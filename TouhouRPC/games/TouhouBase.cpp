@@ -35,7 +35,7 @@ TouhouBase::TouhouBase(PROCESSENTRY32W* pe32)
 TouhouBase::~TouhouBase()
 {
 	CloseHandle(processHandle);
-	free(processEntry);
+	delete processEntry;
 	processEntry = nullptr;
 }
 
