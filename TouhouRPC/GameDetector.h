@@ -14,7 +14,7 @@
 #include "games/Touhou15.h"
 
 // Executables name list
-const int PROCESS_NAME_LIST_SIZE = 4;
+const int PROCESS_NAME_LIST_SIZE = 5;
 
 static const wchar_t* processNameList[PROCESS_NAME_LIST_SIZE] = {
 	// Touhou 06
@@ -25,6 +25,7 @@ static const wchar_t* processNameList[PROCESS_NAME_LIST_SIZE] = {
 	L"th11.exe",
 
 	// Touhou 15
+	L"th15.exe",
 	L"Touhou 15 Legacy of Lunatic Kingdom.exe"
 };
 
