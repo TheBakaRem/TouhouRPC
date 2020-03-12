@@ -103,9 +103,9 @@ void Touhou17::readDataFromGameProcess() {
 		}
 	}
 
-	ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)character, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)SUB_CHARACTER, (LPVOID)characterSub, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)difficulty, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)SUB_CHARACTER, (LPVOID)&characterSub, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
 }
 
 void Touhou17::setGameName(std::string& name) {
@@ -183,23 +183,16 @@ void Touhou17::setGameInfo(std::string& info) {
 void Touhou17::setLargeImageInfo(std::string& icon, std::string& text) {
 	icon = "", text = "";
 	if (menuState >= 0 || stage == 0) return;
-	
 
-}
-
-void Touhou17::setSmallImageInfo(std::string& icon, std::string& text) {
-	icon = "", text = "";
-	if (menuState >= 0 || stage == 0) return;
-	
 	switch (character) {
 	case 0:
-		icon = "th15reimu", text = "Reimu ";
+		icon = "th17reimu", text = "Reimu ";
 		break;
 	case 1:
-		icon = "th15marisa", text = "Marisa ";
+		icon = "th17marisa", text = "Marisa ";
 		break;
 	case 2:
-		icon = "th15sanae", text = "Youmu ";
+		icon = "th17youmu", text = "Youmu ";
 		break;
 	}
 	switch (characterSub) {
@@ -211,6 +204,34 @@ void Touhou17::setSmallImageInfo(std::string& icon, std::string& text) {
 		break;
 	case 2:
 		text.append("(Eagle)");
+		break;
+	}
+}
+
+void Touhou17::setSmallImageInfo(std::string& icon, std::string& text) {
+	icon = "", text = "";
+	if (menuState >= 0 || stage == 0) return;
+
+	switch (difficulty) {
+	case 0: // Easy
+		text.append("Easy");
+		icon.assign("easy");
+		break;
+	case 1: // Normal
+		text.append("Normal");
+		icon.assign("normal");
+		break;
+	case 2: // Hard
+		text.append("Hard");
+		icon.assign("hard");
+		break;
+	case 3: // Lunatic
+		text.append("Lunatic");
+		icon.assign("lunatic");
+		break;
+	case 4: // Extra (difficulty == 4)
+		text.append("Extra");
+		icon.assign("extra");
 		break;
 	}
 }
