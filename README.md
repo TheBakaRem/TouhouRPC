@@ -11,6 +11,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 06 - Embodiment of Scarlet Devil  
 - Touhou 11 - Subterranean Animism  
 - Touhou 15 - Legacy of Lunatic Kingdom  
+- Touhou 17 - Wily Beast and Weakest Creature
 More games will be supported in the future.
 
 ## Additional notes
