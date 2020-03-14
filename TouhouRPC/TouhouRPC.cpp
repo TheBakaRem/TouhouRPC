@@ -72,7 +72,7 @@ void startDisplay() {
     cout << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer." << endl;
     cout << "The program automatically detects when you change betwen supported games." << endl;
     cout << "You can close this program at any time by pressing (Ctrl+C)." << endl;
-    cout << "Supported games: Touhou 06 (EoSD), 11 (SA), 15 (LoLK), 17 (WBaWC)." << endl;
+    cout << "Supported games: Touhou 06 (EoSD), 08 (IN) 11 (SA), 15 (LoLK), 17 (WBaWC)." << endl;
     cout << endl;
     cout << "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!" << endl;
     cout << endl;
@@ -80,7 +80,7 @@ void startDisplay() {
 
 int main()
 {
-    int64_t discordClientId = 684365704220508169;
+    int64_t discordClientId = 687657058157330465;
     
     startDisplay();
 
