@@ -90,6 +90,9 @@
     <ClCompile Include="games\Touhou06.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
+    <ClCompile Include="games\Touhou08.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
     <ClCompile Include="games\Touhou17.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
@@ -162,6 +165,9 @@
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
     <ClInclude Include="games\Touhou06.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou08.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
     <ClInclude Include="games\Touhou17.h">
