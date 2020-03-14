@@ -80,7 +80,7 @@ void startDisplay() {
 
 int main()
 {
-    int64_t discordClientId = 687657058157330465;
+    int64_t discordClientId = 684365704220508169;
     
     startDisplay();
 
