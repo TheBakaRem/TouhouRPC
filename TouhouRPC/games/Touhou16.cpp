@@ -134,7 +134,7 @@ void Touhou16::setGameInfo(std::string& info) {
 	if (spellCardID != -1)
 	{
 		// spellcard practice
-		info.assign("Practicing a spell");
+		info.assign("Practicing a spell:\n");
 		//info.append(th16_spellCardName[spellCardID]); // Uncomment this when Spell Card names are supported
 		return;
 	}

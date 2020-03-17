@@ -13,9 +13,9 @@ void Touhou17::readDataFromGameProcess() {
 	gameState = 0;
 
 	DWORD menu_pointer = 0;
-	ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)menu_pointer, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)&menu_pointer, 4, NULL);
 	if (menu_pointer) {
-		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x24), (LPVOID)menuState, 4, NULL);
+		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x24), (LPVOID)&menuState, 4, NULL);
 		return;
 	}
 	menuState = -1;
@@ -27,10 +27,12 @@ void Touhou17::readDataFromGameProcess() {
 	// Check if the game over music is playing.
 	if (std::strncmp(bgm_playing, "th128_08.wav", std::strlen("th128_08.wav")) == 0) {
 		gameState = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)STAGE, (LPVOID)&stage, 4, NULL);
 	}
 
-	// Convert the part after the _ and befire the . to int
+	// Read stage value
+	ReadProcessMemory(processHandle, (LPCVOID)STAGE, (LPVOID)&stage, 4, NULL);
+	
+	// Convert the part after the _ and before the . to int
 	// That way it is possible to switch case the BGM playing
 	char bgm_id_str[3];
 	bgm_id_str[0] = bgm_playing[5];
@@ -103,6 +105,7 @@ void Touhou17::readDataFromGameProcess() {
 		}
 	}
 
+
 	ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 4, NULL);
 	ReadProcessMemory(processHandle, (LPCVOID)SUB_CHARACTER, (LPVOID)&characterSub, 4, NULL);
 	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
@@ -130,7 +133,7 @@ void Touhou17::setGameInfo(std::string& info) {
 	// Boss name display
 	switch (gameState) {
 	case 1:
-		info.append(" | Fighting: ");
+		info.append(" | Fighting ");
 		switch (stage) {
 		case 1:
 			info.append("Eika Ebisu");
@@ -150,8 +153,9 @@ void Touhou17::setGameInfo(std::string& info) {
 			info.append("Mayumi Joutouguu");
 			break;
 		}
+		break;
 	case 2:
-		info.append(" | Fighting: ");
+		info.append(" | Fighting ");
 		switch (stage) {
 		case 1:
 			info.append("Eika Ebisu");
@@ -174,8 +178,8 @@ void Touhou17::setGameInfo(std::string& info) {
 		case 7:
 			info.append("Saki Kurokoma");
 			break;
-
 		}
+		break;
 	}
 
 }
@@ -212,6 +216,7 @@ void Touhou17::setSmallImageInfo(std::string& icon, std::string& text) {
 	icon = "", text = "";
 	if (menuState >= 0 || stage == 0) return;
 
+	text.append("Difficulty: ");
 	switch (difficulty) {
 	case 0: // Easy
 		text.append("Easy");

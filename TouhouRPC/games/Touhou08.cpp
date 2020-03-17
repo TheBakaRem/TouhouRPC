@@ -54,7 +54,7 @@ void Touhou08::readDataFromGameProcess()
 
 void Touhou08::setGameName(std::string& name)
 {
-    name.assign("Touhou 8 - Imperishable Night");
+    name.assign("Touhou 08 - Imperishable Night");
 }
 
 void Touhou08::setGameInfo(std::string& info)
@@ -70,7 +70,7 @@ void Touhou08::setGameInfo(std::string& info)
     if (BGM[0] != 'b')
     {
         // spellcard practice
-        info.assign("Practicing a spell\n");
+        info.assign("Practicing a spell:\n");
         info.append(th08_spellCardName[spellCardID]);
         return;
     }
