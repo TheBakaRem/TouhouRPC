@@ -1,6 +1,5 @@
 #pragma once
 #include "TouhouBase.h"
-#include "SpellCardNames.h"
 
 class Touhou08 :
 	public TouhouBase
