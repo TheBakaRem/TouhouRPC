@@ -12,12 +12,13 @@
 #include "games/Touhou06.h"
 #include "games/Touhou08.h"
 #include "games/Touhou11.h"
+#include "games/Touhou14.h"
 #include "games/Touhou15.h"
 #include "games/Touhou16.h"
 #include "games/Touhou17.h"
 
 // Executables name list
-const int PROCESS_NAME_LIST_SIZE = 8;
+const int PROCESS_NAME_LIST_SIZE = 9;
 
 static const wchar_t* processNameList[PROCESS_NAME_LIST_SIZE] = {
 	// Touhou 06
@@ -30,6 +31,9 @@ static const wchar_t* processNameList[PROCESS_NAME_LIST_SIZE] = {
 
 	// Touhou 11
 	L"th11.exe",
+
+	// Touhou 14
+	L"th14.exe",
 
 	// Touhou 15
 	L"th15.exe",

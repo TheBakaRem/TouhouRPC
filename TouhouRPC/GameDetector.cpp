@@ -68,6 +68,12 @@ TouhouBase* initializeTouhouGame()
                 std::cout << "Found running game: Touhou 11 - Subterranean Animism." << std::endl;
                 thGame = new Touhou11(pe32);
             }
+            else if (!wcscmp(pe32->szExeFile, L"th14.exe"))
+            {
+                // Touhou 15 detected
+                std::cout << "Found running game: Touhou 14 - Legacy of Lunatic Kingdom." << std::endl;
+                thGame = new Touhou14::Touhou14(pe32);
+            }
             else if (!wcscmp(pe32->szExeFile, L"th15.exe")) {
                 // Touhou 15 detected
                 std::cout << "Found running game: Touhou 15 - Legacy of Lunatic Kingdom." << std::endl;

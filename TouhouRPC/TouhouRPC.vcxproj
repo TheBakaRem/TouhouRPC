@@ -168,6 +168,7 @@
     <ClCompile Include="games\Touhou06.cpp" />
     <ClCompile Include="games\Touhou08.cpp" />
     <ClCompile Include="games\Touhou11.cpp" />
+    <ClCompile Include="games\Touhou14.cpp" />
     <ClCompile Include="games\Touhou15.cpp" />
     <ClCompile Include="games\Touhou16.cpp" />
     <ClCompile Include="games\Touhou17.cpp" />
@@ -191,9 +192,11 @@
   <ItemGroup>
     <ClInclude Include="DiscordRPC.h" />
     <ClInclude Include="GameDetector.h" />
+    <ClInclude Include="games\GameStrings.h" />
     <ClInclude Include="games\Touhou06.h" />
     <ClInclude Include="games\Touhou08.h" />
     <ClInclude Include="games\Touhou11.h" />
+    <ClInclude Include="games\Touhou14.h" />
     <ClInclude Include="games\Touhou15.h" />
     <ClInclude Include="games\Touhou16.h" />
     <ClInclude Include="games\Touhou17.h" />

@@ -1,6 +1,6 @@
 #pragma once
 #include "../DiscordRPC.h"
-#include "SpellCardNames.h"
+#include "GameStrings.h"
 #include <string>
 #include <Windows.h>
 #include <memoryapi.h>
