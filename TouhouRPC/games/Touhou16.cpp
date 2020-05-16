@@ -1,6 +1,6 @@
 #include "Touhou16.h"
 #include <iostream>
-Touhou16::Touhou16(PROCESSENTRY32W* pe32) : TouhouBase(pe32)
+Touhou16::Touhou16(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
 {
 	spellCardID = 0;
 }
@@ -119,11 +119,13 @@ void Touhou16::readDataFromGameProcess() {
 	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
 }
 
-void Touhou16::setGameName(std::string& name) {
-	name = "Touhou 16 - Hidden Stars in Four Seasons";
+void Touhou16::setGameName(std::string& name) const
+{
+	name = getGameName();
 }
 
-void Touhou16::setGameInfo(std::string& info) {
+void Touhou16::setGameInfo(std::string& info) const
+{
 	// Menu
 	if (menuState != -1 || stage == 0) {
 		info = ("In the main menu");
@@ -202,7 +204,8 @@ void Touhou16::setGameInfo(std::string& info) {
 
 }
 
-void Touhou16::setLargeImageInfo(std::string& icon, std::string& text) {
+void Touhou16::setLargeImageInfo(std::string& icon, std::string& text) const
+{
 	icon = "", text = "";
 	if (menuState != -1 || stage == 0) return;
 
@@ -236,7 +239,8 @@ void Touhou16::setLargeImageInfo(std::string& icon, std::string& text) {
 	}
 }
 
-void Touhou16::setSmallImageInfo(std::string& icon, std::string& text) {
+void Touhou16::setSmallImageInfo(std::string& icon, std::string& text) const
+{
 	icon = "", text = "";
 	if (menuState != -1 || stage == 0) return;
 

@@ -4,17 +4,20 @@ class Touhou06 :
 	public TouhouBase
 {
 public:
-	Touhou06(PROCESSENTRY32W* pe32);
+	Touhou06(PROCESSENTRY32W const& pe32);
 	~Touhou06();
 
 
 
 	// Inherited from TouhouBase
+	int64_t getClientId() const override { return 684365704220508169; };
+	const char* getGameName() const override { return "Touhou 06 - Embodiment of Scarlet Devil"; }
+
 	virtual void readDataFromGameProcess() override;
-	virtual void setGameName(std::string& name) override;
-	virtual void setGameInfo(std::string& info) override;
-	virtual void setLargeImageInfo(std::string& icon, std::string& text) override;
-	virtual void setSmallImageInfo(std::string& icon, std::string& text) override;
+	virtual void setGameName(std::string& name) const override;
+	virtual void setGameInfo(std::string& info) const override;
+	virtual void setLargeImageInfo(std::string& icon, std::string& text) const override;
+	virtual void setSmallImageInfo(std::string& icon, std::string& text) const override;
 
 protected:
 	int gameState2;

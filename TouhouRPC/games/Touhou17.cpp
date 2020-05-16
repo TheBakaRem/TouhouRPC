@@ -1,6 +1,6 @@
 #include "Touhou17.h"
 
-Touhou17::Touhou17(PROCESSENTRY32W* pe32) : TouhouBase(pe32)
+Touhou17::Touhou17(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
 {
 }
 
@@ -111,11 +111,13 @@ void Touhou17::readDataFromGameProcess() {
 	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
 }
 
-void Touhou17::setGameName(std::string& name) {
-	name = "Touhou 17 - Wily Beast and Weakest Creature";
+void Touhou17::setGameName(std::string& name) const
+{
+	name = getGameName();
 }
 
-void Touhou17::setGameInfo(std::string& info) {
+void Touhou17::setGameInfo(std::string& info) const
+{
 	if (menuState >= 0 || stage == 0) {
 		info = ("In the main menu");
 		return;
@@ -184,7 +186,8 @@ void Touhou17::setGameInfo(std::string& info) {
 
 }
 
-void Touhou17::setLargeImageInfo(std::string& icon, std::string& text) {
+void Touhou17::setLargeImageInfo(std::string& icon, std::string& text) const
+{
 	icon = "", text = "";
 	if (menuState >= 0 || stage == 0) return;
 
@@ -212,7 +215,8 @@ void Touhou17::setLargeImageInfo(std::string& icon, std::string& text) {
 	}
 }
 
-void Touhou17::setSmallImageInfo(std::string& icon, std::string& text) {
+void Touhou17::setSmallImageInfo(std::string& icon, std::string& text) const
+{
 	icon = "", text = "";
 	if (menuState >= 0 || stage == 0) return;
 

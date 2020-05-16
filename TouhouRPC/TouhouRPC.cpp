@@ -29,8 +29,8 @@ DiscordRPC getDiscord(int64_t clientID) {
     return d;
 }
 
-TouhouBase* getTouhouGame() {
-    TouhouBase* d = initializeTouhouGame();
+std::unique_ptr<TouhouBase> getTouhouGame() {
+    std::unique_ptr<TouhouBase> d = initializeTouhouGame();
 
     while (d == nullptr) {
         std::cout << "No game found. Retrying in 5 seconds..." << std::endl;
@@ -41,29 +41,32 @@ TouhouBase* getTouhouGame() {
     return d;
 }
 
-void touhouUpdate(TouhouBase* touhouGame, DiscordRPC & discord) {
-    if (touhouGame->isStillRunning()) {
+bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord)
+{
+    if (touhouGame->isStillRunning())
+    {
+        // Update data in Touhou class
+        touhouGame->readDataFromGameProcess();
 
-    // Update data in Touhou class
-    touhouGame->readDataFromGameProcess();
+        // Get data from Touhou class
+        string gameName;
+        string gameInfo;
+        string largeImageIcon;
+        string largeImageText;
+        string smallImageIcon;
+        string smallImageText;
 
-    // Get data from Touhou class
-    string gameName = "";
-    string gameInfo = "";
-    string largeImageIcon = "";
-    string largeImageText = "";
-    string smallImageIcon = "";
-    string smallImageText = "";
+        touhouGame->setGameName(gameName);
+        touhouGame->setGameInfo(gameInfo);
+        touhouGame->setLargeImageInfo(largeImageIcon, largeImageText);
+        touhouGame->setSmallImageInfo(smallImageIcon, smallImageText);
 
-    touhouGame->setGameName(gameName);
-    touhouGame->setGameInfo(gameInfo);
-    touhouGame->setLargeImageInfo(largeImageIcon, largeImageText);
-    touhouGame->setSmallImageInfo(smallImageIcon, smallImageText);
+        // Update RPC data, always needs to run
+        discord.setActivityDetails(gameName, gameInfo, largeImageIcon, largeImageText, smallImageIcon, smallImageText);
 
-    // Update RPC data
-    discord.setActivityDetails(gameName, gameInfo, largeImageIcon, largeImageText, smallImageIcon, smallImageText);
-
+        return true;
     }
+    return false;
 }
 
 void startDisplay() {
@@ -80,8 +83,6 @@ void startDisplay() {
 
 int main()
 {
-    int64_t discordClientId = 684365704220508169;
-    
     startDisplay();
 
     // SIGINT (Ctrl+C) detection
@@ -90,39 +91,40 @@ int main()
         std::exit(SIGINT);
         });
 
-    
+
+    // GET TOUHOU GAME
+    std::unique_ptr<TouhouBase> touhouGame = getTouhouGame();
+
     // GET DISCORD LINK
-    DiscordRPC discord = getDiscord(discordClientId);
-    if (!discord.isLaunched()) {
+    DiscordRPC discord = getDiscord(touhouGame->getClientId());
+    if (!discord.isLaunched())
+    {
         cout << "Discord is not started. Exiting..." << endl;
         exit(-1);
     }
-
-    // GET TOUHOU GAME
-    TouhouBase* touhouGame = getTouhouGame();
-
     
     
     // MAIN LOOP
     int count = 50;
     do {
-        discord::Result res = discord.getCore()->RunCallbacks();
-        
+        discord::Result res = discord.tickUpdate();
+
         if (res != discord::Result::Ok)
         {
-            discord.showError(res);
-            discord = getDiscord(discordClientId);
+            DiscordRPC::showError(res);
+            discord = getDiscord(touhouGame->getClientId());
             
-            if (touhouGame->isLinkedToProcess()) {
-                touhouUpdate(touhouGame, discord);
+            if (touhouUpdate(touhouGame, discord))
+            {
+                discord.sendPresence();
             }
-
-            discord.sendPresence();
         }
         else {
             if (count >= 50) {
-                touhouUpdate(touhouGame, discord);
-                discord.sendPresence();
+                if (touhouUpdate(touhouGame, discord))
+                {
+                    discord.sendPresence();
+                }
                 count -= 50;
             }
             count++;
@@ -131,10 +133,12 @@ int main()
         if (!touhouGame->isStillRunning()) {
 
             // Presence reset
-            discord.resetPresence();
+            discord.closeApp();
 
-            std::cout << "Game closed. Trying to find another game to link to..." << endl;
+            std::cout << "Game closed. Trying to find another game to link to..." << endl << endl;
             touhouGame = getTouhouGame();
+
+            discord = getDiscord(touhouGame->getClientId());
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));

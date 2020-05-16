@@ -3,8 +3,9 @@
 
 namespace Touhou14
 {
-Touhou14::Touhou14(PROCESSENTRY32W* pe32)
-	: TouhouBase(pe32)
+
+Touhou14::Touhou14(PROCESSENTRY32W const& pe32)
+	: TouhouMainGameBase(pe32)
 {
 }
 
@@ -15,11 +16,8 @@ void Touhou14::readDataFromGameProcess()
 {
 	// Reset menuState, bgm will tell us if we're in the menu
 	menuState = -1;
-	gameState = STATE_STAGE;
+	state.gameState = GameState::Stage;
 	gameMode = GAME_MODE_STANDARD;
-
-	// Update game mode
-	ReadProcessMemory(processHandle, (LPCVOID)GAME_MODE, (LPVOID)&gameMode, 4, NULL);
 
 	// The BGM playing will be used to determine a lot of things
 	char bgm_playing[20];
@@ -28,8 +26,7 @@ void Touhou14::readDataFromGameProcess()
 	// Check if the game over music is playing.
 	if (std::strncmp(bgm_playing, "th128_08.wav", std::strlen("th128_08.wav")) == 0)
 	{
-		gameState = STATE_GAMEOVER;
-		return;
+		state.gameState = GameState::GameOver;
 	}
 
 	// Convert the part after the _ and before the . to int
@@ -48,442 +45,287 @@ void Touhou14::readDataFromGameProcess()
 
 	unsigned int menu_pointer = 0;
 	ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)&menu_pointer, 4, NULL);
-	if (menu_pointer != 0)
+	if (state.gameState == GameState::Stage && menu_pointer != 0)
 	{
-		// Are you ready for the most bizarre bug in DDC?
-		// The menu object stores a stack of the selected sub menus. The base is meant to be at offset 0x34 inside the menu object.
-		// i.e. any sub menu selected from the top level of the title screen will fill in to this base number.
-		// So, you might naively think, simply reading from this base should be sufficient to know which sub menu we're in?
-		// Haha.
-		// At offset 0xB4 is stored the number of sub menus recorded in the stack, and this is also used to determine where to insert
-		// so when the game increases this when you enter the Manual section BUT DOESN'T DECREASE IT WHEN YOU EXIT
-		// WE KEEP ON MOVING THE SUB MENU LOCATION 4 BYTES FORWARD
-		// Therefore, we have to go and search for it, and we can't just trust that 0 offset == title
-		DWORD subMenuStackOffset = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0xB4), (LPVOID)&subMenuStackOffset, 4, NULL);
+		// The most reliable way of determining our current menu state is through the combination of
+		// menu display state, option count, and extra flags that get set.
+		// This is because of a bug detailed in the mini-documentation below the code
 
-		const unsigned int sub_menu_pointer = menu_pointer + 0x34;
+		/*
+			display state / option count -> menu screen
+			-----------------------------
+			 0 /  0 -> loading
+			 1 / 10 -> main menu
+			 5 /  4 -> game start
+			 5 /  1 -> extra start (has 0x004F5834 set to 4, garbage otherwise?)
+			 5 /  4 -> practice start (has 0x004F58B8 set to 16, 0 otherwise)
+			17 /  7 -> spell card practice (has 0x004F58B8 set to 32, 0 otherwise)
+			11 / 25 -> replay
+			10 /  6 -> all player data screens
+			13 / 17 -> music room
+			 3 /  5 -> options
+			16 / 10 -> all manual screens
 
-		if (subMenuStackOffset == 0)
+			---- sub sub menus ----
+			 6 /  3 -> char select
+			 7 /  2 -> subchar select
+			 8 /  6 -> practice stage select
+			18 /  N -> spell card select, N == num spells for stage
+			19 /  5 -> spell card difficulty select
+			11 /  7 -> replay stage select
+		*/
+
+		DWORD ds = 0;
+		DWORD oc = 0;
+		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x1C), (LPVOID)&ds, 4, NULL);
+		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x30), (LPVOID)&oc, 4, NULL);
+
+		switch (ds)
 		{
-			menuState = 0;
-		}
-		else
+		default: state.mainMenuState = MainMenuState::TitleScreen; break;
+		case 5:
+		case 6:
+		case 7:
 		{
-			// first, read the highest level.
-			int offset = subMenuStackOffset - 1;
-			ReadProcessMemory(processHandle, (LPCVOID)(sub_menu_pointer + (offset * 4)), (LPVOID)&mainMenuSub, 4, NULL);
-
-			// If it is 8 (manual) then we must be on the manual or the title screen.
-			// If not, we're on a sub menu, but not yet sure which. We need to check firstly for the lowest non-8 number
-			if (mainMenuSub != 8)
+			// could be normal game, extra, or stage practice, we can check some extra stuff in order to find out.
+			if (oc == 1) // i.e. only 1 option, extra
 			{
-				for (; offset >= 0; offset--)
-				{
-					int subMenu = 0;
-					ReadProcessMemory(processHandle, (LPCVOID)(sub_menu_pointer + (offset * 4)), (LPVOID)&subMenu, 4, NULL);
-					if (subMenu == 8)
-					{
-						break;
-					}
-					else
-					{
-						mainMenuSub = subMenu;
-					}
-				}
-
-				// Now, mainMenuSub should be lowest non-8 value, and we know for sure we're on this sub menu.
-				menuState = mainMenuSub + 1;
+				state.mainMenuState = MainMenuState::ExtraStart;
 			}
 			else
 			{
-				// How do we tell if we're on the main menu if we got 8 back?
-				// We can check offset 0x1C, which stores some state to do with the main menu, alongside offset 0x30.
-				// These values are pretty arbitrary and are dependent on how deep into the sub menu you are, but
-				// on the main menu, at 0x1C we have 1, and in the manual we have 16.
-				ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x1C), (LPVOID)&mainMenuDisplayStateA, 4, NULL);
-				if (mainMenuDisplayStateA == 1)
+				DWORD practiceFlag = 0;
+				ReadProcessMemory(processHandle, (LPCVOID)PRACTICE_SELECT_FLAG, (LPVOID)&practiceFlag, 4, NULL);
+				if (practiceFlag != 0)
 				{
-					menuState = 0;
+					state.mainMenuState = MainMenuState::StagePractice;
 				}
 				else
 				{
-					menuState = 9;
+					state.mainMenuState = MainMenuState::GameStart;
 				}
 			}
+			break;
+		}
+		case 8: state.mainMenuState = MainMenuState::StagePractice; break;
+		case 17:
+		case 18:
+		case 19: state.mainMenuState = MainMenuState::SpellPractice; break;
+		case 11: state.mainMenuState = MainMenuState::Replays; break;
+		case 10: state.mainMenuState = MainMenuState::PlayerData; break;
+		case 13: state.mainMenuState = MainMenuState::MusicRoom; break;
+		case 3: state.mainMenuState = MainMenuState::Options; break;
+		case 16: state.mainMenuState = MainMenuState::Manual; break;
 		}
 
+		menuState = 0;
+		state.gameState = GameState::MainMenu;
 
-		// Changes 2 places, tracks where cursor is. Not sure why there's 2.
+		///////////////
+		// Unused menu stuff, documented here in case it's ever necessary.
+
+		// These track where the cursor is, changed in 2 places for some reason.
 		// ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x28), (LPVOID)&mainMenuSelectionA, 4, NULL);
 		// ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x2C), (LPVOID)&mainMenuSelectionB, 4, NULL);
 
-		/*
-			10 -> main menu /1
-			4 -> game start /5
-			1 -> extra start /5
-			4 -> practice start (has 0x10 flag set at 0x004F58B8) /5
-			7 -> spell card practice (has 0x20 flag set at 0x004F58B8) /17
-			25 -> replay /11
-			6 -> player data /10
-			17 -> music room /13
-			5 -> options /3
-			10 -> manual (presumably flags set?) /16
-			3 -> char select /6
-			2 -> type select /7
-			6 -> practice stage select /8
-			3 -> spell card select /18
-			5 -> spell card difficulty select /19
-			7 -> replay stage select /11
+		// The menu object stores a stack of the selected sub menus. The bottom of the stack is meant to be at offset 0x34 inside the menu object.
+		// i.e. any sub menu selected from the top level of the title screen will fill in to this base number.
+		// The size of the stack is stored at offset 0xB4, and this is also used to determine where to insert next.
+		// This should've been much more useful than fiddling with display states and option counts and flags etc.
+		// but there is a bug when exiting the Manual sub menu where the stack size doesn't decrease,
+		// making reading from the stack annoying as its base will keep on shifting 4 bytes forward every time the player exits the Manual.
 
-			right = display state A
-			left = display state B
-		*/
-
-		// Since the sub state isn't reliable? There's reliable display states but the numbers are arbitrary.
-		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x1C), (LPVOID)&mainMenuDisplayStateA, 4, NULL);
-		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x30), (LPVOID)&mainMenuDisplayStateB, 4, NULL);
-
-		gameState = STATE_MENU;
-		return;
+		///////////////
+	}
+	else if (bgm_id == 1)
+	{
+		menuState = 0;
+		state.mainMenuState = MainMenuState::TitleScreen;
+		state.gameState = GameState::MainMenu;
 	}
 
-	// Intentionak fallthroughs
-	// Note that ZUN's naming for the BGM file names is not very consistent
-	switch (bgm_id)
+	// Read Spell Card ID (for Spell Practice)
+	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
+	if (state.gameState == GameState::Stage && spellCardID != -1)
 	{
-	default:
-	case 1:
-		menuState = 0;
-		gameState = STATE_MENU;
-		return;
+		state.gameState = GameState::SpellPractice;
+	}
 
-	case 3: // stage 1 boss
-		gameState = STATE_BOSS;
-	case 2: // stage 1
-		stage = 1;
-		break;
+	if (state.gameState == GameState::Stage)
+	{
+		// Intentionak fallthroughs
+		// Note that ZUN's naming for the BGM file names is not very consistent
+		switch (bgm_id)
+		{
+		default:
+		case 1:
+			menuState = 0;
+			state.mainMenuState = MainMenuState::TitleScreen;
+			state.gameState = GameState::MainMenu;
+			break;
 
-	case 5: // stage 2 boss
-		gameState = STATE_BOSS;
-	case 4: // stage 2
-		stage = 2;
-		break;
+		case 3: // stage 1 boss
+			state.gameState = GameState::Boss;
+		case 2: // stage 1
+			stage = 1;
+			break;
 
-	case 7: // stage 3 boss
-		gameState = STATE_BOSS;
-	case 6:// stage 3
-		stage = 3;
-		break;
+		case 5: // stage 2 boss
+			state.gameState = GameState::Boss;
+		case 4: // stage 2
+			stage = 2;
+			break;
 
-	case 10: // stage 4 boss
-		gameState = STATE_BOSS;
-	case 9: // stage 4
-		stage = 4;
-		break;
+		case 7: // stage 3 boss
+			state.gameState = GameState::Boss;
+		case 6:// stage 3
+			stage = 3;
+			break;
 
-	case 12: // stage 5 boss
-		gameState = STATE_BOSS;
-	case 11: // stage 5
-		stage = 5;
-		break;
+		case 10: // stage 4 boss
+			state.gameState = GameState::Boss;
+		case 9: // stage 4
+			stage = 4;
+			break;
 
-	case 15: // stage 6 boss
-		gameState = STATE_BOSS;
-	case 14: // stage 6
-		stage = 6;
-		break;
+		case 12: // stage 5 boss
+			state.gameState = GameState::Boss;
+		case 11: // stage 5
+			stage = 5;
+			break;
 
-	case 19: // extra stage boss
-		gameState = STATE_BOSS;
-	case 18: // extra stage
-		stage = 7;
-		break;
+		case 15: // stage 6 boss
+			state.gameState = GameState::Boss;
+		case 14: // stage 6
+			stage = 6;
+			break;
 
-	case 16: // ending
-		gameState = STATE_ENDING;
-		break;
-	case 17: // staff roll
-		gameState = STATE_CREDITS;
-		break;
+		case 19: // extra stage boss
+			state.gameState = GameState::Boss;
+		case 18: // extra stage
+			stage = 7;
+			break;
+
+		case 16: // ending
+			state.gameState = GameState::Ending;
+			break;
+		case 17: // staff roll
+			state.gameState = GameState::StaffRoll;
+			break;
+		}
 	}
 
 	// We know the main stage boss is triggered when music changes
 	// So if the state isn't already defined, we check if the mid-boss is present
-	if (gameState == STATE_STAGE)
+	if (state.gameState == GameState::Stage)
 	{
 		DWORD boss_mode = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)(ENEMY_STATE), (LPVOID)&boss_mode, 4, NULL);
 		// If it's 0 there is no main boss, if it's 4 it's a mid-boss, 6 is boss, 7 is post-boss
 		if (boss_mode == 4)
 		{
-			gameState = STATE_MIDBOSS;
+			state.gameState = GameState::Midboss;
 		}
 	}
 
 	// Read character and difficulty info
 	ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)SUB_CHARACTER, (LPVOID)&characterSub, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
+	switch (character)
+	{
+	default:
+	case 0: state.character = Character::Reimu; break;
+	case 1: state.character = Character::Marisa; break;
+	case 2: state.character = Character::Sakuya; break;
+	}
 
-	// Read Spell Card ID (for Spell Practice)
-	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)SUB_CHARACTER, (LPVOID)&characterSub, 4, NULL);
+	switch (characterSub)
+	{
+	default:
+	case 0: state.subCharacter = SubCharacter::A; break;
+	case 1: state.subCharacter = SubCharacter::B; break;
+	}
+
+	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
+	switch (difficulty)
+	{
+	default:
+	case 0: state.difficulty = Difficulty::Easy; break;
+	case 1: state.difficulty = Difficulty::Normal; break;
+	case 2: state.difficulty = Difficulty::Hard; break;
+	case 3: state.difficulty = Difficulty::Lunatic; break;
+	case 4: state.difficulty = Difficulty::Extra; break;
+	}
 
 	// Read current game progress
-	ReadProcessMemory(processHandle, (LPCVOID)LIVES, (LPVOID)&lives, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)BOMBS, (LPVOID)&bombs, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)SCORE, (LPVOID)&score, 4, NULL);
-	ReadProcessMemory(processHandle, (LPCVOID)GAMEOVERS, (LPVOID)&gameOvers, 4, NULL);
-}
+	ReadProcessMemory(processHandle, (LPCVOID)LIVES, (LPVOID)&state.lives, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)BOMBS, (LPVOID)&state.bombs, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)SCORE, (LPVOID)&state.score, 4, NULL);
+	ReadProcessMemory(processHandle, (LPCVOID)GAMEOVERS, (LPVOID)&state.gameOvers, 4, NULL);
 
-std::string formatScore(int score, int gameOvers)
-{
-	std::string scoreString = std::to_string((score * 10) + gameOvers);
-	size_t insertPosition = scoreString.length() - 3;
-	while (insertPosition > 0)
-	{
-		scoreString.insert(insertPosition, ",");
-		insertPosition -= 3;
-	}
-	return scoreString;
-}
-
-void Touhou14::setGameName(std::string& name)
-{
-	name = "Touhou 14 - Double Dealing Character";
-}
-
-void Touhou14::setGameInfo(std::string& info)
-{
-	// Menu
-	if (menuState != -1 || stage == 0)
-	{
-		switch (menuState)
-		{
-		case 0: info = "On the title screen"; break;
-		case 1: info = "Preparing to play"; break;
-		case 2: info = "Preparing to play Extra"; break;
-		case 3: info = "Selecting a stage to practice"; break;
-		case 4: info = "Selecting a spell to practice"; break;
-		case 5: info = "Selecting a replay"; break;
-		case 6: info = "Viewing player data"; break;
-		case 7: info = "In the music room:\n"; info.append(th14_musicNames[bgm]); break;
-		case 8: info = "Changing options"; break;
-		case 9: info = "Viewing the manual"; break;
-		}
-		return;
-	}
-
-	// Game over
-	if (gameState == STATE_GAMEOVER)
-	{
-		info = ("Game over");
-		return;
-	}
-
-	// Ending
-	if (gameState == STATE_ENDING || gameState == STATE_CREDITS)
-	{
-		info.assign("Cleared with ");
-		info.append(formatScore(score, gameOvers));
-		return;
-	}
-
-	// Spell practice
-	if (spellCardID != -1)
-	{
-		// spellcard practice
-		info = ("Practicing a spell:\n");
-	}
-
-	// Spell practice
-	if (spellCardID != -1)
-	{
-		// spellcard practice
-		info.append(th14_spellCardName[spellCardID]);
-		return;
-	}
-
+	// Read game mode
+	ReadProcessMemory(processHandle, (LPCVOID)GAME_MODE, (LPVOID)&gameMode, 4, NULL);
 	switch (gameMode)
 	{
-	case GAME_MODE_REPLAY:
-	{
-		info = ("Watching a replay");
-		return;
+	case GAME_MODE_STANDARD: state.stageMode = isValidGameStateForStandardStageMode() ? StageMode::Standard : StageMode::NotInStage; break;
+	case GAME_MODE_REPLAY: state.stageMode = StageMode::Replay; break;
+	case GAME_MODE_CLEAR: state.stageMode = StageMode::NotInStage; break;
+	case GAME_MODE_PRACTICE: state.stageMode = StageMode::Practice; break;
+	case GAME_MODE_SPELLPRACTICE: state.stageMode = StageMode::Standard; break;
 	}
-	case GAME_MODE_PRACTICE:
-	{
-		info = ("Practicing ");
-		break;
-	}
-	default:
-	{
-		break;
-	}
-	}
+}
 
-	// Normal play
+std::string Touhou14::getStageName() const
+{
 	if (stage <= 6)
 	{
-		info.append("Stage ");
-		info.append(std::to_string(stage));
+		std::string name = "Stage ";
+		name.append(std::to_string(stage));
+		return name;
 	}
 	else
 	{
-		info.append("Extra Stage");
+		return "Extra Stage";
 	}
-
-	if (gameMode == GAME_MODE_STANDARD)
-	{
-		info.append(" - (");
-		if (showScoreInsteadOfRes)
-		{
-			info.append(formatScore(score, gameOvers));
-		}
-		else
-		{
-			info.append(std::to_string(lives));
-			info.append("/");
-			info.append(std::to_string(bombs));
-		}
-		info.append(")");
-	}
-
-	// Boss name display
-	switch (gameState)
-	{
-	case STATE_MIDBOSS: // Mid-bosses
-		info.append(" | Fighting ");
-		switch (stage)
-		{
-		case 1:
-			info.append("Cirno");
-			break;
-		case 2:
-			info.append("Sekibanki");
-			break;
-		case 3:
-			info.append("Kagerou Imaizumi");
-			break;
-		case 4:
-			if (characterSub == SUBCHAR_A)
-			{
-				info.append("Yatsuhashi Tsukumo");
-			}
-			else // if (characterSub == SUBCHAR_B)
-			{
-				info.append("Benben Tsukumo");
-			}
-			break;
-		case 5:
-		case 6:
-			info.append("Seija Kijin");
-			break;
-		case 7:
-			info.append("Benben & Yatsuhashi Tsukumo");
-			break;
-		}
-		break;
-	case STATE_BOSS: // Bosses
-		info.append(" | Fighting ");
-		switch (stage)
-		{
-		case 1:
-			info.append("Wakasagihime");
-			break;
-		case 2:
-			info.append("Sekibanki");
-			break;
-		case 3:
-			info.append("Kagerou Imaizumi");
-			break;
-		case 4:
-			if (characterSub == SUBCHAR_A)
-			{
-				info.append("Benben Tsukumo");
-			}
-			else // if (characterSub == SUBCHAR_B)
-			{
-				info.append("Yatsuhashi Tsukumo");
-			}
-			break;
-		case 5:
-			info.append("Seija Kijin");
-			break;
-		case 6:
-			info.append("Shinmyoumaru Sukuna");
-			break;
-		case 7:
-			info.append("Raiko Horikawa");
-			break;
-
-		}
-		break;
-	}
-
 }
 
-void Touhou14::setLargeImageInfo(std::string& icon, std::string& text)
+std::string Touhou14::getMidbossName() const
 {
-	icon = "", text = "";
-	if (menuState != -1 || stage == 0)
+	switch (stage)
 	{
-		return;
-	}
-
-	switch (character)
-	{
-	case CHAR_REIMU:
-		icon = "th14reimu", text = "Shot: Reimu ";
-		break;
-	case CHAR_MARISA:
-		icon = "th14marisa", text = "Marisa ";
-		break;
-	case CHAR_SAKUYA:
-		icon = "th14sakuya", text = "Sakuya ";
-		break;
-	}
-	switch (characterSub)
-	{
-	case SUBCHAR_A:
-		icon.append("a");
-		text.append("A");
-		break;
-	case SUBCHAR_B:
-		icon.append("b");
-		text.append("B");
-		break;
+	case 1: return "Cirno";
+	case 2: return "Sekibanki";
+	case 3: return "Kagerou Imaizumi";
+	case 4: return (state.subCharacter == SubCharacter::A) ? "Yatsuhashi Tsukumo" : "Benben Tsukumo";
+	case 5:
+	case 6: return "Seija Kijin";
+	case 7: return "Benben & Yatsuhashi Tsukumo";
 	}
 }
 
-void Touhou14::setSmallImageInfo(std::string& icon, std::string& text)
+std::string Touhou14::getBossName() const
 {
-	icon = "", text = "";
-	if (menuState != -1 || stage == 0 || spellCardID != -1) return;
-
-	text.append("Difficulty: ");
-	switch (difficulty)
+	switch (stage)
 	{
-	case DIFFICULTY_EASY:
-		text.append("Easy");
-		icon.assign("easy");
-		break;
-	case DIFFICULTY_NORMAL:
-		text.append("Normal");
-		icon.assign("normal");
-		break;
-	case DIFFICULTY_HARD:
-		text.append("Hard");
-		icon.assign("hard");
-		break;
-	case DIFFICULTY_LUNATIC:
-		text.append("Lunatic");
-		icon.assign("lunatic");
-		break;
-	case DIFFICULTY_EXTRA:
-		text.append("Extra");
-		icon.assign("extra");
-		break;
+	case 1: return "Wakasagihime";
+	case 2: return "Sekibanki";
+	case 3: return "Kagerou Imaizumi";
+	case 4: return (state.subCharacter == SubCharacter::A) ? "Benben Tsukumo" : "Yatsuhashi Tsukumo";
+	case 5: return "Seija Kijin";
+	case 6: return "Shinmyoumaru Sukuna";
+	case 7: return "Raiko Horikawa";
+
 	}
 }
+
+std::string const& Touhou14::getSpellCardName() const
+{
+	return th14_spellCardName[spellCardID];
+}
+
+std::string const& Touhou14::getBGMName() const
+{
+	return th14_musicNames[bgm];
+}
+
 }

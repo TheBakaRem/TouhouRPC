@@ -5,16 +5,19 @@ class Touhou08 :
 	public TouhouBase
 {
 public:
-	Touhou08(PROCESSENTRY32* pe32);
+	Touhou08(PROCESSENTRY32W const& pe32);
 	~Touhou08();
 
 	// Inherited from TouhouBase
+	int64_t getClientId() const override { return 684365704220508169; };
+	const char* getGameName() const override { return "Touhou 08 - Imperishable Night"; }
+
 	void readDataFromGameProcess() override;
 
-	void setGameName(std::string& name) override;
-	void setGameInfo(std::string& info) override;
-	void setLargeImageInfo(std::string& icon, std::string& text) override;
-	void setSmallImageInfo(std::string& icon, std::string& text) override;
+	void setGameName(std::string& name) const override;
+	void setGameInfo(std::string& info) const override;
+	void setLargeImageInfo(std::string& icon, std::string& text) const override;
+	void setSmallImageInfo(std::string& icon, std::string& text) const override;
 
 protected:
 	bool isBoss;

@@ -5,17 +5,20 @@ class Touhou16 :
 	public TouhouBase
 {
 public:
-	Touhou16(PROCESSENTRY32W* pe32);
+	Touhou16(PROCESSENTRY32W const& pe32);
 	~Touhou16();
 
 
 
 	// Inherited from TouhouBase
-	virtual void readDataFromGameProcess() override;
-	virtual void setGameName(std::string& name) override;
-	virtual void setGameInfo(std::string& info) override;
-	virtual void setLargeImageInfo(std::string& icon, std::string& text) override;
-	virtual void setSmallImageInfo(std::string& icon, std::string& text) override;
+	int64_t getClientId() const override { return 684365704220508169; };
+	const char* getGameName() const override { return "Touhou 16 - Hidden Stars in Four Seasons"; }
+
+	void readDataFromGameProcess() override;
+	void setGameName(std::string& name) const override;
+	void setGameInfo(std::string& info) const override;
+	void setLargeImageInfo(std::string& icon, std::string& text) const override;
+	void setSmallImageInfo(std::string& icon, std::string& text) const override;
 
 protected:
 	int spellCardID;

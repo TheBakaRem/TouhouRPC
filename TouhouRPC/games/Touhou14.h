@@ -1,41 +1,8 @@
 #pragma once
-#include "TouhouBase.h"
+#include "TouhouMainGameBase.h"
 
 namespace Touhou14
 {
-
-enum GameState
-{
-	STATE_STAGE = 0,
-	STATE_MIDBOSS = 1,
-	STATE_BOSS = 2,
-	STATE_GAMEOVER = 3,
-	STATE_MENU = 4,
-	STATE_ENDING = 5,
-	STATE_CREDITS = 6,
-};
-
-enum Character
-{
-	CHAR_REIMU = 0,
-	CHAR_MARISA = 1,
-	CHAR_SAKUYA = 2,
-};
-
-enum SubCharacter
-{
-	SUBCHAR_A = 0,
-	SUBCHAR_B = 1,
-};
-
-enum Difficulty
-{
-	DIFFICULTY_EASY = 0,
-	DIFFICULTY_NORMAL = 1,
-	DIFFICULTY_HARD = 2,
-	DIFFICULTY_LUNATIC = 3,
-	DIFFICULTY_EXTRA = 4,
-};
 
 enum GameMode
 {
@@ -47,39 +14,36 @@ enum GameMode
 };
 
 class Touhou14 :
-	public TouhouBase
+	public TouhouMainGameBase
 {
 public:
-	Touhou14(PROCESSENTRY32W* pe32);
+	Touhou14(PROCESSENTRY32W const& pe32);
 	~Touhou14();
 
 	// Inherited from TouhouBase
-	virtual void readDataFromGameProcess() override;
-	virtual void setGameName(std::string& name) override;
-	virtual void setGameInfo(std::string& info) override;
-	virtual void setLargeImageInfo(std::string& icon, std::string& text) override;
-	virtual void setSmallImageInfo(std::string& icon, std::string& text) override;
+	int64_t getClientId() const override { return 709074475789844602; };
+	const char* getGameName() const override { return "Touhou 14 - Double Dealing Character"; }
+
+	void readDataFromGameProcess() override;
+
+	// Inherited from TouhouMainGameBase
+	const char* getGameShortName() const override { return "th14"; }
+	std::string getStageName() const override;
+	std::string getMidbossName() const override;
+	std::string getBossName() const override;
+	std::string const& getSpellCardName() const override;
+	std::string const& getBGMName() const override;
 
 protected:
 	int spellCardID{ 0 };
-	int lives{ 0 };
-	int bombs{ 0 };
 	int gameMode{ 0 };
-	int score{ 0 };
-	int gameOvers{ 0 };
-
-	int mainMenuSub{ -1 };
-	int mainMenuDisplayStateA{ -1 };
-	int mainMenuDisplayStateB{ -1 };
 	int bgm{ 1 };
-
-	bool showScoreInsteadOfRes = false;
 
 private:
 	// addresses correct for v1.00b
 	enum address
 	{
-		MENU_POINTER            = 0x004DB6A4L,
+		MENU_POINTER            = 0x004DB6A4L, // offsets and data detailed in code
 		CHARACTER               = 0x004F5828L, // the menu also remembers last chosen at 0x004DB6ACL
 		SUB_CHARACTER           = 0x004F582CL, // the menu also remembers last chosen at 0x004DB6A8L
 		DIFFICULTY              = 0x004F5834L, // the menu also remembers last chosen at 0x004D5984L
@@ -92,6 +56,9 @@ private:
 		GAME_MODE               = 0x004DB6A0L,
 		SCORE                   = 0x004F5830L,
 		GAMEOVERS               = 0x004F5838L,
+
+		// EXTRA_SELECT_FLAG       = 0x004F5834L, // unused, is set to 4 when extra was selected and on main menu.
+		PRACTICE_SELECT_FLAG    = 0x004F58B8L, // is set to 16 when practice selected, 32 when spell practice selected, and 0 otherwise, on main menu.
 	};
 };
 

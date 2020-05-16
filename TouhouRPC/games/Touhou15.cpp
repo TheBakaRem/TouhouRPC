@@ -1,6 +1,6 @@
 #include "Touhou15.h"
 
-Touhou15::Touhou15(PROCESSENTRY32W* pe32) : TouhouBase(pe32)
+Touhou15::Touhou15(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
 {
 	gameType = 0;
 	retryCount = 0;
@@ -52,12 +52,12 @@ void Touhou15::readDataFromGameProcess()
 
 }
 
-void Touhou15::setGameName(std::string& name)
+void Touhou15::setGameName(std::string& name) const
 {
-	name.assign("Touhou 15 - Legacy of Lunatic Kingdom");
+	name.assign(getGameName());
 }
 
-void Touhou15::setGameInfo(std::string& info)
+void Touhou15::setGameInfo(std::string& info) const
 {
 	if (menuState >= 0 || stage == 0) {
 		info.assign("In the main menu");
@@ -132,7 +132,7 @@ void Touhou15::setGameInfo(std::string& info)
 	}
 }
 
-void Touhou15::setLargeImageInfo(std::string& icon, std::string& text)
+void Touhou15::setLargeImageInfo(std::string& icon, std::string& text) const
 {
 	icon.assign("");
 	text.assign("");
@@ -158,7 +158,7 @@ void Touhou15::setLargeImageInfo(std::string& icon, std::string& text)
 	}
 }
 
-void Touhou15::setSmallImageInfo(std::string& icon, std::string& text)
+void Touhou15::setSmallImageInfo(std::string& icon, std::string& text) const
 {
 	icon.assign("");
 	text.assign("");

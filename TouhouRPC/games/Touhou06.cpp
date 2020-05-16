@@ -1,6 +1,6 @@
 #include "Touhou06.h"
 
-Touhou06::Touhou06(PROCESSENTRY32W* pe32) : TouhouBase(pe32)
+Touhou06::Touhou06(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
 {
 	gameState2 = 0;
 }
@@ -43,12 +43,12 @@ void Touhou06::readDataFromGameProcess()
 	}
 }
 
-void Touhou06::setGameName(std::string& name)
+void Touhou06::setGameName(std::string& name) const
 {
-	name.assign("Touhou 06 - Embodiment of Scarlet Devil");
+	name.assign(getGameName());
 }
 
-void Touhou06::setGameInfo(std::string& info)
+void Touhou06::setGameInfo(std::string& info) const
 {
 	if (menuState >= 0 || stage == 0) {
 		info.assign("In the main menu");
@@ -126,7 +126,7 @@ void Touhou06::setGameInfo(std::string& info)
 	}
 }
 
-void Touhou06::setLargeImageInfo(std::string& icon, std::string& text)
+void Touhou06::setLargeImageInfo(std::string& icon, std::string& text) const
 {
 	icon.assign("");
 	text.assign("");
@@ -147,7 +147,7 @@ void Touhou06::setLargeImageInfo(std::string& icon, std::string& text)
 	text.assign(charTeamName);
 }
 
-void Touhou06::setSmallImageInfo(std::string& icon, std::string& text)
+void Touhou06::setSmallImageInfo(std::string& icon, std::string& text) const
 {
 	icon.assign("");
 	text.assign("");

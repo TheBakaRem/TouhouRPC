@@ -1,6 +1,6 @@
 #include "Touhou11.h"
 
-Touhou11::Touhou11(PROCESSENTRY32W* pe32) : TouhouBase(pe32)
+Touhou11::Touhou11(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
 {
 }
 
@@ -47,12 +47,12 @@ void Touhou11::readDataFromGameProcess()
 	}
 }
 
-void Touhou11::setGameName(std::string & name)
+void Touhou11::setGameName(std::string & name) const
 {
-	name.assign("Touhou 11 - Subterranean Animism");
+	name.assign(getGameName());
 }
 
-void Touhou11::setGameInfo(std::string & info)
+void Touhou11::setGameInfo(std::string & info) const
 {
 
 	if (menuState >= 0 || stage == 0) {
@@ -143,7 +143,7 @@ void Touhou11::setGameInfo(std::string & info)
 	}
 }
 
-void Touhou11::setLargeImageInfo(std::string & icon, std::string & text)
+void Touhou11::setLargeImageInfo(std::string & icon, std::string & text) const
 {
 	icon.assign("");
 	text.assign("");
@@ -164,7 +164,7 @@ void Touhou11::setLargeImageInfo(std::string & icon, std::string & text)
 	text.assign(charTeamName);
 }
 
-void Touhou11::setSmallImageInfo(std::string & icon, std::string & text)
+void Touhou11::setSmallImageInfo(std::string & icon, std::string & text) const
 {
 	icon.assign("");
 	text.assign("");

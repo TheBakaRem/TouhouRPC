@@ -102,6 +102,9 @@
     <ClCompile Include="games\Touhou14.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
+    <ClCompile Include="games\TouhouMainGameBase.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\discord-rpc\achievement_manager.h">
@@ -186,6 +189,9 @@
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
     <ClInclude Include="games\GameStrings.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\TouhouMainGameBase.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
   </ItemGroup>

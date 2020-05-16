@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Touhou08.h"
 
-Touhou08::Touhou08(PROCESSENTRY32* pe32) : TouhouBase(pe32)
+Touhou08::Touhou08(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
 {
 	isBoss = 0;
     bossStateChange = 0;
@@ -52,12 +52,12 @@ void Touhou08::readDataFromGameProcess()
     ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 1, NULL);
 }
 
-void Touhou08::setGameName(std::string& name)
+void Touhou08::setGameName(std::string& name) const
 {
-    name.assign("Touhou 08 - Imperishable Night");
+    name.assign(getGameName());
 }
 
-void Touhou08::setGameInfo(std::string& info)
+void Touhou08::setGameInfo(std::string& info) const
 {
     if (stageFrames - oldStageFrames == 0)
     {
@@ -101,7 +101,7 @@ void Touhou08::setGameInfo(std::string& info)
     }
 }
 
-void Touhou08::setLargeImageInfo(std::string& icon, std::string& text)
+void Touhou08::setLargeImageInfo(std::string& icon, std::string& text) const
 {
     icon.assign("");
     text.assign("");
@@ -163,7 +163,7 @@ void Touhou08::setLargeImageInfo(std::string& icon, std::string& text)
     text.assign(charTeamName);
 }
 
-void Touhou08::setSmallImageInfo(std::string& icon, std::string& text)
+void Touhou08::setSmallImageInfo(std::string& icon, std::string& text) const
 {
     icon.assign("");
     text.assign("");
