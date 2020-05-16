@@ -35,7 +35,7 @@ public:
 	std::string const& getBGMName() const override;
 
 protected:
-	int spellCardID{ 0 };
+	int spellCardID{ -1 };
 	int gameMode{ 0 };
 	int bgm{ 1 };
 
