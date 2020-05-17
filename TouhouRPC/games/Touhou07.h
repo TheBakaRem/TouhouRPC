@@ -35,7 +35,8 @@ private:
 		CHARACTER               = 0x0062F645L, // 1 byte
 		SUB_CHARACTER           = 0x0062F646L, // 1 byte
 		DIFFICULTY              = 0x00626280L,
-		ENEMY_ID                = 0x009B46C0L,
+		// ENEMY_ID                = 0x009B46C0L,
+		IS_MAIN_BOSS            = 0x009B655AL, // 1 byte, set to 3 when fighting the boss, 0 otherwise
 		PLAYER_POINTER          = 0x00626278L, // score at offset 00 (int); lives at offset 5C (float); bombs at offset 68 (float); game overs offset 20 (byte)
 		STAGE                   = 0x0062F85CL, // also found at 0x01347FC8L
 		BOSS_FLAG               = 0x0049FC14L,

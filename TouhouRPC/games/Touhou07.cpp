@@ -94,61 +94,10 @@ void Touhou07::readDataFromGameProcess()
 		ReadProcessMemory(processHandle, (LPCVOID)BOSS_FLAG, (LPVOID)&bossFlag, 4, NULL);
 		if (bossFlag == 1)
 		{
-			state.gameState = GameState::Boss; // could be midboss, we'll figure out below
-		}
-	}
-
-	if (state.gameState == GameState::Boss)
-	{
-		DWORD enemyID = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)(ENEMY_ID), (LPVOID)&enemyID, 4, NULL);
-		// depending on the stage and the enemyID we can know if we're on the midboss or not.
-		switch (stage)
-		{
-		default:
-		case 1:
-		case 7: // extra
-		case 8: // phantasm
-			if (enemyID == 0) // all 3 of these midbosses have 0 id
-			{
-				state.gameState = GameState::Midboss;
-			}
-			break;
-
-		case 2:
-			if (enemyID == 41)
-			{
-				state.gameState = GameState::Midboss;
-			}
-			break;
-
-		case 3:
-			if (enemyID == 14 || enemyID == 23)
-			{
-				state.gameState = GameState::Midboss;
-			}
-			break;
-
-		case 4:
-			if (enemyID == 36)
-			{
-				state.gameState = GameState::Midboss;
-			}
-			break;
-
-		case 5:
-			if (enemyID == 38 || enemyID == 44)
-			{
-				state.gameState = GameState::Midboss;
-			}
-			break;
-
-		case 6:
-			if (enemyID == 19 || enemyID == 24)
-			{
-				state.gameState = GameState::Midboss;
-			}
-			break;
+			// fighting either a boss or a midboss, check which it is
+			char midBossFlag = 0;
+			ReadProcessMemory(processHandle, (LPCVOID)IS_MAIN_BOSS, (LPVOID)&midBossFlag, 1, NULL);
+			state.gameState = (midBossFlag == 3) ? GameState::Boss : GameState::Midboss;
 		}
 	}
 
