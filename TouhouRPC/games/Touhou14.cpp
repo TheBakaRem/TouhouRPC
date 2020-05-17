@@ -242,8 +242,8 @@ void Touhou14::readDataFromGameProcess()
 	switch (characterSub)
 	{
 	default:
-	case 0: state.subCharacter = SubCharacter::A; break;
-	case 1: state.subCharacter = SubCharacter::B; break;
+	case 0: state.subCharacter = SubCharacter::A_DistinctIcons; break;
+	case 1: state.subCharacter = SubCharacter::B_DistinctIcons; break;
 	}
 
 	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);

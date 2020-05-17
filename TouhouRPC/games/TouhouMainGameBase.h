@@ -61,6 +61,10 @@ enum class SubCharacter
 	B,
 	C,
 
+	// DDC shot types have different images
+	A_DistinctIcons,
+	B_DistinctIcons,
+
 	// SA partners
 
 	// HSiFS seasons
@@ -125,4 +129,6 @@ protected:
 	} state;
 
 	bool showScoreInsteadOfRes = false; // todo: make a player driven option
+
+	std::string const notSupported{ "not supported" }; // derived classes can return this when they need to return ref
 };

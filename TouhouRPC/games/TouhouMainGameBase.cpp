@@ -169,19 +169,29 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 	{
 		break;
 	}
+	case SubCharacter::A_DistinctIcons:
+	{
+		icon.append("a");
+		// fall through
+	}
 	case SubCharacter::A:
 	{
-		icon.append("a"), text.append(" A");
+		text.append(" A");
 		break;
+	}
+	case SubCharacter::B_DistinctIcons:
+	{
+		icon.append("b");
+		// fall through
 	}
 	case SubCharacter::B:
 	{
-		icon.append("b"), text.append(" B");
+		text.append(" B");
 		break;
 	}
 	case SubCharacter::C:
 	{
-		icon.append("c"), text.append(" C");
+		text.append(" C");
 		break;
 	}
 	}

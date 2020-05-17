@@ -1,6 +1,30 @@
 #include <string>
 #pragma once
 
+// Touhou 07
+const std::string th07_musicNames[20] = {
+	"Ghostly Dream ~ Snow or Cherry Petal",
+	"Paradise ~ Deep Mountain",
+	"Crystallized Silver",
+	"The Fantastic Tales from Tono",
+	"Diao Ye Zong (withered leaf)",
+	"The Doll Maker of Bucuresti",
+	"Doll Judgement ~ The Girl Who Played with People's Shapes",
+	"The Capital City of Flowers in the Sky",
+	"Phantom Band ~ Phantom Ensemble",
+	"Eastern Ghostly Dream ~ Ancient Temple",
+	"Hiroari Shoots a Strange Bird ~ Till When?",
+	"Ultimate Truth",
+	"Bloom Nobly, Ink-Black Cherry Blossom ~ Border of Life",
+	"Border of Life",
+	"Spiritual Domination",
+	"A Maiden's Illusionary Funeral ~ Necro-Fantasy",
+	"Spiritual Domination ~ Who done it!",
+	"Necrofantasia",
+	"Dream of a Spring Breeze",
+	"Sakura, Sakura ~ Japanize Dream...",
+};
+
 // Touhou 08
 const std::string th08_spellCardName[222] = {
 	// stage 1 (13 cards)
