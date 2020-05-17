@@ -27,7 +27,6 @@ public:
 	void readDataFromGameProcess() override;
 
 	// Inherited from TouhouMainGameBase
-	const char* getGameShortName() const override { return "th14"; }
 	std::string getStageName() const override;
 	std::string getMidbossName() const override;
 	std::string getBossName() const override;

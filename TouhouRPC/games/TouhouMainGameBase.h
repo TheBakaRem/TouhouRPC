@@ -90,9 +90,6 @@ class TouhouMainGameBase :
 public:
 	TouhouMainGameBase(PROCESSENTRY32W const& pe32);
 
-	// e.g. return "th14" for Touhou 14, used for finding assets
-	virtual const char* getGameShortName() const = 0;
-
 	// e.g. "Stage 1" or "Extra Stage"
 	virtual std::string getStageName() const = 0;
 

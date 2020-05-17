@@ -136,7 +136,7 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 
 void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & text) const
 {
-	icon = getGameShortName(), text.clear();
+	icon.clear(), text.clear();
 	if (state.stageMode == StageMode::NotInStage)
 	{
 		icon.append("cover");
