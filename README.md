@@ -9,6 +9,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 
 ## Supported games
 - Touhou 06 - Embodiment of Scarlet Devil  
+- Touhou 07 - Perfect Cherry Blossom  
 - Touhou 08 - Imperishable Night  
 - Touhou 11 - Subterranean Animism  
 - Touhou 14 - Double Dealing Character  

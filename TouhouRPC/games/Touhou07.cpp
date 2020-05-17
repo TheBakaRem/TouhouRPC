@@ -32,6 +32,7 @@ void Touhou07::readDataFromGameProcess()
 	char stageMode = 0;
 	ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 1, NULL);
 
+	// stageMode is 14 if we're watching the title screen demo (where inGameFlagB is set to 0)
 	if (inGameFlagB == 0 || stageMode == 14)
 	{
 		state.gameState = GameState::MainMenu;
@@ -77,6 +78,7 @@ void Touhou07::readDataFromGameProcess()
 
 	if (state.gameState == GameState::Stage)
 	{
+		// if paused, the stageMode is 4 lower than usual.
 		char paused = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)PAUSE_FLAG, (LPVOID)&paused, 1, NULL);
 		stageMode -= (paused == 0) ? 4 : 0;
