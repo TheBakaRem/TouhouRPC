@@ -42,6 +42,7 @@ protected:
 	int bgm{ 1 };
 
 private:
+	// addresses correct for v1.00b
 	enum address {
 		CHARACTER                   = 0x004B59F4L,
 		SUB_CHARACTER               = 0x004B59F8L,
@@ -50,6 +51,7 @@ private:
 		MENU_POINTER                = 0x004B77F0L,
 		BGM_STR                     = 0x00526B08L,
 		ENEMY_STATE_POINTER         = 0x004B76A0L,
+		STAGE_STATE                 = 0x004B59E4L,
 		SPELL_CARD_ID               = 0x004B5A14L,
 		LIVES                       = 0x004B5A40L,
 		BOMBS                       = 0x004B5A4CL,

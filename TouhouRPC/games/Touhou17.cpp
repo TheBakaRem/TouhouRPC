@@ -190,18 +190,40 @@ void Touhou17::readDataFromGameProcess() {
 		// Enemy state object
 		// This object holds various information about general ecl state.
 		// Offset 44h in this structure is used to indicate the main boss enemy
-		// If it's 0 there is no main boss
-		// It doesn't differenciate between midbosses and bosses but we already did that anyways
+		// If it's 0 there is no main boss, 1 then there is, except stage 6 where it's 1 in the section leading up to Mayumi too, and cuts to 0 before she's even been beaten!
+		// Offset 48h is some kind of enemy ID, which isn't consistent between runs except is always 0 when there's no boss, and non-zero when there is.
+		// Unlike 44h this holds true for stage 6 too.
+		// Neither of these differentiate between midbosses and bosses.
 		DWORD enemy_state_ptr = 0;
 
 		ReadProcessMemory(processHandle, (LPCVOID)ENEMY_STATE_POINTER, (LPVOID)&enemy_state_ptr, 4, NULL);
-		if (enemy_state_ptr != 0) {
-			DWORD boss_mode = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)(enemy_state_ptr + 0x44), (LPVOID)&boss_mode, 4, NULL);
-			if (boss_mode > 0) {
-				state.stageState = StageState::Midboss;
+		if (enemy_state_ptr != 0)
+		{
+			DWORD enemyID = 0;
+			ReadProcessMemory(processHandle, (LPCVOID)(enemy_state_ptr + 0x48), (LPVOID)&enemyID, 4, NULL);
+
+			if (enemyID > 0)
+			{
+				// Since music only kicks in a little bit after the boss appears, until that happens we'll be showing the midboss by accident.
+				// ... not that it's an issue except for stage 6 and EX, since otherwise all the bosses are also the midbosses.
+				// We can check a stage state number that will confirm if the boss we're looking at is midboss or not.
+
+				// Stage state.
+				// 0 -> pre-midboss + midboss
+				// 2 -> post-midboss (except stage 6 where it stays 0)
+				// 41 -> pre-keiki appearance conversation
+				// 43 -> boss
+				// 81 -> post-boss
+				DWORD stageState = 0;
+
+				ReadProcessMemory(processHandle, (LPCVOID)STAGE_STATE, (LPVOID)&stageState, 4, NULL);
+				if (stageState == 0)
+				{
+					state.stageState = StageState::Midboss;
+				}
 			}
 		}
+
 	}
 
 
