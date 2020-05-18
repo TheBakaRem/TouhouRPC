@@ -5,22 +5,20 @@
 enum class GameState
 {
 	MainMenu,
-	Stage,
-	Midboss,
-	Boss,
+	Playing,
+	StagePractice,
 	SpellPractice,
+	WatchingReplay,
 	GameOver,
 	Ending,
 	StaffRoll,
 };
 
-enum class StageMode
+enum class StageState
 {
-	Standard,
-	Practice,
-	Replay,
-
-	NotInStage,
+	Stage,
+	Midboss,
+	Boss,
 };
 
 enum class MainMenuState
@@ -28,7 +26,6 @@ enum class MainMenuState
 	TitleScreen,
 	GameStart,
 	ExtraStart,
-	PhantasmStart,
 	StagePractice,
 	SpellPractice,
 	Replays,
@@ -97,8 +94,8 @@ public:
 	virtual std::string getBossName() const = 0;
 
 	// Should just forward to correct tables in GameStrings, letting the game decide how to grab them
-	virtual std::string const& getSpellCardName() const = 0;
-	virtual std::string const& getBGMName() const = 0;
+	virtual std::string const& getSpellCardName() const = 0; // spell card practice only
+	virtual std::string const& getBGMName() const = 0; // music room only
 
 
 	void setGameName(std::string& name) const override final;
@@ -106,26 +103,31 @@ public:
 	void setLargeImageInfo(std::string& icon, std::string& text) const override final;
 	void setSmallImageInfo(std::string& icon, std::string& text) const override final;
 
-	bool isValidGameStateForStandardStageMode() const;
+private:
+	bool shouldShowCoverIcon() const;
 	std::string createFormattedScore() const;
 
 protected:
+
+	// Everything in this struct should get a value assigned to it.
 	struct
 	{
+		// States of play: for the most basic functionality, it is required that gameState must at least correctly switch between MainMenu and Playing.
 		GameState gameState{ GameState::MainMenu };
-		StageMode stageMode{ StageMode::Standard };
+		StageState stageState{ StageState::Stage };
 		MainMenuState mainMenuState{ MainMenuState::TitleScreen };
-		Character character{ Character::Reimu };
-		SubCharacter subCharacter{ SubCharacter::A };
-		Difficulty difficulty{ Difficulty::Easy };
 
+		// Player details: all are required to be set.
+		Character character{ Character::Reimu };
+		SubCharacter subCharacter{ SubCharacter::None };
+		Difficulty difficulty{ Difficulty::Easy };
 		int lives{ 0 };
 		int bombs{ 0 };
 		int score{ 0 };
 		int gameOvers{ 0 };
 	} state;
 
-	bool showScoreInsteadOfRes = false; // todo: make a player driven option
-
+	bool showScoreInsteadOfResources = false; // todo: make this a player driven option
+	
 	std::string const notSupported{ "not supported" }; // derived classes can return this when they need to return ref
 };

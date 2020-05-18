@@ -16,7 +16,8 @@ void Touhou14::readDataFromGameProcess()
 {
 	// Reset menuState, bgm will tell us if we're in the menu
 	menuState = -1;
-	state.gameState = GameState::Stage;
+	state.gameState = GameState::Playing;
+	state.stageState = StageState::Stage;
 	gameMode = GAME_MODE_STANDARD;
 
 	// The BGM playing will be used to determine a lot of things
@@ -45,7 +46,7 @@ void Touhou14::readDataFromGameProcess()
 
 	unsigned int menu_pointer = 0;
 	ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)&menu_pointer, 4, NULL);
-	if (state.gameState == GameState::Stage && menu_pointer != 0)
+	if (state.gameState == GameState::Playing && menu_pointer != 0)
 	{
 		// The most reliable way of determining our current menu state is through the combination of
 		// menu display state, option count, and extra flags that get set.
@@ -137,21 +138,8 @@ void Touhou14::readDataFromGameProcess()
 
 		///////////////
 	}
-	else if (bgm_id == 1)
-	{
-		menuState = 0;
-		state.mainMenuState = MainMenuState::TitleScreen;
-		state.gameState = GameState::MainMenu;
-	}
 
-	// Read Spell Card ID (for Spell Practice)
-	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
-	if (state.gameState == GameState::Stage && spellCardID != -1)
-	{
-		state.gameState = GameState::SpellPractice;
-	}
-
-	if (state.gameState == GameState::Stage)
+	if (state.gameState == GameState::Playing)
 	{
 		// Intentionak fallthroughs
 		// Note that ZUN's naming for the BGM file names is not very consistent
@@ -165,43 +153,43 @@ void Touhou14::readDataFromGameProcess()
 			break;
 
 		case 3: // stage 1 boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 2: // stage 1
 			stage = 1;
 			break;
 
 		case 5: // stage 2 boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 4: // stage 2
 			stage = 2;
 			break;
 
 		case 7: // stage 3 boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 6:// stage 3
 			stage = 3;
 			break;
 
 		case 10: // stage 4 boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 9: // stage 4
 			stage = 4;
 			break;
 
 		case 12: // stage 5 boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 11: // stage 5
 			stage = 5;
 			break;
 
 		case 15: // stage 6 boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 14: // stage 6
 			stage = 6;
 			break;
 
 		case 19: // extra stage boss
-			state.gameState = GameState::Boss;
+			state.stageState = StageState::Boss;
 		case 18: // extra stage
 			stage = 7;
 			break;
@@ -217,16 +205,19 @@ void Touhou14::readDataFromGameProcess()
 
 	// We know the main stage boss is triggered when music changes
 	// So if the state isn't already defined, we check if the mid-boss is present
-	if (state.gameState == GameState::Stage)
+	if (state.stageState == StageState::Stage)
 	{
 		DWORD boss_mode = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)(ENEMY_STATE), (LPVOID)&boss_mode, 4, NULL);
 		// If it's 0 there is no main boss, if it's 4 it's a mid-boss, 6 is boss, 7 is post-boss
 		if (boss_mode == 4)
 		{
-			state.gameState = GameState::Midboss;
+			state.stageState = StageState::Midboss;
 		}
 	}
+
+	// Read Spell Card ID (for Spell Practice)
+	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
 
 	// Read character and difficulty info
 	ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 4, NULL);
@@ -267,11 +258,11 @@ void Touhou14::readDataFromGameProcess()
 	ReadProcessMemory(processHandle, (LPCVOID)GAME_MODE, (LPVOID)&gameMode, 4, NULL);
 	switch (gameMode)
 	{
-	case GAME_MODE_STANDARD: state.stageMode = isValidGameStateForStandardStageMode() ? StageMode::Standard : StageMode::NotInStage; break;
-	case GAME_MODE_REPLAY: state.stageMode = StageMode::Replay; break;
-	case GAME_MODE_CLEAR: state.stageMode = StageMode::NotInStage; break;
-	case GAME_MODE_PRACTICE: state.stageMode = StageMode::Practice; break;
-	case GAME_MODE_SPELLPRACTICE: state.stageMode = StageMode::Standard; break;
+	case GAME_MODE_STANDARD: /* could be main menu or playing, no need to overwrite anything */ break;
+	case GAME_MODE_REPLAY: state.gameState = GameState::WatchingReplay; break;
+	case GAME_MODE_CLEAR: state.gameState = GameState::StaffRoll; break;
+	case GAME_MODE_PRACTICE: state.gameState = GameState::StagePractice; break;
+	case GAME_MODE_SPELLPRACTICE: state.gameState = GameState::SpellPractice; break;
 	}
 }
 

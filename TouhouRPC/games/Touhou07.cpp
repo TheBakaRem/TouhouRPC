@@ -22,8 +22,8 @@ void Touhou07::readDataFromGameProcess()
 
 	// Reset menuState, bgm will tell us if we're in the menu
 	menuState = -1;
-	state.gameState = GameState::Stage;
-	state.stageMode = StageMode::Standard;
+	state.gameState = GameState::Playing;
+	state.stageState = StageState::Stage;
 
 	// this is 0 only if we're not playing currently
 	DWORD inGameFlagB = 0;
@@ -36,7 +36,6 @@ void Touhou07::readDataFromGameProcess()
 	if (inGameFlagB == 0 || stageMode == 14)
 	{
 		state.gameState = GameState::MainMenu;
-		state.stageMode = StageMode::NotInStage;
 
 		DWORD menu_pointer = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)&menu_pointer, 4, NULL);
@@ -76,7 +75,7 @@ void Touhou07::readDataFromGameProcess()
 
 	ReadProcessMemory(processHandle, (LPCVOID)STAGE, (LPVOID)&stage, 4, NULL);
 
-	if (state.gameState == GameState::Stage)
+	if (state.gameState == GameState::Playing)
 	{
 		// if paused, the stageMode is 4 lower than usual.
 		char paused = 0;
@@ -85,9 +84,9 @@ void Touhou07::readDataFromGameProcess()
 		switch (stageMode)
 		{
 		default:
-		case 0: state.stageMode = StageMode::Standard; break;
-		case 1: state.stageMode = StageMode::Practice; break;
-		case 8: state.stageMode = StageMode::Replay; break;
+		case 0: state.gameState = GameState::Playing; break;
+		case 1: state.gameState = GameState::StagePractice; break;
+		case 8: state.gameState = GameState::WatchingReplay; break;
 		}
 
 		DWORD bossFlag = 0;
@@ -97,7 +96,7 @@ void Touhou07::readDataFromGameProcess()
 			// fighting either a boss or a midboss, check which it is
 			char midBossFlag = 0;
 			ReadProcessMemory(processHandle, (LPCVOID)IS_MAIN_BOSS, (LPVOID)&midBossFlag, 1, NULL);
-			state.gameState = (midBossFlag == 3) ? GameState::Boss : GameState::Midboss;
+			state.stageState = (midBossFlag == 3) ? StageState::Boss : StageState::Midboss;
 		}
 	}
 

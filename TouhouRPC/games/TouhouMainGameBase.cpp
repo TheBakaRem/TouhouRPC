@@ -15,7 +15,6 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		case MainMenuState::TitleScreen: name = "On the title screen"; break;
 		case MainMenuState::GameStart: name = "Preparing to play"; break;
 		case MainMenuState::ExtraStart: name = "Preparing to play Extra"; break;
-		case MainMenuState::PhantasmStart: name = "Preparing to play Phantasm"; break;
 		case MainMenuState::StagePractice: name = "Selecting a stage to practice"; break;
 		case MainMenuState::SpellPractice: name = "Selecting a spell to practice"; break;
 		case MainMenuState::Replays: name = "Selecting a replay"; break;
@@ -24,13 +23,13 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		case MainMenuState::Options: name = "Changing options"; break;
 		case MainMenuState::Manual: name = "Viewing the manual"; break;
 		}
-		return;
+		break;
 	}
 
 	case GameState::GameOver:
 	{
 		name = ("Game over");
-		return;
+		break;
 	}
 
 	case GameState::Ending:
@@ -38,48 +37,45 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 	{
 		name = ("Cleared with ");
 		name.append(createFormattedScore());
-		return;
+		break;
 	}
 
 	case GameState::SpellPractice:
 	{
 		name = ("Practicing a spell:"); // game info will specify spell.
-		return;
+		break;
 	}
 
-	case GameState::Stage:
-	case GameState::Midboss:
-	case GameState::Boss:
+	case GameState::WatchingReplay:
 	{
-		if (state.stageMode == StageMode::Replay)
-		{
-			name = ("Watching a replay");
-			return;
-		}
+		name = ("Watching a replay");
+		break;
+	}
 
-		if (state.stageMode == StageMode::Practice)
-		{
-			name = ("Practicing ");
-		}
-
-		// Normal play
+	case GameState::StagePractice:
+	{
+		name = ("Practicing ");
+		name.append(getStageName());
+		break;
+	}
+	case GameState::Playing:
+	{
 		name.append(getStageName());
 
-		if (state.stageMode == StageMode::Standard)
+		// normal play shows resources or score
+		name.reserve(name.size() + 6 /* text characters */ + 12 /* max score size */);
+		name.append(" - (");
+		if (showScoreInsteadOfResources)
 		{
-			name.append(" - (");
-			if (showScoreInsteadOfRes)
-			{
-				name.append(createFormattedScore());
-			}
-			else
-			{
-				name.append(std::to_string(state.lives));
-				name.append("/");
-				name.append(std::to_string(state.bombs));
-			}
-			name.append(")");
+			name.append(createFormattedScore());
 		}
+		else
+		{
+			name.append(std::to_string(state.lives));
+			name.append("/");
+			name.append(std::to_string(state.bombs));
+		}
+		name.append(")");
 		break;
 	}
 	}
@@ -87,11 +83,6 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 
 void TouhouMainGameBase::setGameInfo(std::string & info) const
 {
-	if (state.stageMode == StageMode::Replay)
-	{
-		return;
-	}
-
 	switch (state.gameState)
 	{
 	case GameState::MainMenu:
@@ -103,7 +94,7 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 		break;
 	}
 
-	case GameState::Stage:
+	case GameState::WatchingReplay:
 	case GameState::Ending:
 	case GameState::StaffRoll:
 	case GameState::GameOver:
@@ -117,19 +108,32 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 		break;
 	}
 
-	case GameState::Midboss: // Mid-bosses
+	case GameState::Playing:
+	case GameState::StagePractice:
 	{
-		info = "Fighting ";
-		info.append(getMidbossName());
+		switch (state.stageState)
+		{
+		case StageState::Stage:
+		{
+			break;
+		}
+		case StageState::Midboss:
+		{
+			info = "Fighting ";
+			info.append(getMidbossName());
+			break;
+		}
+
+		case StageState::Boss:
+		{
+			info = "Fighting ";
+			info.append(getBossName());
+			break;
+		}
+		}
 		break;
 	}
 
-	case GameState::Boss: // Bosses
-	{
-		info = "Fighting ";
-		info.append(getBossName());
-		break;
-	}
 
 	}
 }
@@ -137,7 +141,7 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & text) const
 {
 	icon.clear(), text.clear();
-	if (state.stageMode == StageMode::NotInStage)
+	if (shouldShowCoverIcon())
 	{
 		icon.append("cover");
 		return;
@@ -200,7 +204,7 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 void TouhouMainGameBase::setSmallImageInfo(std::string & icon, std::string & text) const
 {
 	icon.clear(), text.clear();
-	if (state.stageMode == StageMode::NotInStage) return;
+	if (shouldShowCoverIcon()) return;
 
 	text = "Difficulty: ";
 	switch (state.difficulty)
@@ -238,9 +242,13 @@ void TouhouMainGameBase::setSmallImageInfo(std::string & icon, std::string & tex
 	}
 }
 
-bool TouhouMainGameBase::isValidGameStateForStandardStageMode() const
+bool TouhouMainGameBase::shouldShowCoverIcon() const
 {
-	return state.gameState == GameState::Stage || state.gameState == GameState::Midboss || state.gameState == GameState::Boss || state.gameState == GameState::SpellPractice;
+	return state.gameState != GameState::Playing
+		&& state.gameState != GameState::StagePractice
+		&& state.gameState != GameState::SpellPractice
+		&& state.gameState != GameState::WatchingReplay
+		;
 }
 
 std::string TouhouMainGameBase::createFormattedScore() const
