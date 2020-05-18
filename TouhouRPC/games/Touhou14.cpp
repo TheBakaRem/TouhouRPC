@@ -53,7 +53,7 @@ void Touhou14::readDataFromGameProcess()
 		// This is because of a bug detailed in the mini-documentation below the code
 
 		/*
-			display state / option count -> menu screen
+			display state (0x1C) / option count (0x30) -> menu screen
 			-----------------------------
 			 0 /  0 -> loading
 			 1 / 10 -> main menu
@@ -77,9 +77,7 @@ void Touhou14::readDataFromGameProcess()
 		*/
 
 		DWORD ds = 0;
-		DWORD oc = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x1C), (LPVOID)&ds, 4, NULL);
-		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x30), (LPVOID)&oc, 4, NULL);
 
 		switch (ds)
 		{
@@ -88,8 +86,11 @@ void Touhou14::readDataFromGameProcess()
 		case 6:
 		case 7:
 		{
+			DWORD extraFlag = 0;
+			ReadProcessMemory(processHandle, (LPCVOID)EXTRA_SELECT_FLAG, (LPVOID)&extraFlag, 4, NULL);
+
 			// could be normal game, extra, or stage practice, we can check some extra stuff in order to find out.
-			if (oc == 1) // i.e. only 1 option, extra
+			if (extraFlag == 4)
 			{
 				state.mainMenuState = MainMenuState::ExtraStart;
 			}
@@ -97,14 +98,7 @@ void Touhou14::readDataFromGameProcess()
 			{
 				DWORD practiceFlag = 0;
 				ReadProcessMemory(processHandle, (LPCVOID)PRACTICE_SELECT_FLAG, (LPVOID)&practiceFlag, 4, NULL);
-				if (practiceFlag != 0)
-				{
-					state.mainMenuState = MainMenuState::StagePractice;
-				}
-				else
-				{
-					state.mainMenuState = MainMenuState::GameStart;
-				}
+				state.mainMenuState = (practiceFlag != 0) ? MainMenuState::StagePractice : MainMenuState::GameStart;
 			}
 			break;
 		}

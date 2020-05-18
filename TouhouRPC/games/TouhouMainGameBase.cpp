@@ -19,6 +19,7 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		case MainMenuState::SpellPractice: name = "Selecting a spell to practice"; break;
 		case MainMenuState::Replays: name = "Selecting a replay"; break;
 		case MainMenuState::PlayerData: name = "Viewing player data"; break;
+		case MainMenuState::Achievements: name = "Viewing achievements"; break;
 		case MainMenuState::MusicRoom: name = "In the music room:"; break; // game info will specify track.
 		case MainMenuState::Options: name = "Changing options"; break;
 		case MainMenuState::Manual: name = "Viewing the manual"; break;
@@ -166,6 +167,11 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 		icon.append("sakuya"), text.append("Sakuya");
 		break;
 	}
+	case Character::Youmu:
+	{
+		icon.append("youmu"), text.append("Youmu");
+		break;
+	}
 	}
 	switch (state.subCharacter)
 	{
@@ -196,6 +202,23 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 	case SubCharacter::C:
 	{
 		text.append(" C");
+		break;
+	}
+
+	// WBaWC beasts
+	case SubCharacter::Wolf:
+	{
+		text.append(" (Wolf)");
+		break;
+	}
+	case SubCharacter::Otter:
+	{
+		text.append(" (Otter)");
+		break;
+	}
+	case SubCharacter::Eagle:
+	{
+		text.append(" (Eagle)");
 		break;
 	}
 	}

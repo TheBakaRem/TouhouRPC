@@ -30,6 +30,7 @@ enum class MainMenuState
 	SpellPractice,
 	Replays,
 	PlayerData,
+	Achievements,
 	MusicRoom,
 	Options,
 	Manual,
@@ -43,6 +44,7 @@ enum class Character
 
 	// non-MCs
 	Sakuya,
+	Youmu,
 
 	// IN Teams
 
@@ -67,7 +69,9 @@ enum class SubCharacter
 	// HSiFS seasons
 
 	// WBaWC beasts
-
+	Wolf,
+	Otter,
+	Eagle,
 };
 
 enum class Difficulty

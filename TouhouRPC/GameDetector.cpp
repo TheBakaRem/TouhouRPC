@@ -53,13 +53,13 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
         switch (game)
         {
         case SupportedGame::EoSD_6:     thGame = std::make_unique<Touhou06>(pe32); break;
-        case SupportedGame::PCB_7:     thGame = std::make_unique<Touhou07::Touhou07>(pe32); break;
+        case SupportedGame::PCB_7:      thGame = std::make_unique<Touhou07::Touhou07>(pe32); break;
         case SupportedGame::IN_8:       thGame = std::make_unique<Touhou08>(pe32); break;
         case SupportedGame::SA_11:      thGame = std::make_unique<Touhou11>(pe32); break;
         case SupportedGame::DDC_14:     thGame = std::make_unique<Touhou14::Touhou14>(pe32); break;
         case SupportedGame::LoLK_15:    thGame = std::make_unique<Touhou15>(pe32); break;
         case SupportedGame::HSiFS_16:   thGame = std::make_unique<Touhou16>(pe32); break;
-        case SupportedGame::WBaWC_17:   thGame = std::make_unique<Touhou17>(pe32); break;
+        case SupportedGame::WBaWC_17:   thGame = std::make_unique<Touhou17::Touhou17>(pe32); break;
 
         case SupportedGame::Invalid:
         {
