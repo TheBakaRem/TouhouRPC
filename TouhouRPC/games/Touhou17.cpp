@@ -12,9 +12,6 @@ Touhou17::~Touhou17()
 }
 
 void Touhou17::readDataFromGameProcess() {
-	// The gameState member will be used like following: 0 = stage, 1 = midboss, 2 = boss
-	gameState = 0;
-
 	menuState = -1;
 	state.gameState = GameState::Playing;
 	state.stageState = StageState::Stage;
