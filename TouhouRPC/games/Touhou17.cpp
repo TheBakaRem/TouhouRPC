@@ -1,5 +1,5 @@
 #include "Touhou17.h"
-#include <iostream>
+
 namespace Touhou17
 {
 
@@ -27,7 +27,7 @@ void Touhou17::readDataFromGameProcess() {
 	// Check if the game over music is playing.
 	if (std::strncmp(bgm_playing, "th128_08.wav", std::strlen("th128_08.wav")) == 0)
 	{
-		gameState = 0;
+		state.gameState = GameState::GameOver;
 	}
 
 	// Read stage value
