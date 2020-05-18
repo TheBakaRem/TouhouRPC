@@ -172,6 +172,16 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 		icon.append("youmu"), text.append("Youmu");
 		break;
 	}
+	case Character::Cirno:
+	{
+		icon.append("cirno"), text.append("Cirno");
+		break;
+	}
+	case Character::Aya:
+	{
+		icon.append("aya"), text.append("Aya");
+		break;
+	}
 	}
 	switch (state.subCharacter)
 	{
@@ -202,6 +212,28 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 	case SubCharacter::C:
 	{
 		text.append(" C");
+		break;
+	}
+
+	// HSiFS seasons
+	case SubCharacter::Spring:
+	{
+		text.append(" (Spring)");
+		break;
+	}
+	case SubCharacter::Summer:
+	{
+		text.append(" (Summer)");
+		break;
+	}
+	case SubCharacter::Fall:
+	{
+		text.append(" (Fall)");
+		break;
+	}
+	case SubCharacter::Winter:
+	{
+		text.append(" (Winter)");
 		break;
 	}
 

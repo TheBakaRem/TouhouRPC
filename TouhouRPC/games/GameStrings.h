@@ -684,6 +684,28 @@ const std::string th16_spellCardName[119] = {
 	"\"Anarchy Bullet Hell\""
 };
 
+// Touhou 16 Music
+const std::string th16_musicNames[18] = {
+	"unused",
+	"The Sky Where Cherry Blossoms Flutter Down",
+	"A Star of Hope Rises in the Blue Sky",
+	"A Midsummer Fairy's Dream",
+	"The Colorless Wind on Youkai Mountain",
+	"Deep-Mountain Encounter",
+	"Swim in a Cherry Blossom-Colored Sea",
+	"A Pair of Divine Beasts",
+	"Illusionary White Traveler",
+	"The Magic Straw-Hat Jizo",
+	"Does the Forbidden Door Lead to This World, or the World Beyond?",
+	"Crazy Backup Dancers",
+	"The Concealed Four Seasons",
+	"Into Backdoor",
+	"Unnatural Nature",
+	"White Traveler",
+	"No More Going Through Doors",
+	"Secret God Matara ~ Hidden Star in All Seasons.",
+};
+
 // Touhou 17
 const std::string th17_spellCardName[101] = {
 	// stage 1 (1-8, 8 cards)
@@ -797,7 +819,7 @@ const std::string th17_spellCardName[101] = {
 };
 
 // Touhou 17 Music
-const std::string th17_musicNames[21] = {
+const std::string th17_musicNames[19] = {
 	"unused",
 	"Silent Beast Spirits",
 	"unused",

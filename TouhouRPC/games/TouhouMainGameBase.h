@@ -45,6 +45,8 @@ enum class Character
 	// non-MCs
 	Sakuya,
 	Youmu,
+	Cirno,
+	Aya,
 
 	// IN Teams
 
@@ -67,6 +69,10 @@ enum class SubCharacter
 	// SA partners
 
 	// HSiFS seasons
+	Spring,
+	Summer,
+	Fall,
+	Winter,
 
 	// WBaWC beasts
 	Wolf,
