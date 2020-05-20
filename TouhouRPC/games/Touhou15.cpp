@@ -363,4 +363,11 @@ void Touhou15::setSmallImageInfo(std::string& icon, std::string& text) const
 	}
 }
 
+bool Touhou15::stateHasChangedSinceLastCheck()
+{
+	bool const changed = TouhouMainGameBase::stateHasChangedSinceLastCheck() || (prevExtraBossState != extraBossState);
+	prevExtraBossState = extraBossState;
+	return changed;
+}
+
 }

@@ -4,6 +4,35 @@ TouhouMainGameBase::TouhouMainGameBase(PROCESSENTRY32W const& pe32)
 	: TouhouBase(pe32)
 {}
 
+void TouhouMainGameBase::StateData::updateImportantData(StateData const& b)
+{
+	gameState = b.gameState;
+	stageState = b.stageState;
+	gameOvers = b.gameOvers;
+
+	lives = b.lives;
+	bombs = b.bombs;
+}
+
+bool TouhouMainGameBase::StateData::isImportantDataEqual(StateData const& b) const
+{
+	return gameState == b.gameState
+		&& stageState == b.stageState
+		&& gameOvers == b.gameOvers
+
+		// are lives/bombs actually important?
+		&& lives == b.lives
+		&& bombs == b.bombs
+	;
+}
+
+bool TouhouMainGameBase::stateHasChangedSinceLastCheck()
+{
+	bool changed = TouhouBase::stateHasChangedSinceLastCheck() || !prevState.isImportantDataEqual(state);
+	prevState.updateImportantData(state);
+	return changed;
+}
+
 void TouhouMainGameBase::setGameName(std::string & name) const
 {
 	switch (state.gameState)

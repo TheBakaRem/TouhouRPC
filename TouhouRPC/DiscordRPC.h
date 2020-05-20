@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <array>
 
 class DiscordRPC {
 
@@ -16,8 +17,8 @@ public:
 	bool isLaunched() const { return launched; }
 
 	// main actions
-	discord::Result tickUpdate();
-	void sendPresence();
+	discord::Result tickUpdate(int msDeltaTime);
+	void sendPresence(bool forceSend);
 	void resetPresence();
 	void closeApp();
 
@@ -31,7 +32,15 @@ public:
 private:
 	std::shared_ptr<discord::Core> core;
 	discord::Activity activity{};
-	bool launched = false;
+	bool launched{ false };
+
+	// Each instant submit has to tracked to make sure we don't go over rate limit.
+	// timeSinceLastSubmits.size() is the max we can do before we have to wait for one to be free.
+	enum
+	{
+		MIN_TIME_BETWEEN_SUBMITS_MS = 20000,
+	};
+	std::array<unsigned int, 3> timeSinceLastSubmits;
 };
 
 #endif // !DISCORDRPC_H

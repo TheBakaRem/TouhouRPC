@@ -49,6 +49,8 @@ public:
 	std::string const& getBGMName() const override;
 	std::string getCustomResources() const override;
 
+	bool stateHasChangedSinceLastCheck() override;
+
 protected:
 	int gameMode{ GAME_MODE_STANDARD };
 	int bgm{ 0 };
@@ -59,6 +61,7 @@ protected:
 	int stageChapter{ 0 };
 	int currentStageChapterFrames{ 0 };
 	ExtraBossState extraBossState{ ExtraBossState::JUNKO_AND_HECATIA };
+	ExtraBossState prevExtraBossState{ ExtraBossState::JUNKO_AND_HECATIA }; // for checking if it changed since last time
 
 private:
 	enum address {

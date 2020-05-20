@@ -112,6 +112,8 @@ public:
 
 	virtual std::string getCustomResources() const { return notSupported; } // e.g. LoLK Pointdevice retry counts. Will only replace when in lives/bombs display mode.
 
+	bool stateHasChangedSinceLastCheck() override;
+
 	void setGameName(std::string& name) const override;
 	void setGameInfo(std::string& info) const override;
 	void setLargeImageInfo(std::string& icon, std::string& text) const override;
@@ -124,7 +126,7 @@ protected:
 	bool shouldShowCoverIcon() const;
 
 	// Everything in this struct should get a value assigned to it.
-	struct
+	struct StateData
 	{
 		// States of play: for the most basic functionality, it is required that gameState must at least correctly switch between MainMenu and Playing.
 		GameState gameState{ GameState::MainMenu };
@@ -139,9 +141,16 @@ protected:
 		int bombs{ 0 };
 		int score{ 0 };
 		int gameOvers{ 0 };
+
+		// The following strictly used for data that we care about changing for the sake of immediate update (i.e. not score)
+		void updateImportantData(StateData const& b);
+		bool isImportantDataEqual(StateData const& b) const;
 	} state;
 
 	bool showScoreInsteadOfResources = false; // todo: make this a player driven option
 	
 	std::string const notSupported{ "not supported" }; // derived classes can return this when they need to return ref
+
+private:
+	StateData prevState{ state };
 };

@@ -47,6 +47,7 @@ bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord)
     {
         // Update data in Touhou class
         touhouGame->readDataFromGameProcess();
+        bool const stateHasChanged = touhouGame->stateHasChangedSinceLastCheck();
 
         // Get data from Touhou class
         string gameName;
@@ -64,7 +65,7 @@ bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord)
         // Update RPC data, always needs to run
         discord.setActivityDetails(gameName, gameInfo, largeImageIcon, largeImageText, smallImageIcon, smallImageText);
 
-        return true;
+        return stateHasChanged;
     }
     return false;
 }
@@ -105,9 +106,14 @@ int main()
     
     
     // MAIN LOOP
-    int count = 50;
+
+    int const msBetweenTicks = 500;
+    int const ticksPerSecond = 1000 / msBetweenTicks;
+    int const ticksBetweenRegularUpdates = 16;
+    int regularUpdateTickCount = ticksBetweenRegularUpdates;
+
     do {
-        discord::Result res = discord.tickUpdate();
+        discord::Result res = discord.tickUpdate(msBetweenTicks);
 
         if (res != discord::Result::Ok)
         {
@@ -116,18 +122,26 @@ int main()
             
             if (touhouUpdate(touhouGame, discord))
             {
-                discord.sendPresence();
+                discord.sendPresence(true);
             }
         }
         else {
-            if (count >= 50) {
-                if (touhouUpdate(touhouGame, discord))
+            bool forceSend = regularUpdateTickCount >= ticksBetweenRegularUpdates;
+            bool const touhouUpdated = touhouUpdate(touhouGame, discord);
+            if (touhouUpdated || forceSend)
+            {
+                // if within 1 second of a normal update, make it a normal update instead of wasting an instant slot
+                if (touhouUpdated && (ticksBetweenRegularUpdates - regularUpdateTickCount) <= ticksPerSecond)
                 {
-                    discord.sendPresence();
+                    forceSend = true;
                 }
-                count -= 50;
+                discord.sendPresence(forceSend);
+                if (forceSend)
+                {
+                    regularUpdateTickCount = 0;
+                }
             }
-            count++;
+            regularUpdateTickCount++;
         }
 
         if (!touhouGame->isStillRunning()) {
@@ -141,7 +155,7 @@ int main()
             discord = getDiscord(touhouGame->getClientId());
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(msBetweenTicks));
     } while (!interrupted);
 
 

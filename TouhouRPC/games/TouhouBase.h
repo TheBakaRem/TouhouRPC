@@ -23,6 +23,7 @@ public:
 	virtual const char* getGameName() const = 0;
 
 	virtual void readDataFromGameProcess() = 0;
+	virtual bool stateHasChangedSinceLastCheck();
 
 	virtual void setGameName(std::string & name) const = 0;
 	virtual void setGameInfo(std::string & info) const = 0;
@@ -40,6 +41,9 @@ protected:
 	int stageFrames{ 0 };
 	int gameStateFrames{ 0 };
 	int menuState{ 1 };
+
+	// data from previous frame, to compare to see if changed
+	int prevStage{ stage };
 
 private:
 	bool linkedToProcess = false;

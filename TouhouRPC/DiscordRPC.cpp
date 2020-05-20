@@ -27,6 +27,7 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 	}
 	else {
 		this->activity = discord::Activity{};
+		timeSinceLastSubmits.fill(MIN_TIME_BETWEEN_SUBMITS_MS);
 		resetActivityTimeStartedToNow(); // new discord app instance made so our "game time" starts from now
 		cout << "Discord instantiated successfully!" << endl;
 		launched = true;
@@ -40,14 +41,35 @@ DiscordRPC::~DiscordRPC()
 }
 
 // Code that should run every tick
-discord::Result DiscordRPC::tickUpdate()
+discord::Result DiscordRPC::tickUpdate(int msDeltaTime)
 {
+	for (unsigned int& time : timeSinceLastSubmits)
+	{
+		time += msDeltaTime;
+	}
 	return core->RunCallbacks();
 }
 
 // Send the presence to Discord servers
-void DiscordRPC::sendPresence()
+void DiscordRPC::sendPresence(bool forceSend)
 {
+	if (!forceSend)
+	{
+		bool cantSubmit = true;
+		for (unsigned int& time : timeSinceLastSubmits)
+		{
+			if (time >= MIN_TIME_BETWEEN_SUBMITS_MS)
+			{
+				cantSubmit = false;
+				time = 0;
+				break;
+			}
+		}
+		if (cantSubmit)
+		{
+			return;
+		}
+	}
 	this->core->ActivityManager().UpdateActivity(this->activity, [](discord::Result result) {
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{

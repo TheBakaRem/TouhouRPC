@@ -31,3 +31,10 @@ bool TouhouBase::isStillRunning() const
     DWORD running;
     return GetExitCodeProcess(processHandle, &running) && running == STILL_ACTIVE;
 }
+
+bool TouhouBase::stateHasChangedSinceLastCheck()
+{
+    bool changed = prevStage != stage;    
+    prevStage = stage;
+    return changed;
+}
