@@ -6,6 +6,7 @@ enum class GameState
 {
 	MainMenu,
 	Playing,
+	Playing_CustomResources, // LoLK Pointdevice resource support
 	StagePractice,
 	SpellPractice,
 	WatchingReplay,
@@ -44,7 +45,9 @@ enum class Character
 
 	// non-MCs
 	Sakuya,
+	Sanae,
 	Youmu,
+	Reisen,
 	Cirno,
 	Aya,
 
@@ -104,20 +107,21 @@ public:
 	virtual std::string getBossName() const = 0;
 
 	// Should just forward to correct tables in GameStrings, letting the game decide how to grab them
-	virtual std::string const& getSpellCardName() const = 0; // spell card practice only
-	virtual std::string const& getBGMName() const = 0; // music room only
+	virtual std::string const& getSpellCardName() const { return notSupported; } // spell card practice only
+	virtual std::string const& getBGMName() const { return notSupported; } // music room only
 
+	virtual std::string getCustomResources() const { return notSupported; } // e.g. LoLK Pointdevice retry counts. Will only replace when in lives/bombs display mode.
 
-	void setGameName(std::string& name) const override final;
-	void setGameInfo(std::string& info) const override final;
-	void setLargeImageInfo(std::string& icon, std::string& text) const override final;
-	void setSmallImageInfo(std::string& icon, std::string& text) const override final;
+	void setGameName(std::string& name) const override;
+	void setGameInfo(std::string& info) const override;
+	void setLargeImageInfo(std::string& icon, std::string& text) const override;
+	void setSmallImageInfo(std::string& icon, std::string& text) const override;
 
 private:
-	bool shouldShowCoverIcon() const;
 	std::string createFormattedScore() const;
 
 protected:
+	bool shouldShowCoverIcon() const;
 
 	// Everything in this struct should get a value assigned to it.
 	struct

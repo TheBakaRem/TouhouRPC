@@ -554,6 +554,28 @@ const std::string th14_musicNames[20] = {
 	"Primordial Beat ~ Pristine Beat",
 };
 
+// Touhou 15 Music
+const std::string th15_musicNames[18] = {
+	"unused",
+	"The Space Shrine Maiden Appears",
+	"Unforgettable, the Nostalgic Greenery",
+	"The Lake Reflects the Cleansed Moonlight",
+	"The Rabbit Has Landed",
+	"September Pumpkin",
+	"The Mysterious Shrine Maiden Flying Through Space",
+	"Eternal Spring Dream",
+	"The Frozen Eternal Capital",
+	"Reversed Wheel of Fortune",
+	"Faraway Voyage of 380,000 Kilometers",
+	"Pierrot of the Star-Spangled Banner",
+	"The Sea that Reflects One's Home Planet",
+	"Pure Furies ~ Whereabouts of the Heart",
+	"The Moon as Seen from the Shrine",
+	"The Space Shrine Maiden Returns Home",
+	"A World of Nightmares Never Seen Before",
+	"Pandemonic Planet",
+};
+
 // Touhou 16
 const std::string th16_spellCardName[119] = {
 	// stage 1 (8 cards)

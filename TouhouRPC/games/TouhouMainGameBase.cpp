@@ -79,6 +79,24 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		name.append(")");
 		break;
 	}
+	case GameState::Playing_CustomResources:
+	{
+		name.append(getStageName());
+
+		// normal play shows resources or score
+		name.reserve(name.size() + 6 /* text characters */ + 12 /* max score size */);
+		name.append(" - (");
+		if (showScoreInsteadOfResources)
+		{
+			name.append(createFormattedScore());
+		}
+		else
+		{
+			name.append(getCustomResources());
+		}
+		name.append(")");
+		break;
+	}
 	}
 }
 
@@ -110,6 +128,7 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 	}
 
 	case GameState::Playing:
+	case GameState::Playing_CustomResources:
 	case GameState::StagePractice:
 	{
 		switch (state.stageState)
@@ -167,9 +186,19 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 		icon.append("sakuya"), text.append("Sakuya");
 		break;
 	}
+	case Character::Sanae:
+	{
+		icon.append("sanae"), text.append("Sanae");
+		break;
+	}
 	case Character::Youmu:
 	{
 		icon.append("youmu"), text.append("Youmu");
+		break;
+	}
+	case Character::Reisen:
+	{
+		icon.append("reisen"), text.append("Reisen");
 		break;
 	}
 	case Character::Cirno:
@@ -300,6 +329,7 @@ void TouhouMainGameBase::setSmallImageInfo(std::string & icon, std::string & tex
 bool TouhouMainGameBase::shouldShowCoverIcon() const
 {
 	return state.gameState != GameState::Playing
+		&& state.gameState != GameState::Playing_CustomResources
 		&& state.gameState != GameState::StagePractice
 		&& state.gameState != GameState::SpellPractice
 		&& state.gameState != GameState::WatchingReplay
