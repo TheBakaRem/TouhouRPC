@@ -204,11 +204,6 @@ std::string Touhou07::getBossName() const
 	}
 }
 
-std::string const& Touhou07::getSpellCardName() const
-{
-	return notSupported;
-}
-
 std::string const& Touhou07::getBGMName() const
 {
 	return th07_musicNames[bgm];
