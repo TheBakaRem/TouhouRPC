@@ -30,6 +30,9 @@ void Touhou14::readDataFromGameProcess()
 		state.gameState = GameState::GameOver;
 	}
 
+	// Read stage value
+	ReadProcessMemory(processHandle, (LPCVOID)STAGE, (LPVOID)&stage, 4, NULL);
+
 	// Convert the part after the _ and before the . to int
 	// That way it is possible to switch case the BGM playing
 	bool prefixBGM = bgm_playing[0] == 'b';
@@ -135,64 +138,22 @@ void Touhou14::readDataFromGameProcess()
 
 	if (state.gameState == GameState::Playing)
 	{
-		// Intentionak fallthroughs
 		// Note that ZUN's naming for the BGM file names is not very consistent
 		switch (bgm_id)
 		{
-		default:
+		case 0:
 		case 1:
 			menuState = 0;
 			state.mainMenuState = MainMenuState::TitleScreen;
 			state.gameState = GameState::MainMenu;
 			break;
-
-		case 3: // stage 1 boss
-			state.stageState = StageState::Boss;
-		case 2: // stage 1
-			stage = 1;
-			break;
-
-		case 5: // stage 2 boss
-			state.stageState = StageState::Boss;
-		case 4: // stage 2
-			stage = 2;
-			break;
-
-		case 7: // stage 3 boss
-			state.stageState = StageState::Boss;
-		case 6:// stage 3
-			stage = 3;
-			break;
-
-		case 10: // stage 4 boss
-			state.stageState = StageState::Boss;
-		case 9: // stage 4
-			stage = 4;
-			break;
-
-		case 12: // stage 5 boss
-			state.stageState = StageState::Boss;
-		case 11: // stage 5
-			stage = 5;
-			break;
-
-		case 15: // stage 6 boss
-			state.stageState = StageState::Boss;
-		case 14: // stage 6
-			stage = 6;
-			break;
-
-		case 19: // extra stage boss
-			state.stageState = StageState::Boss;
-		case 18: // extra stage
-			stage = 7;
-			break;
-
 		case 16: // ending
 			state.gameState = GameState::Ending;
 			break;
 		case 17: // staff roll
 			state.gameState = GameState::StaffRoll;
+			break;
+		default:
 			break;
 		}
 	}
@@ -207,6 +168,10 @@ void Touhou14::readDataFromGameProcess()
 		if (boss_mode == 4)
 		{
 			state.stageState = StageState::Midboss;
+		}
+		else if (boss_mode == 6)
+		{
+			state.stageState = StageState::Boss;
 		}
 	}
 
@@ -281,7 +246,7 @@ std::string Touhou14::getMidbossName() const
 	case 1: return "Cirno";
 	case 2: return "Sekibanki";
 	case 3: return "Kagerou Imaizumi";
-	case 4: return (state.subCharacter == SubCharacter::A) ? "Yatsuhashi Tsukumo" : "Benben Tsukumo";
+	case 4: return (state.subCharacter == SubCharacter::A_DistinctIcons) ? "Yatsuhashi Tsukumo" : "Benben Tsukumo";
 	case 5:
 	case 6: return "Seija Kijin";
 	case 7: return "Benben & Yatsuhashi Tsukumo";
@@ -295,7 +260,7 @@ std::string Touhou14::getBossName() const
 	case 1: return "Wakasagihime";
 	case 2: return "Sekibanki";
 	case 3: return "Kagerou Imaizumi";
-	case 4: return (state.subCharacter == SubCharacter::A) ? "Benben Tsukumo" : "Yatsuhashi Tsukumo";
+	case 4: return (state.subCharacter == SubCharacter::A_DistinctIcons) ? "Benben Tsukumo" : "Yatsuhashi Tsukumo";
 	case 5: return "Seija Kijin";
 	case 6: return "Shinmyoumaru Sukuna";
 	case 7: return "Raiko Horikawa";

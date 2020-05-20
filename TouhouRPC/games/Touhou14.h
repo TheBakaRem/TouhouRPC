@@ -51,7 +51,7 @@ private:
 		SPELL_CARD_ID           = 0x004F5844L,
 		LIVES                   = 0x004F5864L,
 		BOMBS                   = 0x004F5870L,
-		// STAGE                  = 0x004F58A4L, // also found at 0x004F58A8L // bgm checking makes stage unnecessary
+		STAGE                   = 0x004F58A4L, // also found at 0x004F58A8L
 		GAME_MODE               = 0x004DB6A0L,
 		SCORE                   = 0x004F5830L,
 		GAMEOVERS               = 0x004F5838L,
