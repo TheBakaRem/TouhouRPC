@@ -44,6 +44,17 @@ void Touhou14::readDataFromGameProcess()
 
 	bgm = bgm_id;
 
+	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
+	switch (difficulty)
+	{
+	default:
+	case 0: state.difficulty = Difficulty::Easy; break;
+	case 1: state.difficulty = Difficulty::Normal; break;
+	case 2: state.difficulty = Difficulty::Hard; break;
+	case 3: state.difficulty = Difficulty::Lunatic; break;
+	case 4: state.difficulty = Difficulty::Extra; break;
+	}
+
 	// Update menu state. The object at menu_pointer contains many things to do with the main menu,
 	// and they kind of behave awkwardly in DDC. For now we mainly care about whether we're in the music room or not.
 
@@ -89,11 +100,8 @@ void Touhou14::readDataFromGameProcess()
 		case 6:
 		case 7:
 		{
-			DWORD extraFlag = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)EXTRA_SELECT_FLAG, (LPVOID)&extraFlag, 4, NULL);
-
 			// could be normal game, extra, or stage practice, we can check some extra stuff in order to find out.
-			if (extraFlag == 4)
+			if (difficulty == 4)
 			{
 				state.mainMenuState = MainMenuState::ExtraStart;
 			}
@@ -194,17 +202,6 @@ void Touhou14::readDataFromGameProcess()
 	default:
 	case 0: state.subCharacter = SubCharacter::A_DistinctIcons; break;
 	case 1: state.subCharacter = SubCharacter::B_DistinctIcons; break;
-	}
-
-	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
-	switch (difficulty)
-	{
-	default:
-	case 0: state.difficulty = Difficulty::Easy; break;
-	case 1: state.difficulty = Difficulty::Normal; break;
-	case 2: state.difficulty = Difficulty::Hard; break;
-	case 3: state.difficulty = Difficulty::Lunatic; break;
-	case 4: state.difficulty = Difficulty::Extra; break;
 	}
 
 	// Read current game progress

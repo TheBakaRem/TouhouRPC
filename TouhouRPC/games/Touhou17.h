@@ -58,7 +58,6 @@ private:
 		SCORE                       = 0x004B59FCL,
 		GAMEOVERS                   = 0x004B5A04L,
 		GAME_MODE                   = 0x004B77ECL,
-		EXTRA_FLAG                  = 0x004B5A00L, // is set to 4 when extra was selected, 1 otherwise
 		PRACTICE_SELECT_FLAG        = 0x004B59C8L, // is set to 16 when practice selected, 32 when spell practice selected, and 0 otherwise, on main menu.
 	};
 };

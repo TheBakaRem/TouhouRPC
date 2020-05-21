@@ -41,6 +41,17 @@ void Touhou16::readDataFromGameProcess() {
 
 	bgm = bgm_id;
 
+	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
+	switch (difficulty)
+	{
+	default:
+	case 0: state.difficulty = Difficulty::Easy; break;
+	case 1: state.difficulty = Difficulty::Normal; break;
+	case 2: state.difficulty = Difficulty::Hard; break;
+	case 3: state.difficulty = Difficulty::Lunatic; break;
+	case 4: state.difficulty = Difficulty::Extra; break;
+	}
+
 	unsigned int menu_pointer = 0;
 	ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)&menu_pointer, 4, NULL);
 	if (state.gameState == GameState::Playing && menu_pointer != 0)
@@ -84,11 +95,8 @@ void Touhou16::readDataFromGameProcess() {
 		case 6:
 		case 7:
 		{
-			DWORD extraFlag = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)EXTRA_FLAG, (LPVOID)&extraFlag, 4, NULL);
-
 			// could be normal game, extra, or stage practice, we can check some extra stuff in order to find out.
-			if (extraFlag == 4)
+			if (difficulty == 4)
 			{
 				state.mainMenuState = MainMenuState::ExtraStart;
 			}
@@ -219,17 +227,6 @@ void Touhou16::readDataFromGameProcess() {
 	case 1: state.subCharacter = SubCharacter::Summer; break;
 	case 2: state.subCharacter = SubCharacter::Fall; break;
 	case 3: state.subCharacter = SubCharacter::Winter; break;
-	}
-
-	ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 4, NULL);
-	switch (difficulty)
-	{
-	default:
-	case 0: state.difficulty = Difficulty::Easy; break;
-	case 1: state.difficulty = Difficulty::Normal; break;
-	case 2: state.difficulty = Difficulty::Hard; break;
-	case 3: state.difficulty = Difficulty::Lunatic; break;
-	case 4: state.difficulty = Difficulty::Extra; break;
 	}
 
 	// Read current game progress

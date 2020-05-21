@@ -123,11 +123,8 @@ void Touhou15::readDataFromGameProcess()
 		case 6:
 		case 7:
 		{
-			DWORD extraFlag = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)EXTRA_FLAG, (LPVOID)&extraFlag, 4, NULL);
-
 			// could be normal game, extra, or stage practice, we can check some extra stuff in order to find out.
-			if (extraFlag == 4)
+			if (difficulty == 4)
 			{
 				state.mainMenuState = MainMenuState::ExtraStart;
 			}
