@@ -352,6 +352,11 @@ void TouhouMainGameBase::setSmallImageInfo(std::string & icon, std::string & tex
 		icon = "phantasm", text.append("Phantasm");
 		break;
 	}
+	case Difficulty::Overdrive:
+	{
+		icon = "overdrive", text.append("Overdrive");
+		break;
+	}
 	}
 }
 

@@ -400,6 +400,32 @@ const std::string th13_spellCardName[127] = {
 	"\"Wild Carpet\""
 };
 
+// Touhou 13 Music
+const std::string th13_musicNames[22] = {
+	"Spirit of Avarice",
+	"Night Sakura of Dead Spirits",
+	"unused",
+	"Ghost Lead",
+	"Welcome to Youkai Temple",
+	"unused",
+	"Youkai Girl at the Gate",
+	"Let's Live in a Lovely Cemetery",
+	"Rigid Paradise",
+	"unused",
+	"Desire Drive",
+	"Old Yuanxian",
+	"The Hall of Dreams' Great Mausoleum",
+	"unused",
+	"unused",
+	"Omiwa Legend",
+	"Starry Sky of Small Desires",
+	"Shoutoku Legend ~ True Administrator",
+	"A New Wind at the Shrine",
+	"Desire Dream",
+	"Youkai Back Shrine Road",
+	"Futatsuiwa from Sado",
+};
+
 // Touhou 14 Spell Cards
 const std::string th14_spellCardName[120] = {
 	// stage 1 (1-10) (10 cards)

@@ -13,6 +13,7 @@
 #include "games/Touhou07.h"
 #include "games/Touhou08.h"
 #include "games/Touhou11.h"
+#include "games/Touhou13.h"
 #include "games/Touhou14.h"
 #include "games/Touhou15.h"
 #include "games/Touhou16.h"
@@ -24,6 +25,7 @@ enum class SupportedGame
 	PCB_7,
 	IN_8,
 	SA_11,
+	TD_13,
 	DDC_14,
 	LoLK_15,
 	HSiFS_16,
@@ -38,7 +40,7 @@ struct ProcessNameGamePair
 	const wchar_t* processName;
 };
 
-const int PROCESS_NAME_LIST_SIZE = 13;
+const int PROCESS_NAME_LIST_SIZE = 14;
 
 // Executables name list and associated game
 static const ProcessNameGamePair processNameList[PROCESS_NAME_LIST_SIZE] =
@@ -52,6 +54,7 @@ static const ProcessNameGamePair processNameList[PROCESS_NAME_LIST_SIZE] =
 	{ SupportedGame::IN_8, L"th08.exe" },
 	{ SupportedGame::IN_8, L"th08e.exe" },
 	{ SupportedGame::SA_11, L"th11.exe" },
+	{ SupportedGame::TD_13, L"th13.exe" },
 	{ SupportedGame::DDC_14, L"th14.exe" },
 	{ SupportedGame::LoLK_15, L"th15.exe" },
 	{ SupportedGame::HSiFS_16, L"th16.exe" },

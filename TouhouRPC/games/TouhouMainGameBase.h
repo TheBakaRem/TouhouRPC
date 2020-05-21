@@ -91,6 +91,7 @@ enum class Difficulty
 	Lunatic,
 	Extra,
 	Phantasm,
+	Overdrive,
 };
 
 // A class that allows for a consistent display of details for mainline Touhou games

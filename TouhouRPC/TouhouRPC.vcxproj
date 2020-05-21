@@ -169,6 +169,7 @@
     <ClCompile Include="games\Touhou07.cpp" />
     <ClCompile Include="games\Touhou08.cpp" />
     <ClCompile Include="games\Touhou11.cpp" />
+    <ClCompile Include="games\Touhou13.cpp" />
     <ClCompile Include="games\Touhou14.cpp" />
     <ClCompile Include="games\Touhou15.cpp" />
     <ClCompile Include="games\Touhou16.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="games\Touhou07.h" />
     <ClInclude Include="games\Touhou08.h" />
     <ClInclude Include="games\Touhou11.h" />
+    <ClInclude Include="games\Touhou13.h" />
     <ClInclude Include="games\Touhou14.h" />
     <ClInclude Include="games\Touhou15.h" />
     <ClInclude Include="games\Touhou16.h" />

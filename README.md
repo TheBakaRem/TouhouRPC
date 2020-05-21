@@ -8,24 +8,35 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 
 
 ## Supported games
-- Touhou 06 - Embodiment of Scarlet Devil  
-- Touhou 07 - Perfect Cherry Blossom  
-- Touhou 08 - Imperishable Night  
-- Touhou 11 - Subterranean Animism  
-- Touhou 14 - Double Dealing Character  
-- Touhou 15 - Legacy of Lunatic Kingdom  
-- Touhou 16 - Hidden Stars in Four Seasons  
-- Touhou 17 - Wily Beast and Weakest Creature  
-  
-More games will be supported in the future.
+| Game											| Basic (Menu + Stage and Bosses) | Extended (Practice, Replays, Resources) | Spell Card Practice | Music Room |
+|--|--|--|--|--|
+| Touhou 06 - Embodiment of Scarlet Devil		| ✅ | ❌ | n/a | ❌ |
+| Touhou 07 - Perfect Cherry Blossom			| ✅ | ✅ | n/a | ✅ |
+| Touhou 08 - Imperishable Night				| ✅ | ❌ | ✅ | ❌ |
+| Touhou 09 - Phantasmagoria of Flower View		| ❌ | ❌ | n/a | ❌ |
+| Touhou 10 - Mountain of Faith					| ❌ | ❌ | n/a | ❌ |
+| Touhou 11 - Subterranean Animism				| ✅ | ❌ | n/a | ❌ |
+| Touhou 12 - Undefined Fantastic Object		| ❌ | ❌ | n/a | ❌ |
+| Touhou 12.8 - Great Fairy Wars				| ❌ | ❌ | n/a | ❌ |
+| Touhou 13 - Ten Desires						| ✅ | ✅ | ✅ | ✅ |
+| Touhou 14 - Double Dealing Character			| ✅ | ✅ | ✅ | ✅ |
+| Touhou 15 - Legacy of Lunatic Kingdom			| ✅ | ✅ | n/a | ✅ |
+| Touhou 16 - Hidden Stars in Four Seasons		| ✅ | ✅ | ✅ | ✅ |
+| Touhou 17 - Wily Beast and Weakest Creature	| ✅ | ✅ | ✅ | ✅ |
+
+Once the above are all complete, support may be added for the other danmaku side games (9.5/12.5/14.3/16.5). If you want any game not already supported, contributions are more than welcome!
 
 ## Display examples
-![Th15 Example - Menu](https://pbs.twimg.com/media/ESxkRhlXkAEK0Xy?format=jpg)
+![Th17 Example - Fighting](https://relick.me/touhourpc/1-wbawc-playing.png)
   
-![Th11 Example - Versus](https://pbs.twimg.com/media/ESSkXiLXsAAl1B3?format=jpg)
+![Th07 Example - Menu](https://relick.me/touhourpc/2-pcb-menu.png)
   
-![Th06 Example - Versus](https://pbs.twimg.com/media/ESxkRhXWsAAkjjq?format=jpg)
+![Th13 Example - Spell Card Practice](https://relick.me/touhourpc/3-td-spellcard.png)
+  
+![Th14 Example - Music Room](https://relick.me/touhourpc/4-ddc-musicroom.png)
+  
+![Th17 Example - Stage Practice](https://relick.me/touhourpc/5-wbawc-practicing.png)
  
 
 ## Additional notes
-This program supports games patched using the [Touhou Community Reliant Automatic Patcher](https://github.com/thpatch/thcrap).
+This program supports games patched using the [Touhou Community Reliant Automatic Patcher](https://github.com/thpatch/thcrap). It also supports games using the vpatch.
