@@ -32,8 +32,7 @@ void Touhou07::readDataFromGameProcess()
 	char stageMode = 0;
 	ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 1, NULL);
 
-	// stageMode is 14 if we're watching the title screen demo (where inGameFlagB is set to 0)
-	if (inGameFlagB == 0 || stageMode == 14)
+	if (inGameFlagB == 0 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
 	{
 		state.gameState = GameState::MainMenu;
 
@@ -54,7 +53,7 @@ void Touhou07::readDataFromGameProcess()
 			case 129:
 			{
 				// 129 is anything other than the above special cases. we can distinguish them a little. todo: figure out how to distinguish the rest
-				if (stageMode == 1)
+				if ((stageMode & STAGE_MODE_PRACTICE_FLAG) != 0)
 				{
 					state.mainMenuState = MainMenuState::StagePractice;
 				}
@@ -77,16 +76,13 @@ void Touhou07::readDataFromGameProcess()
 
 	if (state.gameState == GameState::Playing)
 	{
-		// if paused, the stageMode is 4 lower than usual.
-		char paused = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)PAUSE_FLAG, (LPVOID)&paused, 1, NULL);
-		stageMode -= (paused == 0) ? 4 : 0;
-		switch (stageMode)
+		if ((stageMode & STAGE_MODE_PRACTICE_FLAG) != 0)
 		{
-		default:
-		case 0: state.gameState = GameState::Playing; break;
-		case 1: state.gameState = GameState::StagePractice; break;
-		case 8: state.gameState = GameState::WatchingReplay; break;
+			state.gameState = GameState::StagePractice;
+		}
+		else if ((stageMode & STAGE_MODE_REPLAY_FLAG) != 0)
+		{
+			state.gameState = GameState::WatchingReplay;
 		}
 
 		DWORD bossFlag = 0;
@@ -97,6 +93,14 @@ void Touhou07::readDataFromGameProcess()
 			char midBossFlag = 0;
 			ReadProcessMemory(processHandle, (LPCVOID)IS_MAIN_BOSS, (LPVOID)&midBossFlag, 1, NULL);
 			state.stageState = (midBossFlag == 3) ? StageState::Boss : StageState::Midboss;
+			if (stage == 6)
+			{
+				// For some reason stage 6 youmu also has flag == 3 so let's take a guess based on frame counter
+				// from testing, 5200 seems a reasonable cutoff
+				unsigned int frameCounter = 0;
+				ReadProcessMemory(processHandle, (LPCVOID)FRAME_COUNTER, (LPVOID)&frameCounter, 4, NULL);
+				state.stageState = (frameCounter < 5200) ? StageState::Midboss : StageState::Boss;
+			}
 		}
 	}
 

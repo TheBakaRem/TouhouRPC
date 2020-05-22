@@ -44,18 +44,21 @@ private:
 		MUSIC_ROOM_TRACK        = 0x0135E2BCL,
 		PAUSE_FLAG              = 0x0062F64CL, // 1 byte, 2 when paused, 0 when not.
 
-		// 1 byte
-		// l/r -> paused/unpaused (when in game)
-		// 0/4 -> standard play or extra
-		// 1/5 -> practice
-		// 8/12 -> replay
-		// on the title screen it can take these values:
-		// 14 -> title screen demo
-		// 1 -> on practice submenu
-		// 0 otherwise
+		// 1 byte bitset
+		// when in practice mode (including on main menu), bit 0 is set
+		// when on title screen demo, bits 1 and 3 are set (3 for being a replay)
+		// when paused, bit 2 is set
+		// when in replay, bit 3 is set
+		// otherwise, none set
 		STAGE_MODE              = 0x0062F648L,
+		STAGE_MODE_PRACTICE_FLAG = 1,
+		STAGE_MODE_DEMO_FLAG = 2,
+		STAGE_MODE_PAUSE_FLAG = 4,
+		STAGE_MODE_REPLAY_FLAG = 8,
 
 		// PRACTICE_FLAG           = 0x0134E396L, // unused as stage mode supersedes // locked as 808464432 when in practice mode, otherwise changes per stage/difficulty/(character?)
+
+		FRAME_COUNTER           = 0x004BDD54L,
 	};
 };
 
