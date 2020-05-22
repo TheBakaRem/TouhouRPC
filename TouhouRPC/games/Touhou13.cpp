@@ -215,20 +215,6 @@ void Touhou13::readDataFromGameProcess()
 	}
 }
 
-std::string Touhou13::getStageName() const
-{
-	if (stage <= 6)
-	{
-		std::string name = "Stage ";
-		name.append(std::to_string(stage));
-		return name;
-	}
-	else
-	{
-		return "Extra Stage";
-	}
-}
-
 std::string Touhou13::getMidbossName() const
 {
 	switch (stage)

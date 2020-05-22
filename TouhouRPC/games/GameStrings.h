@@ -261,6 +261,30 @@ const std::string th08_spellCardName[222] = {
 	"\"Profound Danmaku Barrier -Phantasm, Foam and Shadow-\""
 };
 
+// Touhou 11
+const std::string th11_musicNames[20] = {
+	"Awakening of the Earth Spirits",
+	"The Dark Blowhole",
+	"The Sealed Youkai ~ Lost Place",
+	"The Bridge People No Longer Cross",
+	"unused",
+	"Green-Eyed Jealousy",
+	"Walking the Streets of a Former Hell",
+	"A Flower-Studded Saké Dish on Mt. Ooe",
+	"Heartfelt Fancy",
+	"unused",
+	"Satori Maiden ~ 3rd eye",
+	"unused",
+	"Lullaby of Deserted Hell",
+	"Corpse Voyage ~ Be of good cheer!",
+	"Hellfire Mantle",
+	"Last Remote",
+	"Solar Sect of Mystic Wisdom ~ Nuclear Fusion",
+	"Hartmann's Youkai Girl",
+	"The Earth Spirits' Homecoming",
+	"Energy Daybreak ~ Future Dream...",
+};
+
 // Touhou 13
 const std::string th13_spellCardName[127] = {
 	// stage 1 (14 cards)

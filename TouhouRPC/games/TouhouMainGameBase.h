@@ -70,6 +70,12 @@ enum class SubCharacter
 	B_DistinctIcons,
 
 	// SA partners
+	AndYukari,
+	AndSuika,
+	AndAya,
+	AndAlice,
+	AndPatchouli,
+	AndNitori,
 
 	// HSiFS seasons
 	Spring,
@@ -101,11 +107,12 @@ class TouhouMainGameBase :
 public:
 	TouhouMainGameBase(PROCESSENTRY32W const& pe32);
 
-	// e.g. "Stage 1" or "Extra Stage"
-	virtual std::string getStageName() const = 0;
-
+	// Boss names must be implemented by game, the rest are optional
 	virtual std::string getMidbossName() const = 0;
 	virtual std::string getBossName() const = 0;
+
+	// e.g. "Stage 1" or "Extra Stage"
+	virtual std::string getStageName() const;
 
 	// Should just forward to correct tables in GameStrings, letting the game decide how to grab them
 	virtual std::string const& getSpellCardName() const { return notSupported; } // spell card practice only

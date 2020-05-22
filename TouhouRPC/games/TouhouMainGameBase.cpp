@@ -4,6 +4,20 @@ TouhouMainGameBase::TouhouMainGameBase(PROCESSENTRY32W const& pe32)
 	: TouhouBase(pe32)
 {}
 
+std::string TouhouMainGameBase::getStageName() const
+{
+	if (stage <= 6)
+	{
+		std::string name = "Stage ";
+		name.append(std::to_string(stage));
+		return name;
+	}
+	else
+	{
+		return "Extra Stage";
+	}
+}
+
 void TouhouMainGameBase::StateData::updateImportantData(StateData const& b)
 {
 	gameState = b.gameState;
@@ -270,6 +284,38 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 	case SubCharacter::C:
 	{
 		text.append(" C");
+		break;
+	}
+
+	// SA partners
+	case SubCharacter::AndYukari:
+	{
+		text.append(" + Yukari");
+		break;
+	}
+	case SubCharacter::AndSuika:
+	{
+		text.append(" + Suika");
+		break;
+	}
+	case SubCharacter::AndAya:
+	{
+		text.append(" + Aya");
+		break;
+	}
+	case SubCharacter::AndAlice:
+	{
+		text.append(" + Alice");
+		break;
+	}
+	case SubCharacter::AndPatchouli:
+	{
+		text.append(" + Patchouli");
+		break;
+	}
+	case SubCharacter::AndNitori:
+	{
+		text.append(" + Nitori");
 		break;
 	}
 

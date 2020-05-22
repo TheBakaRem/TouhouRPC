@@ -162,15 +162,9 @@ void Touhou07::readDataFromGameProcess()
 
 std::string Touhou07::getStageName() const
 {
-	if (stage <= 6)
+	if (stage <= 7)
 	{
-		std::string name = "Stage ";
-		name.append(std::to_string(stage));
-		return name;
-	}
-	else if (stage == 7)
-	{
-		return "Extra Stage";
+		return TouhouMainGameBase::getStageName();
 	}
 	else
 	{

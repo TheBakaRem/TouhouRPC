@@ -233,20 +233,6 @@ void Touhou17::readDataFromGameProcess() {
 	}
 }
 
-std::string Touhou17::getStageName() const
-{
-	if (stage <= 6)
-	{
-		std::string name = "Stage ";
-		name.append(std::to_string(stage));
-		return name;
-	}
-	else
-	{
-		return "Extra Stage";
-	}
-}
-
 std::string Touhou17::getMidbossName() const
 {
 	switch (stage)
