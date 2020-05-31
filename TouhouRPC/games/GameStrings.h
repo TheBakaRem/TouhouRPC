@@ -285,6 +285,32 @@ const std::string th11_musicNames[20] = {
 	"Energy Daybreak ~ Future Dream...",
 };
 
+// Touhou 12
+const std::string th12_musicNames[22] = {
+	"At the End of Spring",
+	"A Shadow in the Blue Sky",
+	"A Tiny, Tiny, Clever Commander",
+	"unused",
+	"The Sealed Cloud Route",
+	"Beware the Umbrella Left There Forever",
+	"unused",
+	"Sky Ruin",
+	"The Traditional Old Man and the Stylish Girl",
+	"Interdimensional Voyage of a Ghostly Passenger Ship",
+	"Captain Murasa",
+	"unused",
+	"unused",
+	"Rural Makai City Esoteria",
+	"The Tiger-Patterned Bishamonten",
+	"unused",
+	"Fires of Hokkai",
+	"Emotional Skyscraper ~ Cosmic Mind",
+	"UFO Romance in the Night Sky",
+	"Heian Alien",
+	"Youkai Temple",
+	"Returning Home from the Sky ~ Sky Dream",
+};
+
 // Touhou 13
 const std::string th13_spellCardName[127] = {
 	// stage 1 (14 cards)
