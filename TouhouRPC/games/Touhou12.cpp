@@ -145,7 +145,7 @@ void Touhou12::readDataFromGameProcess()
 
 		if (fightingBoss == 3)
 		{
-			if (gameState == 7 || gameState == 8)
+			if (gameState == 6 || gameState == 7)
 			{
 				// These states are always a midboss
 				state.stageState = StageState::Midboss;
