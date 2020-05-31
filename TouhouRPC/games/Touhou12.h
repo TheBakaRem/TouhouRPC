@@ -24,7 +24,6 @@ public:
 
 protected:
 	int bgm{ 1 };
-	float power{ 0.0f };
 
 private:
 	enum address {

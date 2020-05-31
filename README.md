@@ -14,7 +14,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 | Touhou 07 - Perfect Cherry Blossom			| ✅ | ✅ | n/a | ✅ |
 | Touhou 08 - Imperishable Night				| ✅ | ❌ | ✅ | ❌ |
 | Touhou 09 - Phantasmagoria of Flower View		| ❌ | ❌ | n/a | ❌ |
-| Touhou 10 - Mountain of Faith					| ❌ | ❌ | n/a | ❌ |
+| Touhou 10 - Mountain of Faith					| ✅ | ✅ | n/a | ✅ |
 | Touhou 11 - Subterranean Animism				| ✅ | ✅ | n/a | ✅ |
 | Touhou 12 - Undefined Fantastic Object		| ✅ | ✅ | n/a | ✅ |
 | Touhou 12.8 - Great Fairy Wars				| ❌ | ❌ | n/a | ❌ |

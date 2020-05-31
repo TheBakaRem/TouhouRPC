@@ -261,6 +261,28 @@ const std::string th08_spellCardName[222] = {
 	"\"Profound Danmaku Barrier -Phantasm, Foam and Shadow-\""
 };
 
+// Touhou 10
+const std::string th10_musicNames[18] = {
+	"A God That Misses People ~ Romantic Fall",
+	"Because Princess Inada Is Scolding Me",
+	"Sealed Gods",
+	"The Road of the Misfortune God ~ Dark Road",
+	"Dark Side of Fate",
+	"The Gensokyo the Gods Loved",
+	"Akutagawa Ryuunosuke's \"Kappa\" ~ Candid Friend",
+	"Fall of Fall ~ Autumnal Waterfall",
+	"Youkai Mountain ~ Mysterious Mountain",
+	"The Primal Scene of Japan the Girl Saw",
+	"Faith Is for the Transient People",
+	"Cemetery of Onbashira ~ Grave of Being",
+	"The Venerable Ancient Battlefield ~ Suwa Foughten Field",
+	"Shrine at the Foot of the Mountain",
+	"The Gods Give Us Blessed Rain ~ Sylphid Dream",
+	"Tomorrow Will Be Special, Yesterday Was Not",
+	"Native Faith",
+	"Player's Score",
+};
+
 // Touhou 11
 const std::string th11_musicNames[20] = {
 	"Awakening of the Earth Spirits",

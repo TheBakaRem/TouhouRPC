@@ -38,7 +38,7 @@ private:
 		GAME_STATE_FRAMES     = 0x004A5738L,
 		MENU_POINTER          = 0x004A8ECCL, // display state at 0x1C, sub menu selection at 0x30, in sub menu at 0xB0
 		ENEMY_STATE           = 0x004A8D58L,
-		BGM_STR               = 0x004C7F8CL,
+		BGM_STR_1             = 0x004C7F8CL, // currently playing or stage theme when in stage
 		PRACTICE_FLAG         = 0x004A5758L, // 16 when practicing, 0 otherwise
 		REPLAY_FLAG           = 0x004C3250L, // 2 when watching replay, 1 otherwise
 		LIVES                 = 0x004A5718L,
