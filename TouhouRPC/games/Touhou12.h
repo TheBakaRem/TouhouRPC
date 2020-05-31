@@ -40,12 +40,11 @@ private:
 		BGM_STR_1             = 0x004D3658L, // currently playing outside of stage, or stage theme in-stage
 		BGM_STR_2             = 0x004D3758L, // boss theme
 		PRACTICE_FLAG         = 0x004B0CE0L, // 16 when practicing, 0 otherwise
-		REPLAY_FLAG           = 0x004CF468L, // 2 when watching replay, 0 otherwise
+		REPLAY_FLAG           = 0x004CE8B0L, // 2 when watching replay, 1 otherwise
 		LIVES                 = 0x004B0C98L,
 		BOMBS                 = 0x004B0CA0L,
 		SCORE                 = 0x004B0C44L,
 		GAMEOVERS             = 0x004B0CC4L,
-		PAUSE_POINTER         = 0x004D4754L, // ok dunno what this obj actually is but at 0x34 it says whether game is paused or not
 	};
 };
 

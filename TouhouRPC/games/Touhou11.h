@@ -40,7 +40,7 @@ private:
 		ENEMY_STATE           = 0x004A8D58L,
 		BGM_STR               = 0x004C7F8CL,
 		PRACTICE_FLAG         = 0x004A5758L, // 16 when practicing, 0 otherwise
-		REPLAY_FLAG           = 0x004C3250L, // 2 when watching replay, 0 otherwise
+		REPLAY_FLAG           = 0x004C3250L, // 2 when watching replay, 1 otherwise
 		LIVES                 = 0x004A5718L,
 		POWER                 = 0x004A56E8L, // integer, divide by 20 to get actual power value
 		SCORE                 = 0x004A56E4L,

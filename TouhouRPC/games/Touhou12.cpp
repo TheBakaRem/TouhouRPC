@@ -13,7 +13,6 @@ Touhou12::~Touhou12()
 
 void Touhou12::readDataFromGameProcess()
 {
-	bool wasPreviouslyReplay = state.gameState == GameState::WatchingReplay;
 	menuState = -1;
 	state.gameState = GameState::Playing;
 	state.stageState = StageState::Stage;
@@ -190,22 +189,6 @@ void Touhou12::readDataFromGameProcess()
 		else if (replayFlag == 2)
 		{
 			state.gameState = GameState::WatchingReplay;
-		}
-		if (replayFlag == 0)
-		{
-			// could be paused
-			DWORD pausePtr = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)PAUSE_POINTER, (LPVOID)&pausePtr, 4, NULL);
-
-			if (pausePtr)
-			{
-				unsigned int isPaused = 0;
-				ReadProcessMemory(processHandle, (LPCVOID)(pausePtr + 0x34), (LPVOID)&isPaused, 4, NULL);
-				if (isPaused && wasPreviouslyReplay)
-				{
-					state.gameState = GameState::WatchingReplay;
-				}
-			}
 		}
 	}
 }
