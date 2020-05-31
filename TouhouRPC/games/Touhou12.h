@@ -26,6 +26,7 @@ protected:
 	int bgm{ 1 };
 
 private:
+	// addresses correct for v1.00b
 	enum address {
 		CHARACTER             = 0x004B0C90L,
 		SUB_CHARACTER         = 0x004B0C94L,

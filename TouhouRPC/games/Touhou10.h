@@ -28,6 +28,7 @@ protected:
 	float power{ 0.0f };
 
 private:
+	// addresses correct for v1.00a
 	enum address {
 		CHARACTER             = 0x00474C68L,
 		SUB_CHARACTER         = 0x00474C6CL,
