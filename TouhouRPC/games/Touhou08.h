@@ -46,26 +46,26 @@ protected:
 
 	// screw stage 5, 6B, extra for having a different midboss than boss
 	const std::string midBossName[9] = {
-		"Wriggle",
-		"Mystia",
-		"Keine",
-		"Reimu",
-		"Marisa",
-		"Tewi",
-		"Eirin",
-		"Eirin",
-		"Keine"
+		"Wriggle Nightbug",
+		"Mystia Lorelei",
+		"Keine Kamishirasawa",
+		"Reimu Hakurei",
+		"Marisa Kirisame",
+		"Tewi Inaba",
+		"Eirin Yagokoro",
+		"Eirin Yagokoro",
+		"Keine Kamishirasawa"
 	};
 	const std::string bossName[9] = {
-		"Wriggle",
-		"Mystia",
-		"Keine",
-		"Reimu",
-		"Marisa",
-		"Reisen",
-		"Eirin",
-		"Kaguya",
-		"Mokou"
+		"Wriggle Nightbug",
+		"Mystia Lorelei",
+		"Keine Kamishirasawa",
+		"Reimu Hakurei",
+		"Marisa Kirisame",
+		"Reisen Udongein Inaba",
+		"Eirin Yagokoro",
+		"Kaguya Houraisan",
+		"Fujiwara no Mokou"
 	};
 
 private:
