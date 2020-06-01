@@ -1,6 +1,27 @@
 #include <string>
 #pragma once
 
+// Touhou 06
+const std::string th06_musicNames[17] = {
+	"A Dream More Scarlet than Red",
+	"A Soul as Scarlet as a Ground Cherry",
+	"Apparitions Stalk the Night",
+	"Lunate Elf",
+	"Tomboyish Girl in Love",
+	"Shanghai Scarlet Teahouse ~ Chinese Tea",
+	"Shanghai Alice of Meiji 17",
+	"Voile, the Magic Library",
+	"Locked Girl ~ The Girl's Sealed Room",
+	"The Maid and the Pocket Watch of Blood",
+	"Lunar Clock ~ Luna Dial",
+	"The Young Descendant of Tepes",
+	"Septette for a Dead Princess",
+	"The Centennial Festival for Magical Girls",
+	"U.N. Owen was Her?",
+	"An Eternity More Transient than Scarlet",
+	"Scarlet Tower ~ Eastern Dream...",
+};
+
 // Touhou 07
 const std::string th07_musicNames[20] = {
 	"Ghostly Dream ~ Snow or Cherry Petal",
