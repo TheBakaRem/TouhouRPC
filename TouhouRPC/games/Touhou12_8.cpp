@@ -219,6 +219,7 @@ std::string Touhou12_8::getStageName() const
 	case C2_2: return "Stage C2-2";
 	case C2_3: return "Stage C2-3";
 
+	default:
 	case EX: return "Extra Stage";
 	}
 }
@@ -248,6 +249,7 @@ std::string Touhou12_8::getMidbossName() const
 	case A1_3:
 	case C2_3: return "Sunny Milk";
 
+	default:
 	case EX: return "Lily White and Daiyousei";
 	}
 }
@@ -275,6 +277,7 @@ std::string Touhou12_8::getBossName() const
 	case C1_3:
 	case C2_3: return "Three Faires of Light";
 
+	default:
 	case EX: return "Marisa Kirismae";
 	}
 }
