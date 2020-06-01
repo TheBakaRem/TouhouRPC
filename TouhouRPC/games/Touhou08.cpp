@@ -82,16 +82,24 @@ void Touhou08::readDataFromGameProcess()
     // SPELL_CARD_ID
     ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 1, NULL);
 
-    unsigned int inGameFlag = 0;
-    ReadProcessMemory(processHandle, (LPCVOID)IN_GAME_FLAG, (LPVOID)&inGameFlag, 4, NULL);
+    unsigned int menuMode = 0;
+    ReadProcessMemory(processHandle, (LPCVOID)MENU_MODE, (LPVOID)&menuMode, 4, NULL);
+    // menu mode being 2 implies we're in-game
 
     char stageMode = 0;
     ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 1, NULL);
 
-    if (inGameFlag == 0 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
+    if (menuMode != 2 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
     {
         state.gameState = GameState::MainMenu;
-        state.mainMenuState = MainMenuState::TitleScreen;
+
+        switch (menuMode)
+        {
+        default:
+        case 1: state.mainMenuState = MainMenuState::TitleScreen; break;
+        case 5: state.mainMenuState = MainMenuState::PlayerData; break;
+        case 8: state.mainMenuState = MainMenuState::MusicRoom; break;
+        }
 
         if (state.mainMenuState == MainMenuState::MusicRoom)
         {

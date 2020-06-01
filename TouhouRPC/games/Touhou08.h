@@ -69,6 +69,7 @@ protected:
 	};
 
 private:
+	// addresses correct for v1.00d
 	enum address {
 		CHARACTER              = 0x0164D0B1, // 2 byte
 		DIFFICULTY             = 0x0160F538, // 1 byte
@@ -81,13 +82,14 @@ private:
 		MUSIC_ROOM_CURSOR      = 0x017CF53CL,
 		MUSIC_ROOM_TRACK       = 0x017CF540L, // the actually playing track
 
-		IN_GAME_FLAG           = 0x004CD65CL, // 0 on main menu, non-zero otherwise.
+		MENU_MODE              = 0x017CE8B0L, // 1 on most menus, 2 in-game, 5 in player data, 8 in music room
 
 		// 1 byte bitset
 		// when in practice mode (including on main menu), bit 0 is set
 		// when on title screen demo, bits 1 and 3 are set (3 for being a replay)
 		// when unpaused, bit 2 is set
 		// when in replay, bit 3 is set
+		// when the boss is present in spell practice, bit 8 is set. this is kind of unreliable since it goes away if the boss is killed
 		// otherwise, none set
 		STAGE_MODE             = 0x0164D0B4L,
 		STAGE_MODE_PRACTICE_FLAG = 1,
@@ -97,10 +99,6 @@ private:
 		STAGE_MODE_SPELL_PRACTICE_FLAG = 128,
 
 		PLAYER_POINTER         = 0x0160F510L, // score at offset 00 (int); lives at offset 74 (float); bombs at offset 80 (float); game overs offset 28 (byte)
-
-		//MENU_POINTER           = 0x004B9E44L, // offset C is 130 on title, 129 in a submenu (except options), 47 in player data, 35 in music room, 0 in gameplay
-		//
-		//FRAME_COUNTER          = 0x004BDD54L,
 	};
 };
 
