@@ -310,7 +310,7 @@ std::string const& Touhou15::getBGMName() const
 std::string Touhou15::getCustomResources() const
 {
 	std::string resources = std::to_string(state.bombs);
-	resources.append(" bombs left, ");
+	resources.append(" bombs, ");
 	resources.append(std::to_string(chapterRetryCount));
 	resources.append("/");
 	resources.append(std::to_string(retryCount));
