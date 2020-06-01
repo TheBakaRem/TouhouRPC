@@ -333,6 +333,22 @@ const std::string th12_musicNames[22] = {
 	"Returning Home from the Sky ~ Sky Dream",
 };
 
+// Touhou 12.8
+const std::string th12_8_musicNames[12] = {
+	"The Refrain of the Lovely Great War",
+	"Year-Round Absorbed Curiosity",
+	"Staking Your Life on a Prank",
+	"unused",
+	"unused",
+	"A Midnight Fairy Dance",
+	"Great Fairy Wars ~ Fairy Wars",
+	"An Ice Fairy in Spring",
+	"Player's Score",
+	"An Ice Fairy in Spring - still -",
+	"Loose Rain",
+	"Magus Night",
+};
+
 // Touhou 13
 const std::string th13_spellCardName[127] = {
 	// stage 1 (14 cards)
