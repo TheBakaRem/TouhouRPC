@@ -47,7 +47,7 @@ private:
 		// 1 byte bitset
 		// when in practice mode (including on main menu), bit 0 is set
 		// when on title screen demo, bits 1 and 3 are set (3 for being a replay)
-		// when paused, bit 2 is set
+		// when unpaused, bit 2 is set
 		// when in replay, bit 3 is set
 		// otherwise, none set
 		STAGE_MODE              = 0x0062F648L,

@@ -6,7 +6,7 @@ enum class GameState
 {
 	MainMenu,
 	Playing,
-	Playing_CustomResources, // LoLK Pointdevice resource support
+	Playing_CustomResources, // alt resource support e.g. power for bombs
 	StagePractice,
 	SpellPractice,
 	WatchingReplay,
@@ -52,9 +52,16 @@ enum class Character
 	Aya,
 
 	// IN Teams
+	Border,
+	Magic,
+	Scarlet,
+	Nether,
 
 	// IN Solo
-
+	Yukari,
+	Alice,
+	Remilia,
+	Yuyuko,
 };
 
 enum class SubCharacter
@@ -64,6 +71,10 @@ enum class SubCharacter
 	A,
 	B,
 	C,
+
+	// IN
+	Team,
+	Solo,
 
 	// DDC shot types have different images
 	A_DistinctIcons,

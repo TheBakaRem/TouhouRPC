@@ -254,11 +254,66 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 		icon.append("aya"), text.append("Aya");
 		break;
 	}
+
+	// IN Teams
+	case Character::Border:
+	{
+		icon.append("border"), text.append("Illusionary Barrier");
+		break;
 	}
+	case Character::Magic:
+	{
+		icon.append("magic"), text.append("Aria of Forbidden Magic");
+		break;
+	}
+	case Character::Scarlet:
+	{
+		icon.append("scarlet"), text.append("Visionary Scarlet Devil");
+		break;
+	}
+	case Character::Nether:
+	{
+		icon.append("nether"), text.append("Netherworld Dwellers's");
+		break;
+	}
+	
+	// IN Solo
+	case Character::Yukari:
+	{
+		icon.append("yukari"), text.append("Yukari");
+		break;
+	}
+	case Character::Alice:
+	{
+		icon.append("alice"), text.append("Alice");
+		break;
+	}
+	case Character::Remilia:
+	{
+		icon.append("remilia"), text.append("Remilia");
+		break;
+	}
+	case Character::Yuyuko:
+	{
+		icon.append("yuyuko"), text.append("Yuyuko");
+		break;
+	}
+	}
+
 	switch (state.subCharacter)
 	{
 	case SubCharacter::None:
 	{
+		break;
+	}
+	case SubCharacter::Team:
+	{
+		text.append(" Team");
+		break;
+	}
+	case SubCharacter::Solo:
+	{
+		text.append(" Solo");
 		break;
 	}
 	case SubCharacter::A_DistinctIcons:

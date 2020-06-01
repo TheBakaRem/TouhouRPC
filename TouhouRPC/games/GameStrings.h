@@ -26,6 +26,31 @@ const std::string th07_musicNames[20] = {
 };
 
 // Touhou 08
+const std::string th08_musicNames[21] = {
+	"Eternal Night Vignette ~ Eastern Night",
+	"Illusionary Night ~ Ghostly Eyes",
+	"Stirring an Autumn Moon ~ Mooned Insect",
+	"Song of the Night Sparrow ~ Night Bird",
+	"Deaf to All but the Song",
+	"Nostalgic Blood of the East ~ Old World",
+	"Plain Asia",
+	"Retribution for the Eternal Night ~ Imperishable Night",
+	"Maiden's Capriccio ~ Dream Battle",
+	"Love-Colored Master Spark",
+	"Cinderella Cage ~ Kagome-Kagome",
+	"Lunatic Eyes ~ Invisible Full Moon",
+	"Voyage 1969",
+	"Gensokyo Millennium ~ History of the Moon",
+	"Flight of the Bamboo Cutter ~ Lunatic Princess",
+	"Voyage 1970",
+	"Extend Ash ~ Person of Hourai",
+	"Reach for the Moon, Immortal Smoke",
+	"Evening Primrose",
+	"Eternal Dream ~ Mystical Maple",
+	"Eastern Youkai Beauty",
+};
+
+// Touhou 08
 const std::string th08_spellCardName[222] = {
 	// stage 1 (13 cards)
 	"Firefly Sign \"Meteors on Earth\"",

@@ -1,7 +1,10 @@
 #include <iostream>
 #include "Touhou08.h"
 
-Touhou08::Touhou08(PROCESSENTRY32W const& pe32) : TouhouBase(pe32)
+namespace Touhou08
+{
+
+Touhou08::Touhou08(PROCESSENTRY32W const& pe32) : TouhouMainGameBase(pe32)
 {
 	isBoss = 0;
     bossStateChange = 0;
@@ -17,12 +20,40 @@ void Touhou08::readDataFromGameProcess()
 {
     bool oldIsBoss;
     int oldStage; // to reset bossStateChange
+    state.gameState = GameState::Playing;
+    state.stageState = StageState::Stage;
+    state.mainMenuState = MainMenuState::TitleScreen;
 
     // PLAYER
-    ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 1, NULL);
+    ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 2, NULL);
+    state.subCharacter = (character <= 3) ? SubCharacter::Team : SubCharacter::Solo;
+    switch (character)
+    {
+    case 0: state.character = Character::Border; break;
+    case 1: state.character = Character::Magic; break;
+    case 2: state.character = Character::Scarlet; break;
+    case 3: state.character = Character::Nether; break;
+    case 4: state.character = Character::Reimu; break;
+    case 5: state.character = Character::Yukari; break;
+    case 6: state.character = Character::Marisa; break;
+    case 7: state.character = Character::Alice; break;
+    case 8: state.character = Character::Sakuya; break;
+    case 9: state.character = Character::Remilia; break;
+    case 10: state.character = Character::Youmu; break;
+    case 11: state.character = Character::Yuyuko; break;
+    }
 
     // DIFFICULTY
     ReadProcessMemory(processHandle, (LPCVOID)DIFFICULTY, (LPVOID)&difficulty, 1, NULL);
+    switch (difficulty)
+    {
+    default:
+    case 0: state.difficulty = Difficulty::Easy; break;
+    case 1: state.difficulty = Difficulty::Normal; break;
+    case 2: state.difficulty = Difficulty::Hard; break;
+    case 3: state.difficulty = Difficulty::Lunatic; break;
+    case 4: state.difficulty = Difficulty::Extra; break;
+    }
 
     // FRAMES
     oldStageFrames = stageFrames;
@@ -50,146 +81,112 @@ void Touhou08::readDataFromGameProcess()
 
     // SPELL_CARD_ID
     ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 1, NULL);
-}
 
-void Touhou08::setGameName(std::string& name) const
-{
-    name.assign(getGameName());
-}
+    unsigned int inGameFlag = 0;
+    ReadProcessMemory(processHandle, (LPCVOID)IN_GAME_FLAG, (LPVOID)&inGameFlag, 4, NULL);
 
-void Touhou08::setGameInfo(std::string& info) const
-{
-    if (stageFrames - oldStageFrames == 0)
+    char stageMode = 0;
+    ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 1, NULL);
+
+    if (inGameFlag == 0 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
     {
-        info.assign("In the menu"); // main menu, pause menu, etc
-        return;
-    }
+        state.gameState = GameState::MainMenu;
+        state.mainMenuState = MainMenuState::TitleScreen;
 
-    std::string BGM;
-    ReadProcessMemory(processHandle, (LPCVOID)PLAYING_MUSIC, (LPVOID)&BGM, 1, NULL);
-    if (BGM[0] != 'b')
-    {
-        // spellcard practice
-        info.assign("Practicing a spell:\n");
-        info.append(th08_spellCardName[spellCardID]);
-        return;
-    }
-
-    info.assign(stageName[stage]);
-
-    // boss
-    if (isBoss)
-    {
-        info.append(" | Fighting ");
-        // screw stage 5, 6B, ex
-        if (stage == 5 || stage == 7 || stage == 8)
+        if (state.mainMenuState == MainMenuState::MusicRoom)
         {
-            switch (bossStateChange)
+            ReadProcessMemory(processHandle, (LPCVOID)MUSIC_ROOM_TRACK, (LPVOID)&bgm, 4, NULL);
+        }
+    }
+
+
+    if (state.gameState == GameState::Playing)
+    {
+        char bgm_playing[1];
+        ReadProcessMemory(processHandle, (LPCVOID)BGM_STR_1, bgm_playing, 1, NULL);
+
+        if ((stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG) != 0 || bgm_playing[0] != 'b')
+        {
+            state.gameState = GameState::SpellPractice;
+        }
+        else if ((stageMode & STAGE_MODE_PRACTICE_FLAG) != 0)
+        {
+            state.gameState = GameState::StagePractice;
+        }
+        else if ((stageMode & STAGE_MODE_REPLAY_FLAG) != 0)
+        {
+            state.gameState = GameState::WatchingReplay;
+        }
+
+        // boss
+        if (isBoss)
+        {
+            // screw stage 5, 6B, ex
+            if (stage == 5 || stage == 7 || stage == 8)
             {
-            case 0: // for people who open in middle of a replay
-            case 1: // but really launch this before launching your game
-                info.append(midBossName[stage]);
-                break;
-            default: 
-                info.append(bossName[stage]);
+                switch (bossStateChange)
+                {
+                case 0: // for people who open in middle of a replay
+                case 1: // but really launch this before launching your game
+                    state.stageState = StageState::Midboss;
+                    break;
+                default:
+                    state.stageState = StageState::Boss;
+                    break;
+                }
+            }
+            else
+            {
+                state.stageState = StageState::Boss;
             }
         }
-        else
-        {
-            info.append(bossName[stage]);
-        }
     }
-}
 
-void Touhou08::setLargeImageInfo(std::string& icon, std::string& text) const
-{
-    icon.assign("");
-    text.assign("");
+    // Read current game progress
+    DWORD player_pointer = 0;
+    ReadProcessMemory(processHandle, (LPCVOID)PLAYER_POINTER, (LPVOID)&player_pointer, 4, NULL);
 
-    if (stageFrames - oldStageFrames == 0) return; // So that the rest isn't executed while in the menus
-
-    std::string charTeamName;
-    switch (character)
+    if (player_pointer)
     {
-    case 0: // border team:
-        charTeamName = "Border Team";
-        icon.assign("th08borderteam");
-        break;
-    case 1: // magic team
-        charTeamName = "Magic Team";
-        icon.assign("th08magicteam");
-        break;
-    case 2: // scarlet team
-        charTeamName = "Scarlet Team";
-        icon.assign("th08scarletteam");
-        break;
-    case 3: // ghost team
-        charTeamName = "Ghost Team";
-        icon.assign("th08ghostteam");
-        break;
-    case 4: // reimu
-        charTeamName = "Reimu";
-        icon.assign("th08reimu");
-        break;
-    case 5: // yukari
-        charTeamName = "Yukari";
-        icon.assign("th08yukari");
-        break;
-    case 6: // marisa
-        charTeamName = "Marisa";
-        icon.assign("th08marisa");
-        break;
-    case 7: // alice
-        charTeamName = "Alice";
-        icon.assign("th08alice");
-        break;
-    case 8: // sakuya
-        charTeamName = "Sakuya";
-        icon.assign("th08sakuya");
-        break;
-    case 9: // remilia
-        charTeamName = "Remilia";
-        icon.assign("th08remilia");
-        break;
-    case 10: // youmu
-        charTeamName = "Youmu";
-        icon.assign("th08youmu");
-        break;
-    case 11: // yuyuko
-        charTeamName = "Yuyuko";
-        icon.assign("th08yuyuko");
-        break;
+        float lives = 0;
+        ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x74), (LPVOID)&lives, 4, NULL);
+        state.lives = lives;
+
+        float bombs = 0;
+        ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x80), (LPVOID)&bombs, 4, NULL);
+        state.bombs = bombs;
+
+        ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x00), (LPVOID)&state.score, 4, NULL);
+
+        char gameOvers = 0;
+        ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x28), (LPVOID)&gameOvers, 1, NULL);
+        state.gameOvers = gameOvers;
     }
-    text.assign(charTeamName);
 }
 
-void Touhou08::setSmallImageInfo(std::string& icon, std::string& text) const
+std::string Touhou08::getStageName() const
 {
-    icon.assign("");
-    text.assign("");
-    if (stageFrames - oldStageFrames == 0) return; // So that the rest isn't executed while in the menus
+    return stageName[stage];
+}
 
-    text.append("Difficulty: ");
-    switch (difficulty) {
-    case 0: // Easy
-        text.append("Easy");
-        icon.assign("easy");
-        break;
-    case 1: // Normal or Last Word
-        text.append("Normal");
-        icon.assign("normal");
-        break;
-    case 2: // Hard
-        text.append("Hard");
-        icon.assign("hard");
-        break;
-    case 3: // Lunatic
-        text.append("Lunatic");
-        icon.assign("lunatic");
-        break;
-    case 4: // Extra (difficulty == 4)
-        text.append("Extra");
-        icon.assign("extra");
-        break;
-    }
+std::string Touhou08::getMidbossName() const
+{
+    return midBossName[stage];
+}
+
+std::string Touhou08::getBossName() const
+{
+    return bossName[stage];
+}
+
+std::string const& Touhou08::getSpellCardName() const
+{
+    return th08_spellCardName[spellCardID];
+}
+
+std::string const& Touhou08::getBGMName() const
+{
+    return th08_musicNames[bgm];
+}
+
 }
