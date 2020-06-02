@@ -278,7 +278,7 @@ std::string Touhou12_8::getBossName() const
 	case C2_3: return "Three Faires of Light";
 
 	default:
-	case EX: return "Marisa Kirismae";
+	case EX: return "Marisa Kirisame";
 	}
 }
 
