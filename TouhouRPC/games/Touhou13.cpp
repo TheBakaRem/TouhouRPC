@@ -1,17 +1,20 @@
-#include "Touhou16.h"
+﻿#include "Touhou13.h"
+#include <iostream>
 
-namespace Touhou16
+namespace Touhou13
 {
 
-Touhou16::Touhou16(PROCESSENTRY32W const& pe32) : TouhouMainGameBase(pe32)
-{
-}
-
-Touhou16::~Touhou16()
+Touhou13::Touhou13(PROCESSENTRY32W const& pe32)
+	: TouhouMainGameBase(pe32)
 {
 }
 
-void Touhou16::readDataFromGameProcess() {
+Touhou13::~Touhou13()
+{}
+
+void Touhou13::readDataFromGameProcess()
+{
+	// Reset menuState, bgm will tell us if we're in the menu
 	menuState = -1;
 	state.gameState = GameState::Playing;
 	state.stageState = StageState::Stage;
@@ -50,43 +53,46 @@ void Touhou16::readDataFromGameProcess() {
 	case 2: state.difficulty = Difficulty::Hard; break;
 	case 3: state.difficulty = Difficulty::Lunatic; break;
 	case 4: state.difficulty = Difficulty::Extra; break;
+	case 5: state.difficulty = Difficulty::Overdrive; break;
 	}
+
+	// Update menu state. The object at menu_pointer contains many things to do with the main menu,
+	// and they kind of behave awkwardly in DDC. For now we mainly care about whether we're in the music room or not.
 
 	unsigned int menu_pointer = 0;
 	ReadProcessMemory(processHandle, (LPCVOID)MENU_POINTER, (LPVOID)&menu_pointer, 4, NULL);
 	if (state.gameState == GameState::Playing && menu_pointer != 0)
 	{
 		// The most reliable way of determining our current menu state is through the combination of
-		// menu display state and extra flags that get set.
-		// This is because of a bug detailed in Touhou14's source file
+		// menu display state, option count, and extra flags that get set.
+		// This is because of a bug detailed in the mini-documentation below the code
 
 		/*
-			display state (0x18) -> menu screen
+			display state (0x1C) / option count (0x30) -> menu screen
 			-----------------------------
-			 0 -> loading
-			 1 -> main menu
-			 5 -> game start
-			 5 -> extra start
-			 5 -> practice start
-			17 -> spell card practice
-			11 -> replay
-			10 -> player data
-			13 -> music room
-			 3 -> options
-			16 -> all manual screens
+			 0 /  0 -> loading
+			 1 / 10 -> main menu
+			 5 /  4 -> game start
+			 5 /  1 -> extra start (has 0x004F5834 set to 4, garbage otherwise?)
+			 5 /  4 -> practice start (has 0x004F58B8 set to 16, 0 otherwise)
+			17 /  7 -> spell card practice (has 0x004F58B8 set to 32, 0 otherwise)
+			11 / 25 -> replay
+			10 /  6 -> all player data screens
+			13 / 17 -> music room
+			 3 /  5 -> options
+			16 / 10 -> all manual screens
 
 			---- sub sub menus ----
-			 6 -> char select
-			 7 -> subchar select
-			 8 -> practice stage select
-			18 -> spell card select, N == num spells for stage
-			19 -> spell card difficulty select
-			20 -> spell card subtype select
-			11 -> replay stage select
+			 6 /  3 -> char select
+			 7 /  2 -> subchar select
+			 8 /  6 -> practice stage select
+			18 /  N -> spell card select, N == num spells for stage
+			19 /  5 -> spell card difficulty select
+			11 /  7 -> replay stage select
 		*/
 
 		DWORD ds = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x18), (LPVOID)&ds, 4, NULL);
+		ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x1C), (LPVOID)&ds, 4, NULL);
 
 		switch (ds)
 		{
@@ -111,8 +117,7 @@ void Touhou16::readDataFromGameProcess() {
 		case 8: state.mainMenuState = MainMenuState::StagePractice; break;
 		case 17:
 		case 18:
-		case 19:
-		case 20: state.mainMenuState = MainMenuState::SpellPractice; break;
+		case 19: state.mainMenuState = MainMenuState::SpellPractice; break;
 		case 11: state.mainMenuState = MainMenuState::Replays; break;
 		case 10: state.mainMenuState = MainMenuState::PlayerData; break;
 		case 13: state.mainMenuState = MainMenuState::MusicRoom; break;
@@ -122,111 +127,74 @@ void Touhou16::readDataFromGameProcess() {
 
 		menuState = 0;
 		state.gameState = GameState::MainMenu;
-	}
 
+		///////////////
+		// Unused menu stuff, documented here in case it's ever necessary.
+
+		// These track where the cursor is, changed in 2 places for some reason.
+		// ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x28), (LPVOID)&mainMenuSelectionA, 4, NULL);
+		// ReadProcessMemory(processHandle, (LPCVOID)(menu_pointer + 0x2C), (LPVOID)&mainMenuSelectionB, 4, NULL);
+
+		// The menu object stores a stack of the selected sub menus. The bottom of the stack is meant to be at offset 0x34 inside the menu object.
+		// i.e. any sub menu selected from the top level of the title screen will fill in to this base number.
+		// The size of the stack is stored at offset 0xB4, and this is also used to determine where to insert next.
+		// This should've been much more useful than fiddling with display states and option counts and flags etc.
+		// but there is a bug when exiting the Manual sub menu where the stack size doesn't decrease,
+		// making reading from the stack annoying as its base will keep on shifting 4 bytes forward every time the player exits the Manual.
+
+		///////////////
+	}
 
 	if (state.gameState == GameState::Playing)
 	{
-		// Intentionak fallthroughs
 		// Note that ZUN's naming for the BGM file names is not very consistent
 		switch (bgm_id)
 		{
-		default:
-		case 1:
+		case 0:
 			menuState = 0;
 			state.mainMenuState = MainMenuState::TitleScreen;
 			state.gameState = GameState::MainMenu;
 			break;
-
-		case 3: // stage 1 boss
-			state.stageState = StageState::Boss;
-		case 2: // stage 1
-			stage = 1;
-			break;
-
-		case 5: // stage 2 boss
-			state.stageState = StageState::Boss;
-		case 4: // stage 2
-			stage = 2;
-			break;
-
-		case 7: // stage 3 boss
-			state.stageState = StageState::Boss;
-		case 6:// stage 3
-			stage = 3;
-			break;
-
-		case 9: // stage 4 boss
-			state.stageState = StageState::Boss;
-		case 8: // stage 4
-			stage = 4;
-			break;
-
-		case 11: // stage 5 boss
-			state.stageState = StageState::Boss;
-		case 10: // stage 5
-			stage = 5;
-			break;
-
-		case 12: // stage 6 boss
-			state.stageState = StageState::Boss;
-		case 13: // stage 6
-			stage = 6;
-			break;
-
-		case 17: // extra stage boss
-			state.stageState = StageState::Boss;
-		case 16: // extra stage
-			stage = 7;
-			break;
-
-		case 14: // ending
+		case 18: // ending
 			state.gameState = GameState::Ending;
 			break;
-		case 15: // staff roll
+		case 19: // staff roll
 			state.gameState = GameState::StaffRoll;
+			break;
+		default:
 			break;
 		}
 	}
-	
-	// Enemy state object
-	// This object holds various information about general ecl state.
-	// Offset 1BC8h in this structure is used to indicate the main boss enemy
-	// If it's 0 there is no main boss, if it's 4 it's a mid-boss or a boss
 
 	// We know the main stage boss is triggered when music changes
 	// So if the state isn't already defined, we check if the mid-boss is present
-	if (state.stageState == StageState::Stage) {
-		DWORD enemy_state_ptr = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)ENEMY_STATE_POINTER, (LPVOID)&enemy_state_ptr, 4, NULL);
-		if (enemy_state_ptr != 0) {
-			DWORD boss_mode = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)(enemy_state_ptr + 0x1BC8), (LPVOID)&boss_mode, 4, NULL);
-			if (boss_mode == 4) {
-				state.stageState = StageState::Midboss;
-			}
+	if (state.stageState == StageState::Stage)
+	{
+		DWORD boss_mode = 0;
+		ReadProcessMemory(processHandle, (LPCVOID)(ENEMY_STATE), (LPVOID)&boss_mode, 4, NULL);
+		// If it's 0 there is no main boss, if it's 4 it's a mid-boss, 6 is boss, 7 is post-boss
+		if (boss_mode == 4)
+		{
+			state.stageState = StageState::Midboss;
+		}
+		else if (boss_mode == 6)
+		{
+			state.stageState = StageState::Boss;
 		}
 	}
-	
+
+	// Read Spell Card ID (for Spell Practice)
+	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
+
 	// Read character and difficulty info
 	ReadProcessMemory(processHandle, (LPCVOID)CHARACTER, (LPVOID)&character, 4, NULL);
 	switch (character)
 	{
 	default:
 	case 0: state.character = Character::Reimu; break;
-	case 1: state.character = Character::Cirno; break;
-	case 2: state.character = Character::Aya; break;
-	case 3: state.character = Character::Marisa; break;
-	}
-
-	ReadProcessMemory(processHandle, (LPCVOID)SUB_CHARACTER, (LPVOID)&characterSub, 4, NULL);
-	switch (characterSub)
-	{
-	default:
-	case 0: state.subCharacter = SubCharacter::Spring; break;
-	case 1: state.subCharacter = SubCharacter::Summer; break;
-	case 2: state.subCharacter = SubCharacter::Fall; break;
-	case 3: state.subCharacter = SubCharacter::Winter; break;
+	case 1: state.character = Character::Marisa; break;
+	case 2: state.character = Character::Sanae; break;
+	case 3: state.character = Character::Youmu; break;
 	}
 
 	// Read current game progress
@@ -234,9 +202,6 @@ void Touhou16::readDataFromGameProcess() {
 	ReadProcessMemory(processHandle, (LPCVOID)BOMBS, (LPVOID)&state.bombs, 4, NULL);
 	ReadProcessMemory(processHandle, (LPCVOID)SCORE, (LPVOID)&state.score, 4, NULL);
 	ReadProcessMemory(processHandle, (LPCVOID)GAMEOVERS, (LPVOID)&state.gameOvers, 4, NULL);
-
-	// Read Spell Card ID (for Spell Practice)
-	ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 4, NULL);
 
 	// Read game mode
 	ReadProcessMemory(processHandle, (LPCVOID)GAME_MODE, (LPVOID)&gameMode, 4, NULL);
@@ -250,43 +215,43 @@ void Touhou16::readDataFromGameProcess() {
 	}
 }
 
-std::string Touhou16::getMidbossName() const
+std::string Touhou13::getMidbossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Eternity Larva";
-	case 2: return "Nemuno Sakata";
-	case 3: return "Lily White";
-	case 4: return "Mai Teireida";
-	case 5: return "Satono Nishida";
+	case 1: return "\"Divine spirit\"";
+	case 2: return "Kyouko Kasodani";
+	case 3: return "Kogasa Tatara";
+	case 4: return "Seiga Kaku‎";
+	case 5: return "Soga no Tojiko";
 	// case 6: none
-	case 7: return "Mai Teireida & Satono Nishida";
+	case 7: return "Nue Houjuu";
 	}
 }
 
-std::string Touhou16::getBossName() const
+std::string Touhou13::getBossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Eternity Larva";
-	case 2: return "Nemuno Sakata";
-	case 3: return "Aunn Komano";
-	case 4: return "Narumi Yatadera";
-	case 5: return "Mai Teireida & Satono Nishida";
-	case 6:
-	case 7: return "Okina Matara";
+	case 1: return "Yuyuko Saigyouji";
+	case 2: return "Kyouko Kasodani";
+	case 3: return "Yoshika Miyako‎";
+	case 4: return "Seiga Kaku";
+	case 5: return "Mononobe no Futo";
+	case 6: return "Toyosatomimi no Miko";
+	case 7: return "Mamizou Futatsuiwa";
 
 	}
 }
 
-std::string const& Touhou16::getSpellCardName() const
+std::string const& Touhou13::getSpellCardName() const
 {
-	return th16_spellCardName[spellCardID];
+	return th13_spellCardName[spellCardID];
 }
 
-std::string const& Touhou16::getBGMName() const
+std::string const& Touhou13::getBGMName() const
 {
-	return th16_musicNames[bgm];
+	return th13_musicNames[bgm];
 }
 
 }

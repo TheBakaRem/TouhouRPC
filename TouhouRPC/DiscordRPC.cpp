@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <chrono>
 using namespace std;
 
 // Constructor
@@ -21,10 +22,13 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 
 	if (!core) {
 		cout << "Failed to instantiate Discord!" << endl;
+		DiscordRPC::showError(response);
 		launched = false;
 	}
 	else {
 		this->activity = discord::Activity{};
+		timeSinceLastSubmits.fill(MIN_TIME_BETWEEN_SUBMITS_MS);
+		resetActivityTimeStartedToNow(); // new discord app instance made so our "game time" starts from now
 		cout << "Discord instantiated successfully!" << endl;
 		launched = true;
 	}
@@ -36,7 +40,65 @@ DiscordRPC::~DiscordRPC()
 {
 }
 
-void DiscordRPC::setActivityDetails(std::string& details, std::string& state, std::string& largeIcon, std::string& largeText, std::string& smallIcon, std::string& smallText)
+// Code that should run every tick
+discord::Result DiscordRPC::tickUpdate(int msDeltaTime)
+{
+	for (unsigned int& time : timeSinceLastSubmits)
+	{
+		time += msDeltaTime;
+	}
+	return core->RunCallbacks();
+}
+
+// Send the presence to Discord servers
+void DiscordRPC::sendPresence(bool forceSend)
+{
+	if (!forceSend)
+	{
+		bool cantSubmit = true;
+		for (unsigned int& time : timeSinceLastSubmits)
+		{
+			if (time >= MIN_TIME_BETWEEN_SUBMITS_MS)
+			{
+				cantSubmit = false;
+				time = 0;
+				break;
+			}
+		}
+		if (cantSubmit)
+		{
+			return;
+		}
+	}
+	this->core->ActivityManager().UpdateActivity(this->activity, [](discord::Result result) {
+		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
+		{
+			cout << "Failed updating activity!" << endl;
+			DiscordRPC::showError(result);
+		}
+	});
+}
+
+
+// Reset presence
+void DiscordRPC::resetPresence()
+{
+	this->core->ActivityManager().ClearActivity([](discord::Result result) {
+		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
+		{
+			cout << "Failed clearing activity!" << endl;
+			DiscordRPC::showError(result);
+		}
+	});
+}
+
+void DiscordRPC::closeApp()
+{
+	core = {};
+	launched = false;
+}
+
+void DiscordRPC::setActivityDetails(std::string const& details, std::string const& state, std::string const& largeIcon, std::string const& largeText, std::string const& smallIcon, std::string const& smallText)
 {
 	activity.SetDetails(details.c_str());
 	activity.SetState(state.c_str());
@@ -46,16 +108,10 @@ void DiscordRPC::setActivityDetails(std::string& details, std::string& state, st
 	activity.GetAssets().SetSmallText(smallText.c_str());
 }
 
-
-// Get an instance of the Core
-std::shared_ptr<discord::Core> DiscordRPC::getCore()
+void DiscordRPC::resetActivityTimeStartedToNow()
 {
-	return this->core;
-}
-
-bool DiscordRPC::isLaunched()
-{
-	return this->launched;
+	// discord timestamps expect seconds since epoch.
+	activity.GetTimestamps().SetStart(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
 // Display a Discord error
@@ -79,21 +135,4 @@ void DiscordRPC::showError(discord::Result res)
 	}
 
 	std::cerr << "Discord error: " << errType << std::endl;
-}
-
-// Send the presence to Discord servers
-void DiscordRPC::sendPresence()
-{
-	this->core->ActivityManager().UpdateActivity(this->activity, [](discord::Result result) {
-		if (result != discord::Result::Ok) cout << "Failed updating activity!" << endl;
-	});
-}
-
-
-// Reset presence
-void DiscordRPC::resetPresence()
-{
-	this->core->ActivityManager().ClearActivity([](discord::Result result) {
-		if (result != discord::Result::Ok) cout << "Failed clearing activity!" << endl;
-	});
 }

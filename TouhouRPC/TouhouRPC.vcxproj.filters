@@ -99,6 +99,30 @@
     <ClCompile Include="games\Touhou16.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
+    <ClCompile Include="games\Touhou14.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\TouhouMainGameBase.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou07.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou13.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou12.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou10.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou12_8.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou09.cpp">
+      <Filter>Fichiers sources\game-classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\discord-rpc\achievement_manager.h">
@@ -177,6 +201,33 @@
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
     <ClInclude Include="games\Touhou16.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou14.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\GameStrings.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\TouhouMainGameBase.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou07.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou13.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou12.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou10.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou12_8.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="games\Touhou09.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
   </ItemGroup>

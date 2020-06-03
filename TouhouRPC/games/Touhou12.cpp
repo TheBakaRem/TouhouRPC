@@ -1,23 +1,23 @@
-#include "Touhou11.h"
+#include "Touhou12.h"
 
-namespace Touhou11
+namespace Touhou12
 {
 
-Touhou11::Touhou11(PROCESSENTRY32W const& pe32) : TouhouMainGameBase(pe32)
-{
-}
-
-Touhou11::~Touhou11()
+Touhou12::Touhou12(PROCESSENTRY32W const& pe32) : TouhouMainGameBase(pe32)
 {
 }
 
-void Touhou11::readDataFromGameProcess()
+Touhou12::~Touhou12()
+{
+}
+
+void Touhou12::readDataFromGameProcess()
 {
 	menuState = -1;
 	state.gameState = GameState::Playing;
 	state.stageState = StageState::Stage;
 
-	// The BGM playing will be used to determine a lot of things
+	// The BGM playing will be used to determine some things
 	char bgm_playing[20];
 	ReadProcessMemory(processHandle, (LPCVOID)BGM_STR_1, bgm_playing, 20, NULL);
 
@@ -45,6 +45,7 @@ void Touhou11::readDataFromGameProcess()
 	default:
 	case 0: state.character = Character::Reimu; break;
 	case 1: state.character = Character::Marisa; break;
+	case 2: state.character = Character::Sanae; break;
 	}
 
 	// Teammate
@@ -52,9 +53,8 @@ void Touhou11::readDataFromGameProcess()
 	switch (characterSub)
 	{
 	default:
-	case 0: state.subCharacter = (state.character == Character::Reimu) ? SubCharacter::AndYukari : SubCharacter::AndAlice; break;
-	case 1: state.subCharacter = (state.character == Character::Reimu) ? SubCharacter::AndSuika : SubCharacter::AndPatchouli; break;
-	case 2: state.subCharacter = (state.character == Character::Reimu) ? SubCharacter::AndAya : SubCharacter::AndNitori; break;
+	case 0: state.subCharacter = SubCharacter::A; break;
+	case 1: state.subCharacter = SubCharacter::B; break;
 	}
 	
 	// Difficulty
@@ -87,12 +87,12 @@ void Touhou11::readDataFromGameProcess()
 	if (state.gameState == GameState::Playing && menuPtr)
 	{
 		unsigned int inSubMenu = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)(menuPtr + 0xB0), (LPVOID)&inSubMenu, 4, NULL);
+		ReadProcessMemory(processHandle, (LPCVOID)(menuPtr + 0xB4), (LPVOID)&inSubMenu, 4, NULL);
 
 		if (inSubMenu != 0)
 		{
 			unsigned int subMenuSelection = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)(menuPtr + 0x30), (LPVOID)&subMenuSelection, 4, NULL);
+			ReadProcessMemory(processHandle, (LPCVOID)(menuPtr + 0x34), (LPVOID)&subMenuSelection, 4, NULL);
 
 			switch (subMenuSelection)
 			{
@@ -120,15 +120,15 @@ void Touhou11::readDataFromGameProcess()
 		// Note that ZUN's naming for the BGM file names is not very consistent
 		switch (bgm_id)
 		{
-		case 0:
+		case 1:
 			menuState = 0;
 			state.mainMenuState = MainMenuState::TitleScreen;
 			state.gameState = GameState::MainMenu;
 			break;
-		case 18: // ending
+		case 20: // ending
 			state.gameState = GameState::Ending;
 			break;
-		case 19: // staff roll
+		case 21: // staff roll
 			state.gameState = GameState::StaffRoll;
 			break;
 		default:
@@ -141,99 +141,37 @@ void Touhou11::readDataFromGameProcess()
 	if (state.gameState == GameState::Playing && enemyStatePtr)
 	{
 		unsigned int fightingBoss = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)(enemyStatePtr + 0x131C), &fightingBoss, 4, NULL);
+		ReadProcessMemory(processHandle, (LPCVOID)(enemyStatePtr + 0x1594), &fightingBoss, 4, NULL);
 
 		if (fightingBoss == 3)
 		{
-			// Stage 1: Kisume
-			if (stage == 1 && (gameState >= 6 && gameState <= 8) || gameState == 15)
+			if (gameState == 6 || gameState == 7)
 			{
+				// These states are always a midboss
 				state.stageState = StageState::Midboss;
 			}
-			// Stage 1: Yamame
-			else if (stage == 1 && (gameState == 2 || gameState >= 24))
+			else if (gameState == 24 || gameState == 25 || gameState == 44)
 			{
+				// These states are always a boss
 				state.stageState = StageState::Boss;
 			}
-
-			// Stage 2: Parsee (mid-boss)
-			else if (stage == 2 && (gameState == 6 || (gameState == 43 && gameStateFrames <= 2040)))
+			else if (gameState == 43)
 			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 2: Parsee (boss)
-			else if (stage == 2 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 3: Yuugi (mid-boss)
-			else if (stage == 3 && (gameState == 6 || gameState == 43 || gameState == 4))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 3: Yuugi (boss)
-			else if (stage == 3 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 4: Orin (start)
-			else if (stage == 4 && (gameState == 6 && gameStateFrames <= 900))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 4: Orin (mid-boss)
-			else if (stage == 4 && (gameState == 7 && gameStateFrames <= 1590))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 4: Satori (boss)
-			else if (stage == 4 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 5: Orin (mid-boss)
-			else if (stage == 5 && (gameState == 6 || (gameState == 7 && gameStateFrames <= 1200) || gameState == 15))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 5: Orin (boss)
-			else if (stage == 5 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 6: Orin (mid-boss)
-			else if (stage == 6 && (gameState == 6 || (gameState == 15 && gameStateFrames <= 2220)))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 6: Utsuho (boss)
-			else if (stage == 6 && gameState >= 24)
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 7 (Extra): Sanae
-			else if (stage == 7 && (gameState == 6 || (gameState == 0 && (stageFrames > gameStateFrames) && gameStateFrames <= 11200)))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 7 (Extra): Koishi
-			else if (stage == 7 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
+				// Some stages have gameState == 43 for both midboss and boss, so split by stage frames
+				switch (stage)
+				{
+				default:
+				case 2: state.stageState = stageFrames < 7300 ? StageState::Midboss : StageState::Boss; break;
+				case 3: state.stageState = stageFrames < 8900 ? StageState::Midboss : StageState::Boss; break;
+				case 5: state.stageState = stageFrames < 9000 ? StageState::Midboss : StageState::Boss; break;
+				}
 			}
 		}
 	}
 
 	// Read current game progress
 	ReadProcessMemory(processHandle, (LPCVOID)LIVES, (LPVOID)&state.lives, 4, NULL);
-	unsigned int integerPower = 0;
-	ReadProcessMemory(processHandle, (LPCVOID)POWER, (LPVOID)&integerPower, 4, NULL);
-	power = static_cast<float>(integerPower) / 20.0f;
+	ReadProcessMemory(processHandle, (LPCVOID)BOMBS, (LPVOID)&state.bombs, 4, NULL);
 	ReadProcessMemory(processHandle, (LPCVOID)SCORE, (LPVOID)&state.score, 4, NULL);
 	ReadProcessMemory(processHandle, (LPCVOID)GAMEOVERS, (LPVOID)&state.gameOvers, 4, NULL);
 
@@ -252,55 +190,40 @@ void Touhou11::readDataFromGameProcess()
 		{
 			state.gameState = GameState::WatchingReplay;
 		}
-		else
-		{
-			state.gameState = GameState::Playing_CustomResources; // display power instead of bombs
-		}
 	}
 }
 
-std::string Touhou11::getMidbossName() const
+std::string Touhou12::getMidbossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Kisume";
-	case 2: return "Parsee Mizuhashi";
-	case 3: return "Yuugi Hoshiguma";
+	case 1:
+	case 5: return "Nazrin";
+	case 2: return "Kogasa Tatara";
+	case 3: return "Ichirin Kumoi & Unzan";
 	case 4:
-	case 5:
-	case 6: return "Rin Kaenbyou";
-	case 7: return "Sanae Kochiya";
+	case 6: return "Nue Houjuu (Unknown Form)";
+	case 7: return "Kogasa Tatara";
 	}
 }
 
-std::string Touhou11::getBossName() const
+std::string Touhou12::getBossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Yamame Kurodani";
-	case 2: return "Parsee Mizuhashi";
-	case 3: return "Yuugi Hoshiguma";
-	case 4: return "Satori Komeiji";
-	case 5: return "Rin Kaenbyou";
-	case 6: return "Utsuho Reiuji";
-	case 7: return "Koishi Komeiji";
+	case 1: return "Nazrin";
+	case 2: return "Kogasa Tatara";
+	case 3: return "Ichirin Kumoi & Unzan";
+	case 4: return "Minamitsu Murasa";
+	case 5: return "Shou Toramaru";
+	case 6: return "Byakuren Hijiri";
+	case 7: return "Nue Houjuu";
 	}
 }
 
-std::string const& Touhou11::getBGMName() const
+std::string const& Touhou12::getBGMName() const
 {
-	return th11_musicNames[bgm];
-}
-
-std::string Touhou11::getCustomResources() const
-{
-	std::string resources = std::to_string(state.lives);
-	resources.append("/");
-	std::string powerStr = std::to_string(power);
-	powerStr.resize(4); // ez way to format to 2 d.p.
-	resources.append(powerStr);
-
-	return resources;
+	return th12_musicNames[bgm];
 }
 
 }

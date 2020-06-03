@@ -1,17 +1,17 @@
-#include "Touhou11.h"
+#include "Touhou10.h"
 
-namespace Touhou11
+namespace Touhou10
 {
 
-Touhou11::Touhou11(PROCESSENTRY32W const& pe32) : TouhouMainGameBase(pe32)
-{
-}
-
-Touhou11::~Touhou11()
+Touhou10::Touhou10(PROCESSENTRY32W const& pe32) : TouhouMainGameBase(pe32)
 {
 }
 
-void Touhou11::readDataFromGameProcess()
+Touhou10::~Touhou10()
+{
+}
+
+void Touhou10::readDataFromGameProcess()
 {
 	menuState = -1;
 	state.gameState = GameState::Playing;
@@ -52,9 +52,9 @@ void Touhou11::readDataFromGameProcess()
 	switch (characterSub)
 	{
 	default:
-	case 0: state.subCharacter = (state.character == Character::Reimu) ? SubCharacter::AndYukari : SubCharacter::AndAlice; break;
-	case 1: state.subCharacter = (state.character == Character::Reimu) ? SubCharacter::AndSuika : SubCharacter::AndPatchouli; break;
-	case 2: state.subCharacter = (state.character == Character::Reimu) ? SubCharacter::AndAya : SubCharacter::AndNitori; break;
+	case 0: state.subCharacter = SubCharacter::A; break;
+	case 1: state.subCharacter = SubCharacter::B; break;
+	case 2: state.subCharacter = SubCharacter::C; break;
 	}
 	
 	// Difficulty
@@ -120,15 +120,15 @@ void Touhou11::readDataFromGameProcess()
 		// Note that ZUN's naming for the BGM file names is not very consistent
 		switch (bgm_id)
 		{
-		case 0:
+		case 2:
 			menuState = 0;
 			state.mainMenuState = MainMenuState::TitleScreen;
 			state.gameState = GameState::MainMenu;
 			break;
-		case 18: // ending
+		case 13: // ending
 			state.gameState = GameState::Ending;
 			break;
-		case 19: // staff roll
+		case 14: // staff roll
 			state.gameState = GameState::StaffRoll;
 			break;
 		default:
@@ -136,95 +136,26 @@ void Touhou11::readDataFromGameProcess()
 		}
 	}
 
-	DWORD enemyStatePtr = 0;
-	ReadProcessMemory(processHandle, (LPCVOID)ENEMY_STATE, &enemyStatePtr, 4, NULL); // Get enemy state address
-	if (state.gameState == GameState::Playing && enemyStatePtr)
+	if (state.gameState == GameState::Playing)
 	{
-		unsigned int fightingBoss = 0;
-		ReadProcessMemory(processHandle, (LPCVOID)(enemyStatePtr + 0x131C), &fightingBoss, 4, NULL);
-
-		if (fightingBoss == 3)
+		// All non-(mid)boss states are below 6, e.g. 1 or 3 for conversations, 2 for post-boss
+		if (gameState >= 24) // 24-31, 43-52 are boss only
 		{
-			// Stage 1: Kisume
-			if (stage == 1 && (gameState >= 6 && gameState <= 8) || gameState == 15)
+			state.stageState = StageState::Boss;
+		}
+		else if (gameState >= 6) // 6 and 15 are midboss only
+		{
+			// On all stages except 2 and 4, the gameState reverts to 0 after mid-boss disappears
+			if (stage == 2 || stage == 4)
+			{
+				if (gameStateFrames < 900) // same for both
+				{
+					state.stageState = StageState::Midboss;
+				}
+			}
+			else
 			{
 				state.stageState = StageState::Midboss;
-			}
-			// Stage 1: Yamame
-			else if (stage == 1 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 2: Parsee (mid-boss)
-			else if (stage == 2 && (gameState == 6 || (gameState == 43 && gameStateFrames <= 2040)))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 2: Parsee (boss)
-			else if (stage == 2 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 3: Yuugi (mid-boss)
-			else if (stage == 3 && (gameState == 6 || gameState == 43 || gameState == 4))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 3: Yuugi (boss)
-			else if (stage == 3 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 4: Orin (start)
-			else if (stage == 4 && (gameState == 6 && gameStateFrames <= 900))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 4: Orin (mid-boss)
-			else if (stage == 4 && (gameState == 7 && gameStateFrames <= 1590))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 4: Satori (boss)
-			else if (stage == 4 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 5: Orin (mid-boss)
-			else if (stage == 5 && (gameState == 6 || (gameState == 7 && gameStateFrames <= 1200) || gameState == 15))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 5: Orin (boss)
-			else if (stage == 5 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 6: Orin (mid-boss)
-			else if (stage == 6 && (gameState == 6 || (gameState == 15 && gameStateFrames <= 2220)))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 6: Utsuho (boss)
-			else if (stage == 6 && gameState >= 24)
-			{
-				state.stageState = StageState::Boss;
-			}
-
-			// Stage 7 (Extra): Sanae
-			else if (stage == 7 && (gameState == 6 || (gameState == 0 && (stageFrames > gameStateFrames) && gameStateFrames <= 11200)))
-			{
-				state.stageState = StageState::Midboss;
-			}
-			// Stage 7 (Extra): Koishi
-			else if (stage == 7 && (gameState == 2 || gameState >= 24))
-			{
-				state.stageState = StageState::Boss;
 			}
 		}
 	}
@@ -259,40 +190,40 @@ void Touhou11::readDataFromGameProcess()
 	}
 }
 
-std::string Touhou11::getMidbossName() const
+std::string Touhou10::getMidbossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Kisume";
-	case 2: return "Parsee Mizuhashi";
-	case 3: return "Yuugi Hoshiguma";
-	case 4:
-	case 5:
-	case 6: return "Rin Kaenbyou";
-	case 7: return "Sanae Kochiya";
+	case 1: return "Shizuha Aki";
+	case 2: return "Hina Kagiyama";
+	case 3: return "Nitori Kawashiro";
+	case 4: return "Momiji Inubashiri";
+	case 5: return "Sanae Kochiya";
+	// case 6: none
+	case 7: return "Kanako Yasaka";
 	}
 }
 
-std::string Touhou11::getBossName() const
+std::string Touhou10::getBossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Yamame Kurodani";
-	case 2: return "Parsee Mizuhashi";
-	case 3: return "Yuugi Hoshiguma";
-	case 4: return "Satori Komeiji";
-	case 5: return "Rin Kaenbyou";
-	case 6: return "Utsuho Reiuji";
-	case 7: return "Koishi Komeiji";
+	case 1: return "Minoriko Aki";
+	case 2: return "Hina Kagiyama";
+	case 3: return "Nitori Kawashiro";
+	case 4: return "Aya Shameimaru";
+	case 5: return "Sanae Kochiya";
+	case 6: return "Kanako Yasaka";
+	case 7: return "Suwako Moriya";
 	}
 }
 
-std::string const& Touhou11::getBGMName() const
+std::string const& Touhou10::getBGMName() const
 {
-	return th11_musicNames[bgm];
+	return th10_musicNames[bgm];
 }
 
-std::string Touhou11::getCustomResources() const
+std::string Touhou10::getCustomResources() const
 {
 	std::string resources = std::to_string(state.lives);
 	resources.append("/");
