@@ -71,6 +71,65 @@ const std::string th08_musicNames[21] = {
 	"Eastern Youkai Beauty",
 };
 
+// Touhou 09
+const std::string th09_musicNames[19] = {
+	"Flower Reflecting Mound ~ Higan Retour",
+	"Spring Lane ~ Colorful Path",
+	"Oriental Dark Flight",
+	"Flowering Night",
+	"Eastern Ghostly Dream ~ Ancient Temple",
+	"Lunatic Eyes ~ Invisible Full Moon",
+	"Adventure of the Lovestruck Tomboy",
+	"Phantom Band ~ Phantom Ensemble",
+	"Deaf to All but the Song ~ Flower Mix",
+	"White Flag of Usa Shrine",
+	"Wind God Girl",
+	"Poison Body ~ Forsaken Doll",
+	"Gensokyo, Past and Present ~ Flower Land",
+	"Higan Retour ~ Riverside View",
+	"Eastern Judgement in the Sixtieth Year ~ Fate of Sixty Years",
+	"The Mound where the Flowers Reflect",
+	"Mound of Shigan",
+	"The Flowers Remain in Fantasy",
+	"Flower of Soul ~ Another Dream...",
+};
+
+const std::string th09_stageNames[14] = {
+	"Bamboo Forest of the Lost",
+	"Bamboo Forest of the Lost",
+	"Phantom Meadow",
+	"Hakugyokurou's Stairway",
+	"Eientei",
+	"Misty Lake",
+	"Barrier of Life & Death",
+	"Youkai Trail",
+	"Bamboo Forest of the Lost",
+	"Garden of the Sun",
+	"Giant Toad's Pond",
+	"The Nameless Hill",
+	"Road of Reconsideration",
+	"Muenzuka",
+};
+
+const std::string th09_characterNames[16] = {
+	"Reimu",
+	"Marisa",
+	"Sakuya",
+	"Youmu",
+	"Reisen",
+	"Cirno",
+	"Lyrica",
+	"Mystia",
+	"Tewi",
+	"Yuuka",
+	"Aya",
+	"Medicine",
+	"Komachi",
+	"Eiki",
+	"Merlin",
+	"Lunasa",
+};
+
 // Touhou 08
 const std::string th08_spellCardName[222] = {
 	// stage 1 (13 cards)

@@ -298,6 +298,53 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 		icon.append("yuyuko"), text.append("Yuyuko");
 		break;
 	}
+
+	// PoFV
+	case Character::Lyrica:
+	{
+		icon.append("lyrica"), text.append("Lyrica");
+		break;
+	}
+	case Character::Merlin:
+	{
+		icon.append("merlin"), text.append("Merlin");
+		break;
+	}
+	case Character::Lunasa:
+	{
+		icon.append("lunasa"), text.append("Lunasa");
+		break;
+	}
+	case Character::Mystia:
+	{
+		icon.append("mystia"), text.append("Mystia");
+		break;
+	}
+	case Character::Tewi:
+	{
+		icon.append("tewi"), text.append("Tewi");
+		break;
+	}
+	case Character::Yuuka:
+	{
+		icon.append("yuuka"), text.append("Yuuka");
+		break;
+	}
+	case Character::Medicine:
+	{
+		icon.append("medicine"), text.append("Medicine");
+		break;
+	}
+	case Character::Komachi:
+	{
+		icon.append("komachi"), text.append("Komachi");
+		break;
+	}
+	case Character::Eiki:
+	{
+		icon.append("eiki"), text.append("Eiki");
+		break;
+	}
 	}
 
 	switch (state.subCharacter)
@@ -314,6 +361,11 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 	case SubCharacter::Solo:
 	{
 		text.append(" Solo");
+		break;
+	}
+	case SubCharacter::AltColour:
+	{
+		icon.append("alt");
 		break;
 	}
 	case SubCharacter::A_DistinctIcons:

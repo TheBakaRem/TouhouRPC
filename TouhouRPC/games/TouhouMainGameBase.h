@@ -62,6 +62,17 @@ enum class Character
 	Alice,
 	Remilia,
 	Yuyuko,
+
+	// PoFV
+	Lyrica,
+	Merlin,
+	Lunasa,
+	Mystia,
+	Tewi,
+	Yuuka,
+	Medicine,
+	Komachi,
+	Eiki,
 };
 
 enum class SubCharacter
@@ -75,6 +86,9 @@ enum class SubCharacter
 	// IN
 	Team,
 	Solo,
+
+	// PoFV
+	AltColour,
 
 	// DDC shot types have different images
 	A_DistinctIcons,
@@ -138,10 +152,8 @@ public:
 	void setLargeImageInfo(std::string& icon, std::string& text) const override;
 	void setSmallImageInfo(std::string& icon, std::string& text) const override;
 
-private:
-	std::string createFormattedScore() const;
-
 protected:
+	std::string createFormattedScore() const;
 	bool shouldShowCoverIcon() const;
 
 	// Everything in this struct should get a value assigned to it.

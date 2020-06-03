@@ -11,6 +11,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 06 - Embodiment of Scarlet Devil
 - Touhou 07 - Perfect Cherry Blossom
 - Touhou 08 - Imperishable Night
+- Touhou 09 - Phantasmagoria of Flower View
 - Touhou 10 - Mountain of Faith
 - Touhou 11 - Subterranean Animism
 - Touhou 12 - Undefined Fantastic Object
@@ -21,7 +22,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 16 - Hidden Stars in Four Seasons
 - Touhou 17 - Wily Beast and Weakest Creature
 
-Touhou 9 - Phantasmagoria of Flower View support is planned, for any other games feel free to contribute!
+If you want to see other games or fangames supported, contributions are welcome!
 
 ## Display examples
 ![Th17 Example - Fighting](https://relick.me/touhourpc/1-wbawc-playing.png)

@@ -76,7 +76,7 @@ void startDisplay() {
     cout << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer." << endl;
     cout << "The program automatically detects when you change betwen supported games." << endl;
     cout << "You can close this program at any time by pressing (Ctrl+C)." << endl;
-    cout << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 10, (MoF), 11 (SA), 12 (UFO), 12.8 (GFW), 13 (TD), 14 (DDC), 15 (LoLK), 16(HSiFS), 17 (WBaWC)." << endl;
+    cout << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 10, (MoF), 11 (SA), 12 (UFO), 12.8 (GFW), 13 (TD), 14 (DDC), 15 (LoLK), 16(HSiFS), 17 (WBaWC)." << endl;
     cout << endl;
     cout << "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!" << endl;
     cout << endl;
