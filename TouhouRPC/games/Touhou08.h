@@ -78,7 +78,6 @@ private:
 		BOSS_APPEARANCE        = 0x018B89B8, // 1 byte
 		SPELL_CARD_ID          = 0x004EA678, // 1 byte
 		STAGE_FRAMES           = 0x0164D0AC,
-		BGM_STR_1              = 0x018BCB70, // set to stage music when normally playing, or the current music when in spell practice. in spell practice, "bgm/" is missing
 		MUSIC_ROOM_CURSOR      = 0x017CF53CL,
 		MUSIC_ROOM_TRACK       = 0x017CF540L, // the actually playing track
 

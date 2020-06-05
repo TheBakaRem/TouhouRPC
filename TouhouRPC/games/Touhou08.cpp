@@ -110,10 +110,7 @@ void Touhou08::readDataFromGameProcess()
 
     if (state.gameState == GameState::Playing)
     {
-        char bgm_playing[1];
-        ReadProcessMemory(processHandle, (LPCVOID)BGM_STR_1, bgm_playing, 1, NULL);
-
-        if ((stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG) != 0 || bgm_playing[0] != 'b')
+        if ((stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG) != 0)
         {
             state.gameState = GameState::SpellPractice;
         }
