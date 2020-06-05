@@ -76,7 +76,12 @@ private:
 		SCORE                  = 0x0160F510,
 		STAGE                  = 0x004E4850,
 		BOSS_APPEARANCE        = 0x018B89B8, // 1 byte
-		SPELL_CARD_ID          = 0x004EA678, // 1 byte
+		SPELL_CARD_ID          = 0x004EA678, // 4 bytes (even if only 1 byte is used, the game writes/reads it as dword)
+
+		// unlike the one above, this is set before the spell begins in spellprac
+		// (probably used by ECL script to tell which spell to even start)
+		SPELLPRAC_CARD_ID      = 0x0164D0B8,
+
 		STAGE_FRAMES           = 0x0164D0AC,
 		MUSIC_ROOM_CURSOR      = 0x017CF53CL,
 		MUSIC_ROOM_TRACK       = 0x017CF540L, // the actually playing track

@@ -79,15 +79,17 @@ void Touhou08::readDataFromGameProcess()
         bossStateChange++;
     }
 
-    // SPELL_CARD_ID
-    ReadProcessMemory(processHandle, (LPCVOID)SPELL_CARD_ID, (LPVOID)&spellCardID, 1, NULL);
-
     unsigned int menuMode = 0;
     ReadProcessMemory(processHandle, (LPCVOID)MENU_MODE, (LPVOID)&menuMode, 4, NULL);
     // menu mode being 2 implies we're in-game
 
     unsigned int stageMode = 0;
     ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 4, NULL);
+
+    // SPELL_CARD_ID
+    ReadProcessMemory(processHandle,
+        (LPCVOID)(stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG ? SPELLPRAC_CARD_ID : SPELL_CARD_ID),
+        (LPVOID)&spellCardID, 4, NULL);
 
     if (menuMode != 2 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
     {
