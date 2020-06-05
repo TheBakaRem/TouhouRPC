@@ -76,9 +76,13 @@ private:
 		SCORE                  = 0x0160F510,
 		STAGE                  = 0x004E4850,
 		BOSS_APPEARANCE        = 0x018B89B8, // 1 byte
-		SPELL_CARD_ID          = 0x004EA678, // 1 byte
+		SPELL_CARD_ID          = 0x004EA678, // 4 bytes (even if only 1 byte is used, the game writes/reads it as dword)
+
+		// unlike the one above, this is set before the spell begins in spellprac
+		// (probably used by ECL script to tell which spell to even start)
+		SPELLPRAC_CARD_ID      = 0x0164D0B8, // 2 bytes
+
 		STAGE_FRAMES           = 0x0164D0AC,
-		BGM_STR_1              = 0x018BCB70, // set to stage music when normally playing, or the current music when in spell practice. in spell practice, "bgm/" is missing
 		MUSIC_ROOM_CURSOR      = 0x017CF53CL,
 		MUSIC_ROOM_TRACK       = 0x017CF540L, // the actually playing track
 
@@ -96,7 +100,7 @@ private:
 		STAGE_MODE_DEMO_FLAG = 2,
 		STAGE_MODE_PAUSE_FLAG = 4,
 		STAGE_MODE_REPLAY_FLAG = 8,
-		STAGE_MODE_SPELL_PRACTICE_FLAG = 128,
+		STAGE_MODE_SPELL_PRACTICE_FLAG = 0x4000,
 
 		PLAYER_POINTER         = 0x0160F510L, // score at offset 00 (int); lives at offset 74 (float); bombs at offset 80 (float); game overs offset 28 (byte)
 	};
