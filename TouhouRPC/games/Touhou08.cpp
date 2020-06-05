@@ -87,9 +87,17 @@ void Touhou08::readDataFromGameProcess()
     ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 4, NULL);
 
     // SPELL_CARD_ID
-    ReadProcessMemory(processHandle,
-        (LPCVOID)(stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG ? SPELLPRAC_CARD_ID : SPELL_CARD_ID),
-        (LPVOID)&spellCardID, 4, NULL);
+    // Technically this is not needed and it could just always read the id into a 4-byte var (initialized to 0 beforehand),
+    // but reading 2 byte values into a 2 byte variable and 4 byte values into 4 byte variables just... makes more sense.
+    UINT32 spellIdNormal;
+    UINT16 spellIdSpellprac;
+    if (stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG) {
+        ReadProcessMemory(processHandle, (LPVOID)SPELLPRAC_CARD_ID, &spellIdSpellprac, sizeof(spellIdSpellprac), NULL);
+        spellCardID = spellIdSpellprac;
+    } else {
+        ReadProcessMemory(processHandle, (LPVOID)SPELL_CARD_ID, &spellIdNormal, sizeof(spellIdNormal), NULL);
+        spellCardID = spellIdNormal;
+    }
 
     if (menuMode != 2 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
     {

@@ -80,7 +80,7 @@ private:
 
 		// unlike the one above, this is set before the spell begins in spellprac
 		// (probably used by ECL script to tell which spell to even start)
-		SPELLPRAC_CARD_ID      = 0x0164D0B8,
+		SPELLPRAC_CARD_ID      = 0x0164D0B8, // 2 bytes
 
 		STAGE_FRAMES           = 0x0164D0AC,
 		MUSIC_ROOM_CURSOR      = 0x017CF53CL,
