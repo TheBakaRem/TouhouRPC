@@ -86,8 +86,8 @@ void Touhou08::readDataFromGameProcess()
     ReadProcessMemory(processHandle, (LPCVOID)MENU_MODE, (LPVOID)&menuMode, 4, NULL);
     // menu mode being 2 implies we're in-game
 
-    char stageMode = 0;
-    ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 1, NULL);
+    unsigned int stageMode = 0;
+    ReadProcessMemory(processHandle, (LPCVOID)STAGE_MODE, (LPVOID)&stageMode, 4, NULL);
 
     if (menuMode != 2 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0)
     {

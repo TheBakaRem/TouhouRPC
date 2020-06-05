@@ -95,7 +95,7 @@ private:
 		STAGE_MODE_DEMO_FLAG = 2,
 		STAGE_MODE_PAUSE_FLAG = 4,
 		STAGE_MODE_REPLAY_FLAG = 8,
-		STAGE_MODE_SPELL_PRACTICE_FLAG = 128,
+		STAGE_MODE_SPELL_PRACTICE_FLAG = 0x4000,
 
 		PLAYER_POINTER         = 0x0160F510L, // score at offset 00 (int); lives at offset 74 (float); bombs at offset 80 (float); game overs offset 28 (byte)
 	};
