@@ -132,7 +132,7 @@ void Touhou15::readDataFromGameProcess()
 			{
 				DWORD practiceFlag = 0;
 				ReadProcessMemory(processHandle, (LPCVOID)PRACTICE_SELECT_FLAG, (LPVOID)&practiceFlag, 4, NULL);
-				state.mainMenuState = (practiceFlag != 0) ? MainMenuState::StagePractice : MainMenuState::GameStart;
+				state.mainMenuState = (practiceFlag != 0 && practiceFlag != 256) ? MainMenuState::StagePractice : MainMenuState::GameStart;
 			}
 			break;
 		}

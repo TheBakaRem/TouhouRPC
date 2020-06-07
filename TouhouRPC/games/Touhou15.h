@@ -78,7 +78,7 @@ private:
 		SCORE                      = 0x004E740CL,
 		GAMEOVERS                  = 0x004E7414L,
 		GAME_MODE                  = 0x004E9BDCL,
-		PRACTICE_SELECT_FLAG       = 0x004E7794L, // is set to 16 when practice selected, 32 when spell practice selected, and 0 otherwise, on main menu.
+		PRACTICE_SELECT_FLAG       = 0x004E7794L, // is set to 16 when practice selected, 32 when spell practice selected, 256 when Pointdevice mode selected, and 0 otherwise, on main menu.
 		BGM_STR                    = 0x00520224L,
 	};
 };
