@@ -1,5 +1,7 @@
 #include "TouhouMainGameBase.h"
 
+#include "../Log.h"
+
 TouhouMainGameBase::TouhouMainGameBase(PROCESSENTRY32W const& pe32)
 	: TouhouBase(pe32)
 {}

@@ -6,8 +6,9 @@
 #include <thread>
 #include <chrono>
 #include <csignal>
-#include "DiscordRPC.h"
 
+#include "Log.h"
+#include "DiscordRPC.h"
 #include "GameDetector.h"
 #include "games/TouhouBase.h"
 
@@ -21,7 +22,7 @@ DiscordRPC getDiscord(int64_t clientID) {
     DiscordRPC d = DiscordRPC(clientID);
 
     while (!d.isLaunched()) {
-        std::cout << "Discord connection failed. Retrying in 5 seconds..." << std::endl;
+        printLog(LOG_WARNING, "Connection to Discord has failed. Retrying in 5 seconds...");
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         d = DiscordRPC(clientID);
     }
@@ -33,7 +34,7 @@ std::unique_ptr<TouhouBase> getTouhouGame() {
     std::unique_ptr<TouhouBase> d = initializeTouhouGame();
 
     while (d == nullptr) {
-        std::cout << "No game found. Retrying in 5 seconds..." << std::endl;
+        printLog(LOG_WARNING, "No supported game has been found. Retrying in 5 seconds...");
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         d = initializeTouhouGame();
     }
@@ -70,6 +71,23 @@ bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord)
     return false;
 }
 
+// This code runs when a close event is detected (SIGINT or CTRL_CLOSE_EVENT)
+void programClose() {
+    printLog(LOG_INFO, "User asked to close the program. Exiting...");
+    logExit();
+}
+
+
+BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
+{
+    if (dwCtrlType == CTRL_CLOSE_EVENT)
+    {
+        programClose();
+        return TRUE;
+    }
+    return FALSE;
+}
+
 void startDisplay() {
     cout << "TOUHOU RPC - Discord Rich Presence status for Touhou games" << endl;
     cout << "Available on GitHub: https://www.github.com/FrDarky/TouhouRPC" << endl;
@@ -82,15 +100,24 @@ void startDisplay() {
     cout << endl;
 }
 
-int main()
+int main(int argc, char** argv)
 {
+
+    // Program start
     startDisplay();
 
     // SIGINT (Ctrl+C) detection
     std::signal(SIGINT, [](int) {
-        std::cout << "Quitting program now..." << std::endl;
+        programClose();
         std::exit(SIGINT);
         });
+
+    // Console closing detection
+    SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
+
+    // START LOG SYSTEM
+    logInit();
+    setLogLevel(LOG_DEBUG);
 
 
     // GET TOUHOU GAME
@@ -100,7 +127,8 @@ int main()
     DiscordRPC discord = getDiscord(touhouGame->getClientId());
     if (!discord.isLaunched())
     {
-        cout << "Discord is not started. Exiting..." << endl;
+        printLog(LOG_ERROR, "Discord is not running. Exiting program...");
+        logExit();
         exit(-1);
     }
     
@@ -149,7 +177,7 @@ int main()
             // Presence reset
             discord.closeApp();
 
-            std::cout << "Game closed. Trying to find another game to link to..." << endl << endl;
+            printLog(LOG_INFO, "Game closed. Program ready to find another supported game.");
             touhouGame = getTouhouGame();
 
             discord = getDiscord(touhouGame->getClientId());
@@ -159,7 +187,6 @@ int main()
     } while (!interrupted);
 
 
-    std::cout << "Terminating program..." << std::endl;
-
+    printLog(LOG_INFO, "Terminating program (reaching the end of the code).");
     return 0;
 }

@@ -194,6 +194,7 @@
     <ClCompile Include="includes\discord-rpc\types.cpp" />
     <ClCompile Include="includes\discord-rpc\user_manager.cpp" />
     <ClCompile Include="includes\discord-rpc\voice_manager.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="TouhouRPC.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +233,7 @@
     <ClInclude Include="includes\discord-rpc\types.h" />
     <ClInclude Include="includes\discord-rpc\user_manager.h" />
     <ClInclude Include="includes\discord-rpc\voice_manager.h" />
+    <ClInclude Include="Log.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+#include "Log.h"
+
 bool findRunningTouhouProcess(const ProcessNameGamePair processList[], PROCESSENTRY32W& processEntry, SupportedGame& processGame)
 {
 
@@ -68,31 +70,31 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
 
         case SupportedGame::Invalid:
         {
-            std::cout << "An unexpected error occured. If you see this message, then the game has been detected but isn't properly linked by the program." << std::endl;
-            std::cout << "Exiting now..." << std::endl;
+            printLog(LOG_ERROR, "An unexpected error occured. The game has been detected but isn't properly linked by the program. Exiting now...");
+            logExit();
             std::exit(-1);
             return {};
         }
         // no default, forces compile error when supported game added to enum but this switch isn't updated.
         }
 
-        std::cout << "Found running game: " << thGame->getGameName() << "." << std::endl;
-        std::wcout << "Found process: \"" << pe32.szExeFile << "\", PID: " << pe32.th32ProcessID << std::endl; // For debug
+        printLog(LOG_INFO, "Supported game found: %s", thGame->getGameName());
+        printLog(LOG_DEBUG, "Supported game process name: \"%S\", PID: %d", pe32.szExeFile, pe32.th32ProcessID);
 
         if (thGame->isLinkedToProcess())
         {
-            std::cout << "The program is now linked to the game. Starting Rich Presence display..." << std::endl;
+            printLog(LOG_INFO, "The program is now linked to the game. Starting Rich Presence display...");
             return thGame;
         }
         else
         {
-            std::cout << "Game linking has failed." << std::endl;
+            printLog(LOG_WARNING, "Failed linking the program to the game.");
             return {};
         }
     }
     else
     {
-        std::wcout << "Error: No supported game currently running." << std::endl;
+        printLog(LOG_WARNING, "No supported game currently running.");
         return {};
     }
 }

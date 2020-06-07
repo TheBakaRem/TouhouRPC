@@ -123,6 +123,9 @@
     <ClCompile Include="games\Touhou09.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\discord-rpc\achievement_manager.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="games\Touhou09.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

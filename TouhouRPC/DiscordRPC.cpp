@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <string>
 #include <chrono>
+
+#include "Log.h"
 using namespace std;
 
 // Constructor
@@ -14,14 +16,15 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 	auto response = discord::Core::Create(clientID, DiscordCreateFlags_NoRequireDiscord, &core);
 
 	if (response == discord::Result::NotInstalled) {
-		std::cout << "You do not have Discord installed on this PC. Install it before running this program." << std::endl;
+		printLog(LOG_ERROR, "You do not have the Discord client installed on this PC. Install it before running this program.");
+		logExit();
 		std::exit(-1);
 	}
 
 	this->core.reset(core);
 
 	if (!core) {
-		cout << "Failed to instantiate Discord!" << endl;
+		printLog(LOG_ERROR, "Failed to instantiate Discord!");
 		DiscordRPC::showError(response);
 		launched = false;
 	}
@@ -29,7 +32,7 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 		this->activity = discord::Activity{};
 		timeSinceLastSubmits.fill(MIN_TIME_BETWEEN_SUBMITS_MS);
 		resetActivityTimeStartedToNow(); // new discord app instance made so our "game time" starts from now
-		cout << "Discord instantiated successfully!" << endl;
+		printLog(LOG_INFO, "Discord instantiated successfully!");
 		launched = true;
 	}
 
@@ -73,7 +76,7 @@ void DiscordRPC::sendPresence(bool forceSend)
 	this->core->ActivityManager().UpdateActivity(this->activity, [](discord::Result result) {
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{
-			cout << "Failed updating activity!" << endl;
+			printLog(LOG_WARNING, "Failed updating RichPresence activity!");
 			DiscordRPC::showError(result);
 		}
 	});
@@ -86,7 +89,7 @@ void DiscordRPC::resetPresence()
 	this->core->ActivityManager().ClearActivity([](discord::Result result) {
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{
-			cout << "Failed clearing activity!" << endl;
+			printLog(LOG_WARNING, "Failed clearing RichPresence activity!");
 			DiscordRPC::showError(result);
 		}
 	});
@@ -134,5 +137,5 @@ void DiscordRPC::showError(discord::Result res)
 		errType.append(to_string(int(res)));
 	}
 
-	std::cerr << "Discord error: " << errType << std::endl;
+	printLog(LOG_WARNING, "Discord error code: %s", errType.c_str());
 }
