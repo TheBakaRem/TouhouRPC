@@ -28,7 +28,7 @@ enum class MainMenuState
 {
 	TitleScreen,
 	GameStart,
-	GameStart_Custom, // Used in scene-based games to display additional information on the profile like scenes completed and total score (ex: StB)
+	GameStart_Custom, // Used in scene-based games to display additional information on the profile like scenes completed and total score (e.g. StB)
 	ExtraStart,
 	StagePractice,
 	SpellPractice,
@@ -119,7 +119,8 @@ enum class SubCharacter
 
 enum class Difficulty
 {
-	Easy,
+	NoDifficultySettings = -1, // Used for games without difficulty settings (e.g. StB)
+	Easy = 0,
 	Normal,
 	Hard,
 	Lunatic,

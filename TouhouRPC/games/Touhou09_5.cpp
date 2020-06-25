@@ -83,7 +83,7 @@ void Touhou09_5::readDataFromGameProcess()
     // IN-GAME
     if (state.gameState == GameState::Playing_CustomResources) {
 
-        state.difficulty == Difficulty::Normal;
+        state.difficulty == Difficulty::NoDifficultySettings;
 
         // Read current game progress
         int playerState = 0;
@@ -131,10 +131,10 @@ std::string Touhou09_5::getCustomMenuResources() const
 
     // Resource string
     std::string resources = std::to_string(completedScenes);
-    resources.append(" completed scenes, ");
+    resources.append(" completed scenes / ");
 
     resources.append(scoreString);
-    resources.append(" combined photo score.");
+    resources.append(" combined photo score");
     return resources;
 }
 

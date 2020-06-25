@@ -508,6 +508,11 @@ void TouhouMainGameBase::setSmallImageInfo(std::string & icon, std::string & tex
 	text = "Difficulty: ";
 	switch (state.difficulty)
 	{
+	case Difficulty::NoDifficultySettings:
+	{
+		text.clear();
+		break;
+	}
 	case Difficulty::Easy:
 	{
 		icon = "easy", text.append("Easy");
