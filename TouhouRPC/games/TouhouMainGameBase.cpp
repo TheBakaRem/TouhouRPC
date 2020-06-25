@@ -58,7 +58,8 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		switch (state.mainMenuState)
 		{
 		case MainMenuState::TitleScreen: name = "On the title screen"; break;
-		case MainMenuState::GameStart: name = "Preparing to play"; break;
+		case MainMenuState::GameStart:
+		case MainMenuState::GameStart_Custom: name = "Preparing to play"; break;
 		case MainMenuState::ExtraStart: name = "Preparing to play Extra"; break;
 		case MainMenuState::StagePractice: name = "Selecting a stage to practice"; break;
 		case MainMenuState::SpellPractice: name = "Selecting a spell to practice"; break;
@@ -78,11 +79,28 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		break;
 	}
 
+	case GameState::Completed:
+	{
+		// Scene-based games: Completion of a scene
+		name = getStageName();
+		name.append(" completed!");
+		break;
+	}
+
+	case GameState::Fail:
+	{
+		// Scene-based games: Failing completion of a scene
+		name = getStageName();
+		name.append(" failed...");
+		break;
+	}
+
 	case GameState::Ending:
 	case GameState::StaffRoll:
 	{
 		name = ("Cleared with ");
 		name.append(createFormattedScore());
+		name.append(" points");
 		break;
 	}
 
@@ -155,6 +173,10 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 		{
 			info = getBGMName();
 		}
+		if (state.mainMenuState == MainMenuState::GameStart_Custom)
+		{
+			info = getCustomMenuResources();
+		}
 		break;
 	}
 
@@ -162,7 +184,16 @@ void TouhouMainGameBase::setGameInfo(std::string & info) const
 	case GameState::Ending:
 	case GameState::StaffRoll:
 	case GameState::GameOver:
+	case GameState::Fail:
 	{
+		break;
+	}
+
+	case GameState::Completed:
+	{
+		info = "Cleared with ";
+		info.append(createFormattedScore());
+		info.append(" points");
 		break;
 	}
 
@@ -519,6 +550,8 @@ bool TouhouMainGameBase::shouldShowCoverIcon() const
 {
 	return state.gameState != GameState::Playing
 		&& state.gameState != GameState::Playing_CustomResources
+		&& state.gameState != GameState::Completed
+		&& state.gameState != GameState::Fail
 		&& state.gameState != GameState::StagePractice
 		&& state.gameState != GameState::SpellPractice
 		&& state.gameState != GameState::WatchingReplay
@@ -528,7 +561,7 @@ bool TouhouMainGameBase::shouldShowCoverIcon() const
 std::string TouhouMainGameBase::createFormattedScore() const
 {
 	std::string scoreString = std::to_string((state.score * 10) + state.gameOvers);
-	size_t insertPosition = scoreString.length() - 3;
+	int insertPosition = scoreString.length() - 3; // Do NOT use size_t as it is unsigned and can't be properly tested in the loop after, causing std::out_of_range exceptions.
 	while (insertPosition > 0)
 	{
 		scoreString.insert(insertPosition, ",");

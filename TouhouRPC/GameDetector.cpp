@@ -58,6 +58,7 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
         case SupportedGame::PCB_7:      thGame = std::make_unique<Touhou07::Touhou07>(pe32); break;
         case SupportedGame::IN_8:       thGame = std::make_unique<Touhou08::Touhou08>(pe32); break;
         case SupportedGame::PoFV_9:     thGame = std::make_unique<Touhou09::Touhou09>(pe32); break;
+        case SupportedGame::StB_9_5:    thGame = std::make_unique<Touhou09_5::Touhou09_5>(pe32); break;
         case SupportedGame::MoF_10:     thGame = std::make_unique<Touhou10::Touhou10>(pe32); break;
         case SupportedGame::SA_11:      thGame = std::make_unique<Touhou11::Touhou11>(pe32); break;
         case SupportedGame::UFO_12:     thGame = std::make_unique<Touhou12::Touhou12>(pe32); break;

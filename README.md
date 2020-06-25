@@ -12,6 +12,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 07 - Perfect Cherry Blossom
 - Touhou 08 - Imperishable Night
 - Touhou 09 - Phantasmagoria of Flower View
+- Touhou 09.5 - Shoot the Bullet
 - Touhou 10 - Mountain of Faith
 - Touhou 11 - Subterranean Animism
 - Touhou 12 - Undefined Fantastic Object

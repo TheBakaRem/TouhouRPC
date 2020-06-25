@@ -11,6 +11,8 @@ enum class GameState
 	SpellPractice,
 	WatchingReplay,
 	GameOver,
+	Completed, // Used for scene-based games when succesfully completing a scene
+	Fail, // Used for scene-based games when failing to complete a scene
 	Ending,
 	StaffRoll,
 };
@@ -26,6 +28,7 @@ enum class MainMenuState
 {
 	TitleScreen,
 	GameStart,
+	GameStart_Custom, // Used in scene-based games to display additional information on the profile like scenes completed and total score (ex: StB)
 	ExtraStart,
 	StagePractice,
 	SpellPractice,
@@ -143,6 +146,7 @@ public:
 	virtual std::string const& getSpellCardName() const { return notSupported; } // spell card practice only
 	virtual std::string const& getBGMName() const { return notSupported; } // music room only
 
+	virtual std::string getCustomMenuResources() const { return notSupported; } // e.g. StB menu information. Adds details on the "info" line.
 	virtual std::string getCustomResources() const { return notSupported; } // e.g. LoLK Pointdevice retry counts. Will only replace when in lives/bombs display mode.
 
 	bool stateHasChangedSinceLastCheck() override;
