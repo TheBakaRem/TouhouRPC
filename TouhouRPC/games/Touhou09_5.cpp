@@ -39,11 +39,14 @@ void Touhou09_5::readDataFromGameProcess()
             // Game data pointer != 0, means we are in game
             state.gameState = GameState::Playing_CustomResources;
             state.character = Character::Aya;
+            state.difficulty == Difficulty::NoDifficultySettings;
         }
         break;
     case 2:
         // We are in a replay
         state.gameState = GameState::WatchingReplay;
+        state.character = Character::Aya;
+        state.difficulty == Difficulty::NoDifficultySettings;
         break;
     case 5:
         // We are selecting a scene
@@ -82,8 +85,6 @@ void Touhou09_5::readDataFromGameProcess()
 
     // IN-GAME
     if (state.gameState == GameState::Playing_CustomResources) {
-
-        state.difficulty == Difficulty::NoDifficultySettings;
 
         // Read current game progress
         int playerState = 0;
