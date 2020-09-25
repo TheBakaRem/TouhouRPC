@@ -7,6 +7,7 @@
 #include <chrono>
 #include <csignal>
 
+#include "Config.h"
 #include "Log.h"
 #include "DiscordRPC.h"
 #include "GameDetector.h"
@@ -15,6 +16,7 @@
 using namespace std;
 
 namespace {
+    Config* config = nullptr;
     volatile bool interrupted{ false };
 }
 
@@ -115,10 +117,24 @@ int main(int argc, char** argv)
     // Console closing detection
     SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
 
-    // START LOG SYSTEM
-    logInit();
-    setLogLevel(LOG_DEBUG);
+    // START CONFIG
+    config = Config::getInstance();
+    config->parseFile();
 
+
+    // START LOG SYSTEM
+    int activateLogFiles, logLevelConsole, logLevelLogFile;
+
+    config->getValue("activateLogFiles", activateLogFiles);
+    config->getValue("logLevelConsole", logLevelConsole);
+    config->getValue("logLevelLogFile", logLevelLogFile);
+
+
+    if (activateLogFiles) logInitialize(true);
+    else logInitialize(false);
+
+    setLogLevelConsole(logLevelConsole);
+    setLogLevelLogFile(logLevelLogFile);
 
     // GET TOUHOU GAME
     std::unique_ptr<TouhouBase> touhouGame = getTouhouGame();

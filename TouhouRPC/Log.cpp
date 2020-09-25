@@ -1,11 +1,14 @@
 #include "Log.h"
 
+
 // Globals
 
 const char* logLevelNames[]{ "DEBUG", "INFO", "WARNING", "ERROR" }; // Log level names
 
 static FILE* logFile = NULL;
-static int logLevel = LOG_INFO;										// Minimum level required to print the log to the console / log file.
+static int logLevelConsole = LOG_INFO;								// Minimum level required to print the log to the console.
+static int logLevelLogFile = LOG_INFO;								// Minimum level required to print the log to the log file.
+
 static wchar_t logFolderName[] = L"logs";							// Folder name
 
 static char logFileNameFormat[] = "logs/thrpc_log_%d%02d%02d-%02d%02d%02d.txt";	// Name style: thrpc_log_yyyymmdd-hhmmss.txt
@@ -14,7 +17,7 @@ static int isOpened = 0;	// Check if log file is opened or not (to not open two 
 
 // Print log
 void printLog(int level, const char* string, ...) {
-	if (level >= logLevel)
+	if (level >= logLevelConsole)
 	{
 
 		va_list args;
@@ -42,15 +45,27 @@ void printLog(int level, const char* string, ...) {
 
 
 
-// Set log level
-void setLogLevel(int level) {
-	if (level < LOG_DEBUG) logLevel = LOG_DEBUG;
-	else if (level > LOG_ERROR) logLevel = LOG_ERROR;
-	else logLevel = level;
+// Set log level for console
+void setLogLevelConsole(int level) {
+	if (level < LOG_DEBUG) logLevelConsole = LOG_DEBUG;
+	else if (level > LOG_ERROR) logLevelConsole = LOG_ERROR;
+	else logLevelConsole = level;
+}
+
+// Set log level for log files
+void setLogLevelLogFile(int level) {
+	if (level < LOG_DEBUG) logLevelLogFile = LOG_DEBUG;
+	else if (level > LOG_ERROR) logLevelLogFile = LOG_ERROR;
+	else logLevelLogFile = level;
+}
+
+void logInitialize(bool logFile)
+{
+	if (logFile) logInitializeLogFile();
 }
 
 // Log file initialization
-int logInit() {
+int logInitializeLogFile() {
 	if (isOpened == 1) return -2; // Don't create another log instance.
 
 	// Create a logs folder / Check if it already exists

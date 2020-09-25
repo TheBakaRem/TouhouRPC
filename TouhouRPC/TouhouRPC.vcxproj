@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="DiscordRPC.cpp" />
     <ClCompile Include="GameDetector.cpp" />
     <ClCompile Include="games\Touhou06.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="TouhouRPC.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
     <ClInclude Include="DiscordRPC.h" />
     <ClInclude Include="GameDetector.h" />
     <ClInclude Include="games\GameStrings.h" />
@@ -240,6 +242,10 @@
     <ClInclude Include="includes\discord-rpc\user_manager.h" />
     <ClInclude Include="includes\discord-rpc\voice_manager.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
