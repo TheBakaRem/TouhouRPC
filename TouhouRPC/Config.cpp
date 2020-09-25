@@ -75,8 +75,7 @@ bool Config::getValue(std::string key, std::string& value) {
 		return true;
 	}
 
-	// No value has been found, sets a default empty string
-	value = "";
+	// No value has been found
 	return false;
 }
 
@@ -88,8 +87,7 @@ bool Config::getValue(std::string key, int& value) {
 		return true;
 	}
 
-	// No value has been found, sets a default -1 value
-	value = -1;
+	// No value has been found
 	return false;
 }
 

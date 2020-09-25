@@ -122,7 +122,10 @@ int main(int argc, char** argv)
 
 
     // CONFIGURE LOG SYSTEM
-    int activateLogFiles, logLevelConsole, logLevelLogFile;
+
+    // Default values
+    int activateLogFiles = 1; // log files activated by default
+    int logLevelConsole, logLevelLogFile = Log::LOG_INFO; // LOG_INFO by default
 
     config->getValue("activateLogFiles", activateLogFiles);
     config->getValue("logLevelConsole", logLevelConsole);
