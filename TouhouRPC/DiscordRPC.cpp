@@ -16,15 +16,15 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 	auto response = discord::Core::Create(clientID, DiscordCreateFlags_NoRequireDiscord, &core);
 
 	if (response == discord::Result::NotInstalled) {
-		printLog(LOG_ERROR, "You do not have the Discord client installed on this PC. Install it before running this program.");
-		logExit();
+		logSystem->print(Log::LOG_ERROR, "You do not have the Discord client installed on this PC. Install it before running this program.");
+		logSystem->closeLogFile();
 		std::exit(-1);
 	}
 
 	this->core.reset(core);
 
 	if (!core) {
-		printLog(LOG_ERROR, "Failed to instantiate Discord!");
+		logSystem->print(Log::LOG_ERROR, "Failed to instantiate Discord!");
 		DiscordRPC::showError(response);
 		launched = false;
 	}
@@ -32,7 +32,7 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 		this->activity = discord::Activity{};
 		timeSinceLastSubmits.fill(MIN_TIME_BETWEEN_SUBMITS_MS);
 		resetActivityTimeStartedToNow(); // new discord app instance made so our "game time" starts from now
-		printLog(LOG_INFO, "Discord instantiated successfully!");
+		logSystem->print(Log::LOG_INFO, "Discord instantiated successfully!");
 		launched = true;
 	}
 
@@ -76,7 +76,7 @@ void DiscordRPC::sendPresence(bool forceSend)
 	this->core->ActivityManager().UpdateActivity(this->activity, [](discord::Result result) {
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{
-			printLog(LOG_WARNING, "Failed updating RichPresence activity!");
+			logSystem->print(Log::LOG_WARNING, "Failed updating RichPresence activity!");
 			DiscordRPC::showError(result);
 		}
 	});
@@ -89,7 +89,7 @@ void DiscordRPC::resetPresence()
 	this->core->ActivityManager().ClearActivity([](discord::Result result) {
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{
-			printLog(LOG_WARNING, "Failed clearing RichPresence activity!");
+			logSystem->print(Log::LOG_WARNING, "Failed clearing RichPresence activity!");
 			DiscordRPC::showError(result);
 		}
 	});
@@ -137,5 +137,5 @@ void DiscordRPC::showError(discord::Result res)
 		errType.append(to_string(int(res)));
 	}
 
-	printLog(LOG_WARNING, "Discord error code: %s", errType.c_str());
+	logSystem->print(Log::LOG_WARNING, "Discord error code: %s", errType.c_str());
 }

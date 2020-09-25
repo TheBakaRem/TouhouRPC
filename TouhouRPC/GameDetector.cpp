@@ -71,31 +71,31 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
 
         case SupportedGame::Invalid:
         {
-            printLog(LOG_ERROR, "An unexpected error occured. The game has been detected but isn't properly linked by the program. Exiting now...");
-            logExit();
+            logSystem->print(Log::LOG_ERROR, "An unexpected error occured. The game has been detected but isn't properly linked by the program. Exiting now...");
+            logSystem->closeLogFile();
             std::exit(-1);
             return {};
         }
         // no default, forces compile error when supported game added to enum but this switch isn't updated.
         }
 
-        printLog(LOG_INFO, "Supported game found: %s", thGame->getGameName());
-        printLog(LOG_DEBUG, "Supported game process name: \"%S\", PID: %d", pe32.szExeFile, pe32.th32ProcessID);
+        logSystem->print(Log::LOG_INFO, "Supported game found: %s", thGame->getGameName());
+        logSystem->print(Log::LOG_DEBUG, "Supported game process name: \"%S\", PID: %d", pe32.szExeFile, pe32.th32ProcessID);
 
         if (thGame->isLinkedToProcess())
         {
-            printLog(LOG_INFO, "The program is now linked to the game. Starting Rich Presence display...");
+            logSystem->print(Log::LOG_INFO, "The program is now linked to the game. Starting Rich Presence display...");
             return thGame;
         }
         else
         {
-            printLog(LOG_WARNING, "Failed linking the program to the game.");
+            logSystem->print(Log::LOG_WARNING, "Failed linking the program to the game.");
             return {};
         }
     }
     else
     {
-        printLog(LOG_WARNING, "No supported game currently running.");
+        logSystem->print(Log::LOG_WARNING, "No supported game currently running.");
         return {};
     }
 }

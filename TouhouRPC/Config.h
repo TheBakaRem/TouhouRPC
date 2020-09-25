@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 
+
 class Config
 {
 	// Singleton class used to parse and read configuration options.
@@ -48,3 +49,6 @@ private:
 	Config& operator=(const Config& config) {} // Assignment operator
 };
 
+
+// Global instance pointer
+extern Config* config;

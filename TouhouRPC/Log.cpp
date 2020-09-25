@@ -1,75 +1,65 @@
 #include "Log.h"
 
+// Default static values
 
-// Globals
+FILE* Log::p_logFile = nullptr;
+Log* Log::p_instance = nullptr;
+bool Log::logFileOpened = false;
+int Log::logLevelConsole = Log::LOG_INFO;
+int Log::logLevelLogFile = Log::LOG_INFO;
 
-const char* logLevelNames[]{ "DEBUG", "INFO", "WARNING", "ERROR" }; // Log level names
+const char* Log::logLevelNames[]{ "DEBUG", "INFO", "WARNING", "ERROR" }; // Log level names
+const wchar_t Log::logFolderName[] = L"logs";							 // Folder name
+const char Log::logFileNameFormat[] = "logs/thrpc_log_%d%02d%02d-%02d%02d%02d.txt";	// Name style: thrpc_log_yyyymmdd-hhmmss.txt
 
-static FILE* logFile = NULL;
-static int logLevelConsole = LOG_INFO;								// Minimum level required to print the log to the console.
-static int logLevelLogFile = LOG_INFO;								// Minimum level required to print the log to the log file.
 
-static wchar_t logFolderName[] = L"logs";							// Folder name
+// CONSTRUCTOR
+Log::Log() {}
 
-static char logFileNameFormat[] = "logs/thrpc_log_%d%02d%02d-%02d%02d%02d.txt";	// Name style: thrpc_log_yyyymmdd-hhmmss.txt
+// DESTRUCTOR
+Log::~Log() {}
 
-static int isOpened = 0;	// Check if log file is opened or not (to not open two files at the same time)
+// Get instance (used for object creation and to keep the class as singleton)
+Log* Log::getInstance() {
+	if (p_instance == nullptr) p_instance = new Log();
+	return p_instance;
+}
 
-// Print log
-void printLog(int level, const char* string, ...) {
-	if (level >= logLevelConsole)
-	{
+// Prints to console and log file at a specified level.
+void Log::print(int level, const char* message, ...) const {
+	
+	va_list args;
+	va_start(args, message);
 
-		va_list args;
-		va_start(args, string);
+	time_t currTime = time(NULL);
+	struct tm currTm;
+	localtime_s(&currTm, &currTime);
 
-		time_t currTime = time(NULL);
-		struct tm currTm;
-		localtime_s(&currTm, &currTime);
-		
-		// Print in log file if it is opened
-		if (isOpened) {
-			fprintf_s(logFile, "[%02d:%02d:%02d] %s: ", currTm.tm_hour, currTm.tm_min, currTm.tm_sec, logLevelNames[level]);
-			vfprintf_s(logFile, string, args);
-			fprintf_s(logFile, "\n");
-		}
-
-		// Print in console
-		fprintf_s(stdout, "[%02d:%02d:%02d] %s: ", currTm.tm_hour, currTm.tm_min, currTm.tm_sec, logLevelNames[level]);
-		vfprintf_s(stdout, string, args);
-		fprintf_s(stdout, "\n");
-		
-		va_end(args);
+	// Print in log file if it is opened
+	if (logFileOpened && level >= logLevelLogFile) {
+		fprintf_s(p_logFile, "[%02d:%02d:%02d] %s: ", currTm.tm_hour, currTm.tm_min, currTm.tm_sec, logLevelNames[level]);
+		vfprintf_s(p_logFile, message, args);
+		fprintf_s(p_logFile, "\n");
 	}
+
+	// Print in console
+	if (level >= logLevelConsole) {
+		fprintf_s(stdout, "[%02d:%02d:%02d] %s: ", currTm.tm_hour, currTm.tm_min, currTm.tm_sec, logLevelNames[level]);
+		vfprintf_s(stdout, message, args);
+		fprintf_s(stdout, "\n");
+	}
+
+	va_end(args);
 }
 
-
-
-// Set log level for console
-void setLogLevelConsole(int level) {
-	if (level < LOG_DEBUG) logLevelConsole = LOG_DEBUG;
-	else if (level > LOG_ERROR) logLevelConsole = LOG_ERROR;
-	else logLevelConsole = level;
-}
-
-// Set log level for log files
-void setLogLevelLogFile(int level) {
-	if (level < LOG_DEBUG) logLevelLogFile = LOG_DEBUG;
-	else if (level > LOG_ERROR) logLevelLogFile = LOG_ERROR;
-	else logLevelLogFile = level;
-}
-
-void logInitialize(bool logFile)
-{
-	if (logFile) logInitializeLogFile();
-}
-
-// Log file initialization
-int logInitializeLogFile() {
-	if (isOpened == 1) return -2; // Don't create another log instance.
+// Open log file
+int Log::openLogFile() {
+	if (logFileOpened) return LOGFILE_ALREADY_OPENED; // Don't recreate another log file if not needed.
 
 	// Create a logs folder / Check if it already exists
 	if (CreateDirectory(logFolderName, NULL) || ERROR_ALREADY_EXISTS == GetLastError()) {
+
+		// Create the log file itself
 		char logFileName[50];
 
 		time_t currTime = time(NULL);
@@ -77,16 +67,16 @@ int logInitializeLogFile() {
 		localtime_s(&currTm, &currTime);
 
 		sprintf_s(logFileName, logFileNameFormat, currTm.tm_year + 1900, currTm.tm_mon + 1, currTm.tm_mday, currTm.tm_hour, currTm.tm_min, currTm.tm_sec); // Format log file name
-		fopen_s(&logFile, logFileName, "w");
+		fopen_s(&p_logFile, logFileName, "w");
 
-		if (logFile != NULL) {
+		if (p_logFile != NULL) {
 			std::cout << "Log file created! Logs for this session are available in " << logFileName << std::endl;
-			
-			fprintf_s(logFile, "TOUHOURPC LOG FILE : %02d/%02d/%d %02d:%02d:%02d\n\n", currTm.tm_mday, currTm.tm_mon + 1, currTm.tm_year + 1900, currTm.tm_hour, currTm.tm_min, currTm.tm_sec);
 
-			isOpened = 1;
+			fprintf_s(p_logFile, "TOUHOURPC LOG FILE : %02d/%02d/%d %02d:%02d:%02d\n\n", currTm.tm_mday, currTm.tm_mon + 1, currTm.tm_year + 1900, currTm.tm_hour, currTm.tm_min, currTm.tm_sec);
 
-			return 0;
+			logFileOpened = true;
+
+			return LOGFILE_SUCCESS;
 		}
 		else {
 			std::cout << "An error occured while creating the log file." << std::endl;
@@ -98,21 +88,45 @@ int logInitializeLogFile() {
 	}
 
 	std::cout << "The program will continue running, but the displayed logs won't be saved in a log file." << std::endl;
-	return -1;
+	return LOGFILE_ERROR;
 }
 
-// Log file closing
-void logExit() {
-	if (isOpened == 0) return; // Don't exit log if it's not needed.
+// Close log file
+int Log::closeLogFile() {
+	if (!logFileOpened) return LOGFILE_ALREADY_CLOSED; // Don't close log file if it's not opened.
 
 	time_t currTime = time(NULL);
 	struct tm currTm;
 	localtime_s(&currTm, &currTime);
 
-	fprintf_s(logFile, "\nLOG CLOSED :  %02d/%02d/%d %02d:%02d:%02d\n", currTm.tm_mday, currTm.tm_mon + 1, currTm.tm_year + 1900, currTm.tm_hour, currTm.tm_min, currTm.tm_sec);
-	std::cout << "Log file has been closed." << std::endl;
+	fprintf_s(p_logFile, "\nLOG CLOSED :  %02d/%02d/%d %02d:%02d:%02d\n", currTm.tm_mday, currTm.tm_mon + 1, currTm.tm_year + 1900, currTm.tm_hour, currTm.tm_min, currTm.tm_sec);
 
-	fclose(logFile);
-	logFile = NULL;
-	isOpened = 0;
+	if (fclose(p_logFile)) {
+		// Error in fclose
+		std::cout << "An error occured while closing the log file." << std::endl;
+		return LOGFILE_ERROR;
+	}
+
+	p_logFile = NULL;
+	logFileOpened = 0;
+
+	std::cout << "Log file has been closed." << std::endl;
+	return LOGFILE_SUCCESS;
 }
+
+// Set the console's log level
+void Log::setLogLevelConsole(int level) {
+	if (level < LOG_DEBUG) logLevelConsole = LOG_DEBUG;
+	else if (level > LOG_ERROR) logLevelConsole = LOG_ERROR;
+	else logLevelConsole = level;
+}
+
+//Set the log file's log level
+void Log::setLogLevelLogFile(int level) {
+	if (level < LOG_DEBUG) logLevelLogFile = LOG_DEBUG;
+	else if (level > LOG_ERROR) logLevelLogFile = LOG_ERROR;
+	else logLevelLogFile = level;
+}
+
+// Global definition
+Log* logSystem = Log::getInstance();

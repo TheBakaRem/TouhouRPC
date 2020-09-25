@@ -16,15 +16,15 @@
 using namespace std;
 
 namespace {
-    Config* config = nullptr;
     volatile bool interrupted{ false };
 }
 
 DiscordRPC getDiscord(int64_t clientID) {
     DiscordRPC d = DiscordRPC(clientID);
 
+
     while (!d.isLaunched()) {
-        printLog(LOG_WARNING, "Connection to Discord has failed. Retrying in 5 seconds...");
+        logSystem->print(Log::LOG_WARNING, "Connection to Discord has failed. Retrying in 5 seconds...");
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         d = DiscordRPC(clientID);
     }
@@ -36,7 +36,7 @@ std::unique_ptr<TouhouBase> getTouhouGame() {
     std::unique_ptr<TouhouBase> d = initializeTouhouGame();
 
     while (d == nullptr) {
-        printLog(LOG_WARNING, "No supported game has been found. Retrying in 5 seconds...");
+        logSystem->print(Log::LOG_WARNING, "No supported game has been found. Retrying in 5 seconds...");
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         d = initializeTouhouGame();
     }
@@ -75,14 +75,14 @@ bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord)
 
 // This code runs when a close event is detected (SIGINT or CTRL_CLOSE_EVENT)
 void programClose() {
-    printLog(LOG_INFO, "User asked to close the program. Exiting...");
-    logExit();
+    logSystem->print(Log::LOG_INFO, "User asked to close the program. Exiting...");
+    logSystem->closeLogFile();
 }
 
 
 BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 {
-    if (dwCtrlType == CTRL_CLOSE_EVENT)
+    if ((int)dwCtrlType == CTRL_CLOSE_EVENT)
     {
         programClose();
         return TRUE;
@@ -117,24 +117,21 @@ int main(int argc, char** argv)
     // Console closing detection
     SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
 
-    // START CONFIG
-    config = Config::getInstance();
+    // PARSE CONFIG
     config->parseFile();
 
 
-    // START LOG SYSTEM
+    // CONFIGURE LOG SYSTEM
     int activateLogFiles, logLevelConsole, logLevelLogFile;
 
     config->getValue("activateLogFiles", activateLogFiles);
     config->getValue("logLevelConsole", logLevelConsole);
     config->getValue("logLevelLogFile", logLevelLogFile);
 
+    if (activateLogFiles) logSystem->openLogFile();
 
-    if (activateLogFiles) logInitialize(true);
-    else logInitialize(false);
-
-    setLogLevelConsole(logLevelConsole);
-    setLogLevelLogFile(logLevelLogFile);
+    logSystem->setLogLevelConsole(logLevelConsole);
+    logSystem->setLogLevelLogFile(logLevelLogFile);
 
     // GET TOUHOU GAME
     std::unique_ptr<TouhouBase> touhouGame = getTouhouGame();
@@ -143,8 +140,8 @@ int main(int argc, char** argv)
     DiscordRPC discord = getDiscord(touhouGame->getClientId());
     if (!discord.isLaunched())
     {
-        printLog(LOG_ERROR, "Discord is not running. Exiting program...");
-        logExit();
+        logSystem->print(Log::LOG_ERROR, "Discord is not running. Exiting program...");
+        logSystem->closeLogFile();
         exit(-1);
     }
     
@@ -193,7 +190,7 @@ int main(int argc, char** argv)
             // Presence reset
             discord.closeApp();
 
-            printLog(LOG_INFO, "Game closed. Program ready to find another supported game.");
+            logSystem->print(Log::LOG_INFO, "Game closed. Ready to find another supported game.");
             touhouGame = getTouhouGame();
 
             discord = getDiscord(touhouGame->getClientId());
@@ -203,6 +200,6 @@ int main(int argc, char** argv)
     } while (!interrupted);
 
 
-    printLog(LOG_INFO, "Terminating program (reaching the end of the code).");
+    logSystem->print(Log::LOG_INFO, "Terminating program (reaching the end of the code).");
     return 0;
 }

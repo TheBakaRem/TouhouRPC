@@ -114,3 +114,5 @@ void Config::dumpValues(std::ostream& ostream) {
 }
 
 
+// Global definition
+Config* config = Config::getInstance();

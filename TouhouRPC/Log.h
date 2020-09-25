@@ -5,43 +5,70 @@
 #include <windows.h>
 #include <iostream>
 
+class Log {
+    // Singleton class used to setup the log files and prints to console/log files.
+public:
+    // Enums
+    /* Log levels */
+    enum { LOG_DEBUG = 0, LOG_INFO, LOG_WARNING, LOG_ERROR };
 
-// Enums
-enum { LOG_DEBUG = 0, LOG_INFO, LOG_WARNING, LOG_ERROR}; // Different log levels
+    /* openLogFile / closeLogFile return values */
+    enum { LOGFILE_SUCCESS = 0, LOGFILE_ERROR = -1, LOGFILE_ALREADY_OPENED = 1, LOGFILE_ALREADY_CLOSED = 2 };
 
-enum { LOGINIT_SUCCESS = 0, LOGINIT_ERROR = -1, LOGINIT_ALREADY_OPENED = 1}; // logInitializeLogFile return values
 
-// Functions
+    /** Returns a unique instance of the object.
+      * Also responsible for the object construction.
+    */
+    static Log* getInstance();
 
-/** Print to the log file and the console with a specified logging level. 
-  * String formatting is the same as printf.
-  * If the log file isn't initialized, we only print to the console.
-*/
-void printLog(int level, const char* string, ...);
+    /** Prints to console and log file at a specified level.
+      * String formatting is the same as printf.
+      * Only prints to a location if the level of the message is greater or equal to the location's log level.
+      * Doesn't print to log file if the log file is closed.
+    */
+    void print(int level, const char* message, ...) const;
 
-/** Set the logging level for terminal.
-  * Logs with a level strictly lower than the currently set level will not be displayed.
-*/
-void setLogLevelConsole(int level);
+    /** Opens a new log file and returns LOGFILE_SUCCESS (0) on success.
+      * If the logs folder doesn't exist, it is automatically created.
+      * If a log file is already opened, returns LOGFILE_ALREADY_OPENED (1)
+      * If another error occured, returns LOGFILE_ERROR (-1)
+    */
+    int openLogFile();
 
-/** Set the logging level for log files.
-  * Logs with a level strictly lower than the currently set level will not be displayed.
-*/
-void setLogLevelLogFile(int level);
+    /** Closes the currently opened log file and returns LOGFILE_SUCCESS (0) on success
+      * If the log file is already closed or was never opened, returns LOGFILE_ALREADY_CLOSED (2)
+      * If another error occured, returns LOGFILE_ERROR (-1)
+    */
+    int closeLogFile();
 
-/** Initialize the log system.
-  * if logFile is set to true, a log file will be created at the same time.
-  * if not, the display will only go to the console.
-*/
-void logInitialize(bool logFile = true);
+    /** Sets the log level for the console
+    */
+    void setLogLevelConsole(int level);
 
-/** Initializes the log file.
-  * Returns 0 if the log file is created.
-  * Returns 1 if a log file is already opened (nothing is changed in that case).
-  * Returns -1 if the log file / log folder creation caused an error.
-*/
-int logInitializeLogFile();
+    /** Sets the log level for the log file
+    */
+    void setLogLevelLogFile(int level);
 
-/** Closes the log file.
-*/
-void logExit();
+
+
+private:
+    static Log* p_instance; // Pointer to the current Log object
+    static bool logFileOpened; // Check if a log file is opened
+    static FILE* p_logFile; // Pointer to the log file
+    static int logLevelConsole; // Current console log level
+    static int logLevelLogFile; // Current log file log level
+
+    static const char* logLevelNames[];    // Log level names (used for display)
+    static const wchar_t logFolderName[];  // Folder name where logs are stored
+    static const char logFileNameFormat[]; // Log filename format (to keep log names similar)
+
+    // Private definitions to keep the class singleton
+    Log(); // Default constructor
+    ~Log(); // Destructor
+    Log(const Log& log) {} // Copy constructor
+    Log& operator=(const Log& log) {} // Assignment operator
+};
+
+
+// Global instance pointer
+extern Log* logSystem;
