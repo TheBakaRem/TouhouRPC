@@ -98,7 +98,7 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 
 void startDisplay() {
     cout << "TOUHOU RPC - Discord Rich Presence status for Touhou games - Version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << endl;
-    cout << "Available on GitHub:\x1B[36m https://www.github.com/FrDarky/TouhouRPC \033[0m" << endl;
+    cout << "Available on GitHub: https://www.github.com/FrDarky/TouhouRPC" << endl;
     cout << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer." << endl;
     cout << "The program automatically detects when you change betwen supported games." << endl;
     cout << "You can close this program at any time by pressing (Ctrl+C)." << endl;
