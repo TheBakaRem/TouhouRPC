@@ -1,6 +1,11 @@
 // TouhouRPC.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
 //
 
+// Version definition
+#define VERSION_MAJOR 1
+#define VERSION_MINOR 2
+#define VERSION_REVISION 0
+
 // Includes
 #include <iostream>
 #include <thread>
@@ -20,12 +25,12 @@ namespace {
 }
 
 DiscordRPC getDiscord(int64_t clientID) {
+    logSystem->print(Log::LOG_INFO, "Connecting to the Discord client...");
+    
     DiscordRPC d = DiscordRPC(clientID);
 
-
     while (!d.isLaunched()) {
-        logSystem->print(Log::LOG_WARNING, "Connection to Discord has failed. Retrying in 5 seconds...");
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(3000));
         d = DiscordRPC(clientID);
     }
 
@@ -33,10 +38,11 @@ DiscordRPC getDiscord(int64_t clientID) {
 }
 
 std::unique_ptr<TouhouBase> getTouhouGame() {
+    logSystem->print(Log::LOG_INFO, "Waiting for a supported game to start...");
+
     std::unique_ptr<TouhouBase> d = initializeTouhouGame();
 
     while (d == nullptr) {
-        logSystem->print(Log::LOG_WARNING, "No supported game has been found. Retrying in 5 seconds...");
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         d = initializeTouhouGame();
     }
@@ -91,13 +97,14 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 }
 
 void startDisplay() {
-    cout << "TOUHOU RPC - Discord Rich Presence status for Touhou games" << endl;
-    cout << "Available on GitHub: https://www.github.com/FrDarky/TouhouRPC" << endl;
+    cout << "TOUHOU RPC - Discord Rich Presence status for Touhou games - Version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << endl;
+    cout << "Available on GitHub:\x1B[36m https://www.github.com/FrDarky/TouhouRPC \033[0m" << endl;
     cout << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer." << endl;
     cout << "The program automatically detects when you change betwen supported games." << endl;
     cout << "You can close this program at any time by pressing (Ctrl+C)." << endl;
-    cout << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB) 10, (MoF), 11 (SA), 12 (UFO), 12.8 (GFW), 13 (TD), 14 (DDC), 15 (LoLK), 16(HSiFS), 17 (WBaWC)." << endl;
+    cout << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB), 10 (MoF), 11 (SA), 12 (UFO), 12.8 (GFW), 13 (TD), 14 (DDC), 15 (LoLK), 16 (HSiFS), 17 (WBaWC)." << endl;
     cout << endl;
+    
     cout << "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!" << endl;
     cout << endl;
 }
@@ -148,6 +155,7 @@ int main(int argc, char** argv)
         exit(-1);
     }
     
+    logSystem->print(Log::LOG_INFO, "Starting Discord Rich Presence display...");
     
     // MAIN LOOP
 
@@ -194,9 +202,11 @@ int main(int argc, char** argv)
             discord.closeApp();
 
             logSystem->print(Log::LOG_INFO, "Game closed. Ready to find another supported game.");
+            
             touhouGame = getTouhouGame();
-
             discord = getDiscord(touhouGame->getClientId());
+
+            logSystem->print(Log::LOG_INFO, "Starting Discord Rich Presence display...");
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(msBetweenTicks));
@@ -204,5 +214,6 @@ int main(int argc, char** argv)
 
 
     logSystem->print(Log::LOG_INFO, "Terminating program (reaching the end of the code).");
+    logSystem->closeLogFile();
     return 0;
 }

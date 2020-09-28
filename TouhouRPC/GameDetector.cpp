@@ -84,7 +84,7 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
 
         if (thGame->isLinkedToProcess())
         {
-            logSystem->print(Log::LOG_INFO, "The program is now linked to the game. Starting Rich Presence display...");
+            logSystem->print(Log::LOG_INFO, "The program is now linked to the game.");
             return thGame;
         }
         else

@@ -24,7 +24,7 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 	this->core.reset(core);
 
 	if (!core) {
-		logSystem->print(Log::LOG_ERROR, "Failed to instantiate Discord!");
+		logSystem->print(Log::LOG_WARNING, "Failed to instantiate Discord!");
 		DiscordRPC::showError(response);
 		launched = false;
 	}
@@ -32,7 +32,7 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 		this->activity = discord::Activity{};
 		timeSinceLastSubmits.fill(MIN_TIME_BETWEEN_SUBMITS_MS);
 		resetActivityTimeStartedToNow(); // new discord app instance made so our "game time" starts from now
-		logSystem->print(Log::LOG_INFO, "Discord instantiated successfully!");
+		logSystem->print(Log::LOG_INFO, "Discord client instantiated successfully!");
 		launched = true;
 	}
 
