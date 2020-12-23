@@ -76,6 +76,9 @@ enum class Character
 	Medicine,
 	Komachi,
 	Eiki,
+
+	// ISC
+	Seija,
 };
 
 enum class SubCharacter

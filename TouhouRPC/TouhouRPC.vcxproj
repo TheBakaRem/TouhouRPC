@@ -181,6 +181,7 @@
     <ClCompile Include="games\Touhou12_8.cpp" />
     <ClCompile Include="games\Touhou13.cpp" />
     <ClCompile Include="games\Touhou14.cpp" />
+    <ClCompile Include="games\Touhou14_3.cpp" />
     <ClCompile Include="games\Touhou15.cpp" />
     <ClCompile Include="games\Touhou16.cpp" />
     <ClCompile Include="games\Touhou17.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="games\Touhou12_8.h" />
     <ClInclude Include="games\Touhou13.h" />
     <ClInclude Include="games\Touhou14.h" />
+    <ClInclude Include="games\Touhou14_3.h" />
     <ClInclude Include="games\Touhou15.h" />
     <ClInclude Include="games\Touhou16.h" />
     <ClInclude Include="games\Touhou17.h" />
@@ -242,7 +244,6 @@
     <ClInclude Include="includes\discord-rpc\user_manager.h" />
     <ClInclude Include="includes\discord-rpc\voice_manager.h" />
     <ClInclude Include="Log.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />
