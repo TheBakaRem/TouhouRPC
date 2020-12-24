@@ -141,17 +141,52 @@ std::string Touhou14_3::getCustomMenuResources() const
 
 }
 
-// Custom in-game resources
-std::string Touhou14_3::getCustomResources() const
+// Change how the Playing_CustomResources is handled for this game.
+void Touhou14_3::setGameName(std::string& name) const
 {
-    std::string res = "Boss not implemented.";
-    // TODO: Add boss and spell info.
-    return res;
+    if (state.gameState != GameState::Playing_CustomResources)
+    {
+        // We just want to change how Playing_CustomResources is handled.
+        // The rest is unchanged.
+        TouhouMainGameBase::setGameName(name);
+        return;
+    }
+
+    name.clear();
+    // We show the stage number (day-scene) and it's name
+    name.append(getStageName());
+
+    name.append(" - ");
+    name.append("Stage name not implemented."); // TODO: Replace this by the stage's name in GameStrings.h
+}
+
+// Change how the Playing_CustomResources is handled for this game.
+void Touhou14_3::setGameInfo(std::string& info) const
+{
+    if (state.gameState != GameState::Playing_CustomResources)
+    {
+        // We just want to change how Playing_CustomResources is handled.
+        // The rest is unchanged.
+        TouhouMainGameBase::setGameInfo(info);
+        return;
+    }
+
+    info.clear();
+    info.append("In a fight.");
+    // TODO: Add boss and spell info from GameStrings.h
 }
 
 void Touhou14_3::setLargeImageInfo(std::string& icon, std::string& text) const
 {
     icon.clear(), text.clear();
+
+    // In the scene selection menu (we show Seija's image here since she's not shown anywhere else)
+    if (state.mainMenuState == MainMenuState::GameStart_Custom)
+    {
+        icon.append("seija");
+        text.append("Seija");
+        return;
+    }
 
     // In-menu check
     if (shouldShowCoverIcon())
@@ -159,6 +194,8 @@ void Touhou14_3::setLargeImageInfo(std::string& icon, std::string& text) const
         icon.append("cover");
         return;
     }
+
+
 
     // In-game
     text.append("Main: ");
@@ -267,6 +304,7 @@ void Touhou14_3::setSmallImageInfo(std::string& icon, std::string& text) const
         }
     }
 }
+
 
 // Custom stage name, because the game operates with a day-scene style.
 std::string Touhou14_3::getStageName() const

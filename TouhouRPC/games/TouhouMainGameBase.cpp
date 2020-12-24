@@ -378,6 +378,13 @@ void TouhouMainGameBase::setLargeImageInfo(std::string & icon, std::string & tex
 		icon.append("eiki"), text.append("Eiki");
 		break;
 	}
+
+	// ISC
+	case Character::Seija:
+	{
+		icon.append("seija"), text.append("Seija");
+		break;
+	}
 	}
 
 	switch (state.subCharacter)

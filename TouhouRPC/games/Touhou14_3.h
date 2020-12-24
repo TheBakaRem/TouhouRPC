@@ -40,11 +40,11 @@ public:
 	std::string const& getBGMName() const override;
 
 	std::string getCustomMenuResources() const override; // Menu custom display
-	std::string getCustomResources() const override; // In-game custom display
 
 	void setLargeImageInfo(std::string& icon, std::string& text) const override; // Overrides the large image info to show main item
 	void setSmallImageInfo(std::string& icon, std::string& text) const override; // Overrides the small image info to show sub item
-
+	void setGameName(std::string& name) const override;
+	void setGameInfo(std::string& info) const override;
 
 protected:
 	// For score displays
