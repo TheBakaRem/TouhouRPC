@@ -58,7 +58,7 @@ void Touhou14_3::readDataFromGameProcess()
             // We are in the music room
             state.gameState = GameState::MainMenu;
             state.mainMenuState = MainMenuState::MusicRoom;
-            // NOTE: Still need to check which music is being played.
+            ReadProcessMemory(processHandle, (LPCVOID)MUSIC_FILE_PLAYED, (LPVOID)&bgm_playing, 20, NULL);
             break;
         case 7:
             // We are selecting a replay
@@ -293,6 +293,24 @@ std::string Touhou14_3::getStageName() const
         return name;
     }
     else { return ""; }
+}
+
+// Music name
+std::string const& Touhou14_3::getBGMName() const
+{    
+    std::string fileName(bgm_playing);
+    if (bgm_playing[0] == 'b') fileName = fileName.substr(4); // Remove the "bgm/" part if it exists
+
+    if      (fileName.rfind("th143_01", 0) == 0) { return th143_musicNames[0]; }
+    else if (fileName.rfind("th143_02", 0) == 0) { return th143_musicNames[1]; }
+    else if (fileName.rfind("th143_05", 0) == 0) { return th143_musicNames[2]; }
+    else if (fileName.rfind("th143_06", 0) == 0) { return th143_musicNames[3]; }
+    else if (fileName.rfind("th143_07", 0) == 0) { return th143_musicNames[4]; }
+    else if (fileName.rfind("th14_03", 0) == 0)  { return th143_musicNames[5]; }
+    else if (fileName.rfind("th14_12", 0) == 0)  { return th143_musicNames[6]; }
+    else if (fileName.rfind("th14_10", 0) == 0)  { return th143_musicNames[7]; }
+    else if (fileName.rfind("th125_06", 0) == 0) { return th143_musicNames[8]; }
+    else { return notSupported; } // In case an error occurs
 }
 
 }

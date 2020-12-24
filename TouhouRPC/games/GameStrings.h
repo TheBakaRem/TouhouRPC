@@ -774,6 +774,19 @@ const std::string th14_musicNames[20] = {
 	"Primordial Beat ~ Pristine Beat",
 };
 
+// Touhou 14.3 Music
+const std::string th143_musicNames[9] = {
+	"Raise the Signal Fire of Cheating",
+	"Cheat Against the Impossible Danmaku",
+	"Midnight Spell Card",
+	"Romantic Escape Flight",
+	"Eternal Transient Reign",
+	"Mermaid from the Uncharted Land",
+	"Reverse Ideology",
+	"Illusionary Joururi",
+	"Youkai Mountain ~ Mysterious Mountain",
+};
+
 // Touhou 15 Music
 const std::string th15_musicNames[18] = {
 	"unused",
