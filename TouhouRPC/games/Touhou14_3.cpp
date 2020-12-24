@@ -154,10 +154,13 @@ void Touhou14_3::setGameName(std::string& name) const
 
     name.clear();
     // We show the stage number (day-scene) and it's name
-    name.append(getStageName());
+    if (stage >= 1 && stage <= 75)
+    {
+        name.append(getStageName());
 
-    name.append(" - ");
-    name.append("Stage name not implemented."); // TODO: Replace this by the stage's name in GameStrings.h
+        name.append(": ");
+        name.append(th143_stageNames[stage]);
+    }
 }
 
 // Change how the Playing_CustomResources is handled for this game.
@@ -172,8 +175,8 @@ void Touhou14_3::setGameInfo(std::string& info) const
     }
 
     info.clear();
-    info.append("In a fight.");
-    // TODO: Add boss and spell info from GameStrings.h
+    info.append("Fighting ");
+    info.append(th143_bossAndSpells[stage]);
 }
 
 void Touhou14_3::setLargeImageInfo(std::string& icon, std::string& text) const
