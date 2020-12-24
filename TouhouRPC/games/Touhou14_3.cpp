@@ -126,6 +126,14 @@ void Touhou14_3::readDataFromGameProcess()
         {
             state.gameState = GameState::Completed;
         }
+
+        // Read game mode (done in last, so we can overwrite other game states in case we're in a replay)
+        ReadProcessMemory(processHandle, (LPCVOID)GAME_MODE, (LPVOID)&gameMode, 4, NULL);
+        switch (gameMode)
+        {
+        case GAME_MODE_STANDARD: /* could be main menu or playing, no need to overwrite anything */ break;
+        case GAME_MODE_REPLAY: state.gameState = GameState::WatchingReplay; break;
+        }
     }
     
 }

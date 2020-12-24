@@ -47,6 +47,10 @@ public:
 	void setGameInfo(std::string& info) const override;
 
 protected:
+
+	// Game mode
+	int gameMode{ GameMode::GAME_MODE_STANDARD };
+
 	// For score displays
 	int completedScenes{ 0 }; // Number of completed scenes
 
@@ -96,6 +100,8 @@ private:
 		CURRENT_TIMER = 0x004E47A8, // Time elapsed in the stage.
 		CURRENT_HIGHSCORE = 0x004E4790L, // High score on the current stage (divided by 10).
 		CURRENT_SCORE = 0x004E46F8L, // Current score on the current stage (divided by 10).
+
+		GAME_MODE = 0x004E6BB0L,	// game mode (normal mode or replay mode)
 	};
 
 	enum Items {
@@ -115,6 +121,12 @@ private:
 		WIN_LOSE,
 		IN_GAME,
 	};
+
+	enum GameMode {
+		GAME_MODE_STANDARD = 1, // main menu, endings, staff roll, and normal gameplay
+		GAME_MODE_REPLAY = 2,	// replay
+	};
+
 };
 
 };
