@@ -366,6 +366,16 @@ const std::string th08_spellCardName[222] = {
 	"\"Profound Danmaku Barrier -Phantasm, Foam and Shadow-\""
 };
 
+// Touhou 09.5 Music
+const std::string th095_musicNames[6] = {
+	"Tengu's Notebook ~ Mysterious Note",
+	"Wind Circulation ~ Wind Tour",
+	"Tengu is Watching ~ Black Eyes",
+	"Sleepless Night of the Eastern Country",
+	"Retrospective Kyoto",
+	"Wind God Girl",
+};
+
 // Touhou 10
 const std::string th10_musicNames[18] = {
 	"A God That Misses People ~ Romantic Fall",

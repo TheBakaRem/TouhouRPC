@@ -21,19 +21,48 @@ void Touhou09_5::readDataFromGameProcess()
 
     int gameDataPtr;
     int menuDataPtr;
+
+    int otherMenuStatePtr = 0;
     
     // MENUS
     ReadProcessMemory(processHandle, (LPCVOID)IN_MENU, (LPVOID)&menuState, 1, NULL);
     ReadProcessMemory(processHandle, (LPCVOID)GAME_DATA_PTR, (LPVOID)&gameDataPtr, 4, NULL);
     ReadProcessMemory(processHandle, (LPCVOID)MENU_DATA_PTR, (LPVOID)&menuDataPtr, 4, NULL);
+    ReadProcessMemory(processHandle, (LPCVOID)OTHER_MENU_STATE_PTR, (LPVOID)&otherMenuStatePtr, 4, NULL);
 
     switch (menuState) {
     default:
     case 1:
         if (gameDataPtr == 0) {
             // Game data pointer == 0, means we are in the main menu
-            state.gameState = GameState::MainMenu;
-            state.mainMenuState = MainMenuState::TitleScreen;
+            int otherMenuStateValue = 0;
+
+            // When in the main menu, otherMenuStatePtr isn't nullptr, so we can use it here.
+            ReadProcessMemory(processHandle, (LPCVOID)(otherMenuStatePtr + OTHER_MENU_STATE_OFFSET), (LPVOID)&otherMenuStateValue, 4, NULL);
+
+            // Check which type of main menu we're in (we don't)
+            switch (otherMenuStateValue)
+            {
+            default:
+            case OtherMenuStateValues::MAIN_MENU:
+                state.gameState = GameState::MainMenu;
+                state.mainMenuState = MainMenuState::TitleScreen;
+                break;
+            case OtherMenuStateValues::OPTIONS:
+                state.gameState = GameState::MainMenu;
+                state.mainMenuState = MainMenuState::Options;
+                break;
+            case OtherMenuStateValues::MUSIC_ROOM:
+                state.gameState = GameState::MainMenu;
+                state.mainMenuState = MainMenuState::MusicRoom;
+                ReadProcessMemory(processHandle, (LPCVOID)BGM_STR, (LPVOID)&bgm_playing, 20, NULL);
+                break;
+            case OtherMenuStateValues::MANUAL:
+                state.gameState = GameState::MainMenu;
+                state.mainMenuState = MainMenuState::Manual;
+                break;
+            }
+            // Mission select and replay select are not checked here, as they are already detected by menuState
         }
         else {
             // Game data pointer != 0, means we are in game
@@ -174,6 +203,20 @@ std::string Touhou09_5::getStageName() const
         }
     }
     else { return ""; }
+}
+
+std::string const& Touhou09_5::getBGMName() const
+{
+    std::string fileName(bgm_playing);
+
+    if (fileName.rfind("th095_00", 0) == 0
+        || fileName.rfind("th09_00", 0) == 0)     { return th095_musicNames[0]; } // When started by the main menu and not the music room, the filename is "th09_00.wav".
+    else if (fileName.rfind("th095_01", 0) == 0)  { return th095_musicNames[1]; }
+    else if (fileName.rfind("th095_02", 0) == 0)  { return th095_musicNames[2]; }
+    else if (fileName.rfind("th095_03", 0) == 0)  { return th095_musicNames[3]; }
+    else if (fileName.rfind("th095_04", 0) == 0)  { return th095_musicNames[4]; }
+    else if (fileName.rfind("th09_08_2", 0) == 0) { return th095_musicNames[5]; }
+    else { return notSupported; } // In case an error occurs
 }
 
 }
