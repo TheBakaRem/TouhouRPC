@@ -179,6 +179,22 @@ std::string Touhou09_5::getCustomResources() const
     return resources;
 }
 
+// Change how the Playing_CustomResources is handled for this game.
+void Touhou09_5::setGameInfo(std::string& info) const
+{
+    if (state.gameState != GameState::Playing_CustomResources)
+    {
+        // We just want to change how Playing_CustomResources is handled.
+        // The rest is unchanged.
+        TouhouMainGameBase::setGameInfo(info);
+        return;
+    }
+
+    info.clear();
+    info.append("Fighting ");
+    info.append(th095_bossAndSpells[stage]);
+}
+
 // Custom stage name, because the game operates with a level-scene style.
 std::string Touhou09_5::getStageName() const
 {

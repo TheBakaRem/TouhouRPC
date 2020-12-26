@@ -23,6 +23,9 @@ public:
 	std::string getBossName() const override { return notSupported; }
 	std::string getStageName() const override;
 	std::string const& getBGMName() const override;
+
+
+	void setGameInfo(std::string& info) const override; // Override for the Playing_CustomResources state
 	
 	std::string getCustomMenuResources() const override; // Menu custom display
 	std::string getCustomResources() const override; // In-game custom display
