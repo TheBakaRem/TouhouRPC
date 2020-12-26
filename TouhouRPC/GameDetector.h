@@ -80,4 +80,4 @@ static const ProcessNameGamePair processNameList[PROCESS_NAME_LIST_SIZE] =
 	{ SupportedGame::WBaWC_17, L"th17.exe" },
 };
 
-std::unique_ptr<TouhouBase> initializeTouhouGame();
+std::unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence = false);

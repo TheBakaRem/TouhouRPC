@@ -9,7 +9,8 @@
 using namespace std;
 
 // Constructor
-DiscordRPC::DiscordRPC(int64_t clientID)
+// The lastErrorType value is used to tell if the error was the same at the last construction. If it is, it's not logged.
+DiscordRPC::DiscordRPC(int64_t clientID, int& lastErrorType)
 {
 
 	discord::Core* core{};
@@ -24,8 +25,7 @@ DiscordRPC::DiscordRPC(int64_t clientID)
 	this->core.reset(core);
 
 	if (!core) {
-		logSystem->print(Log::LOG_WARNING, "Failed to instantiate Discord!");
-		DiscordRPC::showError(response);
+		DiscordRPC::showError(response, lastErrorType);
 		launched = false;
 	}
 	else {
@@ -77,7 +77,9 @@ void DiscordRPC::sendPresence(bool forceSend)
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{
 			logSystem->print(Log::LOG_WARNING, "Failed updating RichPresence activity!");
-			DiscordRPC::showError(result);
+			
+			int err = -1;
+			DiscordRPC::showError(result, err);
 		}
 	});
 }
@@ -90,7 +92,9 @@ void DiscordRPC::resetPresence()
 		if (result != discord::Result::Ok && result != discord::Result::TransactionAborted)
 		{
 			logSystem->print(Log::LOG_WARNING, "Failed clearing RichPresence activity!");
-			DiscordRPC::showError(result);
+			
+			int err = -1;
+			DiscordRPC::showError(result, err);
 		}
 	});
 }
@@ -118,13 +122,26 @@ void DiscordRPC::resetActivityTimeStartedToNow()
 }
 
 // Display a Discord error
-void DiscordRPC::showError(discord::Result res)
+void DiscordRPC::showError(discord::Result res, int& lastErrorType)
 {
-	string errType = "";
+
+	if (int(res) != lastErrorType)
+	{
+		logSystem->print(Log::LOG_WARNING, getErrorString(res).c_str());
+		lastErrorType = int(res);
+	}
+}
+
+std::string DiscordRPC::getErrorString(discord::Result res)
+{
+	string errType = "Discord ";
 
 	switch (int(res)) {
 	case 1: // Service unavailable
 		errType = "Service unavailable - Discord isn't working.";
+		break;
+	case 4: // Internal Error
+		errType = "Internal error - Something went wrong on Discord's side.";
 		break;
 	case 26: // Not installed
 		errType = "Not installed - Discord is not installed.";
@@ -137,5 +154,5 @@ void DiscordRPC::showError(discord::Result res)
 		errType.append(to_string(int(res)));
 	}
 
-	logSystem->print(Log::LOG_WARNING, "Discord error code: %s", errType.c_str());
+	return errType;
 }

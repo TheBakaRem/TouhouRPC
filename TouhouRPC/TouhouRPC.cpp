@@ -22,31 +22,31 @@ using namespace std;
 
 namespace {
     volatile bool interrupted{ false };
+    int discordLastErrorType{ -1 };
 }
 
 DiscordRPC getDiscord(int64_t clientID) {
     logSystem->print(Log::LOG_INFO, "Connecting to the Discord client...");
     
-    DiscordRPC d = DiscordRPC(clientID);
+    DiscordRPC d = DiscordRPC(clientID, discordLastErrorType);
 
     while (!d.isLaunched()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-        d = DiscordRPC(clientID);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        d = DiscordRPC(clientID, discordLastErrorType);
     }
-
+    discordLastErrorType = -1; // Reset the value
     return d;
 }
 
 std::unique_ptr<TouhouBase> getTouhouGame() {
     logSystem->print(Log::LOG_INFO, "Waiting for a supported game to start...");
 
-    std::unique_ptr<TouhouBase> d = initializeTouhouGame();
+    std::unique_ptr<TouhouBase> d = initializeTouhouGame(false);
 
     while (d == nullptr) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-        d = initializeTouhouGame();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        d = initializeTouhouGame(true);
     }
-
     return d;
 }
 
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
         exit(-1);
     }
     
-    logSystem->print(Log::LOG_INFO, "Starting Discord Rich Presence display...");
+    logSystem->print(Log::LOG_DEBUG, "Starting Discord Rich Presence display...");
     
     // MAIN LOOP
 
@@ -169,10 +169,10 @@ int main(int argc, char** argv)
 
         if (res != discord::Result::Ok)
         {
-            DiscordRPC::showError(res);
+            DiscordRPC::showError(res, discordLastErrorType);
             discord = getDiscord(touhouGame->getClientId());
             
-            if (touhouUpdate(touhouGame, discord))
+            if (touhouUpdate(touhouGame, discord) && touhouGame->isStillRunning())
             {
                 discord.sendPresence(true);
             }
@@ -180,7 +180,8 @@ int main(int argc, char** argv)
         else {
             bool forceSend = regularUpdateTickCount >= ticksBetweenRegularUpdates;
             bool const touhouUpdated = touhouUpdate(touhouGame, discord);
-            if (touhouUpdated || forceSend)
+            bool running = touhouGame->isStillRunning();
+            if (running && (touhouUpdated || forceSend))
             {
                 // if within 1 second of a normal update, make it a normal update instead of wasting an instant slot
                 if (touhouUpdated && (ticksBetweenRegularUpdates - regularUpdateTickCount) <= ticksPerSecond)
@@ -199,6 +200,7 @@ int main(int argc, char** argv)
         if (!touhouGame->isStillRunning()) {
 
             // Presence reset
+            discord.resetPresence();
             discord.closeApp();
 
             logSystem->print(Log::LOG_INFO, "Game closed. Ready to find another supported game.");
@@ -206,7 +208,7 @@ int main(int argc, char** argv)
             touhouGame = getTouhouGame();
             discord = getDiscord(touhouGame->getClientId());
 
-            logSystem->print(Log::LOG_INFO, "Starting Discord Rich Presence display...");
+            logSystem->print(Log::LOG_DEBUG, "Starting Discord Rich Presence display...");
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(msBetweenTicks));

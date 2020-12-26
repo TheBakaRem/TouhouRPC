@@ -42,7 +42,7 @@ bool findRunningTouhouProcess(const ProcessNameGamePair processList[], PROCESSEN
         return procRunning;
 }
 
-std::unique_ptr<TouhouBase> initializeTouhouGame()
+std::unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence)
 {
     PROCESSENTRY32W pe32{};
     SupportedGame game{ SupportedGame::Invalid };
@@ -72,7 +72,7 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
 
         case SupportedGame::Invalid:
         {
-            logSystem->print(Log::LOG_ERROR, "An unexpected error occured. The game has been detected but isn't properly linked by the program. Exiting now...");
+            logSystem->print(Log::LOG_ERROR, "The game has been detected but isn't properly linked by the program. Exiting now...");
             logSystem->closeLogFile();
             std::exit(-1);
             return {};
@@ -85,18 +85,18 @@ std::unique_ptr<TouhouBase> initializeTouhouGame()
 
         if (thGame->isLinkedToProcess())
         {
-            logSystem->print(Log::LOG_INFO, "The program is now linked to the game.");
+            logSystem->print(Log::LOG_INFO, "TouhouRPC is now linked to the game.");
             return thGame;
         }
         else
         {
-            logSystem->print(Log::LOG_WARNING, "Failed linking the program to the game.");
+            logSystem->print(Log::LOG_WARNING, "Failed linking TouhouRPC to the game.");
             return {};
         }
     }
     else
     {
-        logSystem->print(Log::LOG_WARNING, "No supported game currently running.");
+        if (!initLogSilence) logSystem->print(Log::LOG_WARNING, "No supported game currently running. Waiting for a game to be launched...");
         return {};
     }
 }

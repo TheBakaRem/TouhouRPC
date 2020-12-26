@@ -11,7 +11,7 @@
 class DiscordRPC {
 
 public:
-	DiscordRPC(int64_t clientID);
+	DiscordRPC(int64_t clientID, int& lastErrorType);
 	~DiscordRPC();
 
 	bool isLaunched() const { return launched; }
@@ -26,7 +26,8 @@ public:
 	void setActivityDetails(std::string const& details, std::string const& state, std::string const& largeIcon, std::string const& largeText, std::string const& smallIcon, std::string const& smallText);
 	void resetActivityTimeStartedToNow();
 
-	static void showError(discord::Result res);
+	static void showError(discord::Result res, int& lastErrorType);
+	static std::string getErrorString(discord::Result res);
 
 
 private:
