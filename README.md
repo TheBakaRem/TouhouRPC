@@ -19,6 +19,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 12.8 - Great Fairy Wars
 - Touhou 13 - Ten Desires
 - Touhou 14 - Double Dealing Character
+- Touhou 14.3 - Impossible Spell Card
 - Touhou 15 - Legacy of Lunatic Kingdom
 - Touhou 16 - Hidden Stars in Four Seasons
 - Touhou 17 - Wily Beast and Weakest Creature
