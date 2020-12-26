@@ -204,6 +204,7 @@ std::string Touhou12::getMidbossName() const
 	case 4:
 	case 6: return "Nue Houjuu (Unknown Form)";
 	case 7: return "Kogasa Tatara";
+	default: return "";
 	}
 }
 
@@ -218,6 +219,7 @@ std::string Touhou12::getBossName() const
 	case 5: return "Shou Toramaru";
 	case 6: return "Byakuren Hijiri";
 	case 7: return "Nue Houjuu";
+	default: return "";
 	}
 }
 

@@ -244,6 +244,7 @@ std::string Touhou17::getMidbossName() const
 	case 4: return "Yachie Kicchou";
 	case 5:
 	case 6: return "Mayumi Joutouguu";
+	default: return "";
 	}
 }
 
@@ -258,7 +259,7 @@ std::string Touhou17::getBossName() const
 	case 5: return "Mayumi Joutouguu";
 	case 6: return "Keiki Haniyasushin";
 	case 7: return "Saki Kurokoma";
-
+	default: return "";
 	}
 }
 

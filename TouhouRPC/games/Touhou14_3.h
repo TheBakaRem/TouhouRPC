@@ -54,7 +54,7 @@ protected:
 	// For score displays
 	int completedScenes{ 0 }; // Number of completed scenes
 
-	char bgm_playing[20]; // Current music file played (used in the music room)
+	char bgm_playing[20] = "\0"; // Current music file played (used in the music room)
 
 	// For in-stage displays
 	int subItemLock{ 0 };				// Check if the sub items are locked. if value == 0 then sub items are locked. if value > 0 then sub items are unlocked.

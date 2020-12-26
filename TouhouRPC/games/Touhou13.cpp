@@ -226,6 +226,7 @@ std::string Touhou13::getMidbossName() const
 	case 5: return "Soga no Tojiko";
 	// case 6: none
 	case 7: return "Nue Houjuu";
+	default: return "";
 	}
 }
 
@@ -240,7 +241,7 @@ std::string Touhou13::getBossName() const
 	case 5: return "Mononobe no Futo";
 	case 6: return "Toyosatomimi no Miko";
 	case 7: return "Mamizou Futatsuiwa";
-
+	default: return "";
 	}
 }
 

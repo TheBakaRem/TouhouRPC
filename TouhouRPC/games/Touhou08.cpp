@@ -165,11 +165,11 @@ void Touhou08::readDataFromGameProcess()
     {
         float lives = 0;
         ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x74), (LPVOID)&lives, 4, NULL);
-        state.lives = lives;
+        state.lives = (int)lives;
 
         float bombs = 0;
         ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x80), (LPVOID)&bombs, 4, NULL);
-        state.bombs = bombs;
+        state.bombs = (int)bombs;
 
         ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x00), (LPVOID)&state.score, 4, NULL);
 

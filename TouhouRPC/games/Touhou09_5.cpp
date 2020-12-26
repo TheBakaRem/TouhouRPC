@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "Touhou09_5.h"
 
 namespace Touhou09_5
@@ -68,14 +68,14 @@ void Touhou09_5::readDataFromGameProcess()
             // Game data pointer != 0, means we are in game
             state.gameState = GameState::Playing_CustomResources;
             state.character = Character::Aya;
-            state.difficulty == Difficulty::NoDifficultySettings;
+            state.difficulty = Difficulty::NoDifficultySettings;
         }
         break;
     case 2:
         // We are in a replay
         state.gameState = GameState::WatchingReplay;
         state.character = Character::Aya;
-        state.difficulty == Difficulty::NoDifficultySettings;
+        state.difficulty = Difficulty::NoDifficultySettings;
         break;
     case 5:
         // We are selecting a scene
@@ -168,7 +168,7 @@ std::string Touhou09_5::getCustomMenuResources() const
     return resources;
 }
 
-// Custom in-game resources (photo n� display)
+// Custom in-game resources (photo n° display)
 std::string Touhou09_5::getCustomResources() const
 {
 

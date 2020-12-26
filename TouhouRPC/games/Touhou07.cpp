@@ -146,11 +146,11 @@ void Touhou07::readDataFromGameProcess()
 	{
 		float lives = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x5C), (LPVOID)&lives, 4, NULL);
-		state.lives = lives;
+		state.lives = (int)lives;
 
 		float bombs = 0;
 		ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x68), (LPVOID)&bombs, 4, NULL);
-		state.bombs = bombs;
+		state.bombs = (int)bombs;
 
 		ReadProcessMemory(processHandle, (LPCVOID)(player_pointer + 0x00), (LPVOID)&state.score, 4, NULL);
 
@@ -184,6 +184,7 @@ std::string Touhou07::getMidbossName() const
 	case 6: return "Youmu Konpaku";
 	case 7: return "Chen";
 	case 8: return "Ran Yakumo";
+	default: return "";
 	}
 }
 
@@ -199,6 +200,7 @@ std::string Touhou07::getBossName() const
 	case 6: return "Yuyuko Saigyouji";
 	case 7: return "Ran Yakumo";
 	case 8: return "Yukari Yakumo";
+	default: return "";
 	}
 }
 

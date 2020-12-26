@@ -225,6 +225,7 @@ std::string Touhou06::getMidbossName() const
 	case 5:
 	case 6: return "Sakuya Izayoi";
 	case 7: return "Patchouli Knowledge";
+	default: return "";
 	}
 }
 
@@ -239,6 +240,7 @@ std::string Touhou06::getBossName() const
 	case 5: return "Sakuya Izayoi";
 	case 6: return "Remilia Scarlet";
 	case 7: return "Flandre Scarlet";
+	default: return "";
 	}
 }
 

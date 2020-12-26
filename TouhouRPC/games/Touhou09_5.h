@@ -33,7 +33,7 @@ public:
 
 protected:
 
-	char bgm_playing[20]; // Background music for music room
+	char bgm_playing[20] = "\0"; // Background music for music room
 
 	// For score displays
 	int combinedPhotoScore{ 0 }; // Total score from all scenes

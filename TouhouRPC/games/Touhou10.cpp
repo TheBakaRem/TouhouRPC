@@ -201,6 +201,7 @@ std::string Touhou10::getMidbossName() const
 	case 5: return "Sanae Kochiya";
 	// case 6: none
 	case 7: return "Kanako Yasaka";
+	default: return "";
 	}
 }
 
@@ -215,6 +216,7 @@ std::string Touhou10::getBossName() const
 	case 5: return "Sanae Kochiya";
 	case 6: return "Kanako Yasaka";
 	case 7: return "Suwako Moriya";
+	default: return "";
 	}
 }
 

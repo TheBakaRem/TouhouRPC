@@ -261,6 +261,7 @@ std::string Touhou16::getMidbossName() const
 	case 5: return "Satono Nishida";
 	// case 6: none
 	case 7: return "Mai Teireida & Satono Nishida";
+	default: return "";
 	}
 }
 
@@ -275,7 +276,7 @@ std::string Touhou16::getBossName() const
 	case 5: return "Mai Teireida & Satono Nishida";
 	case 6:
 	case 7: return "Okina Matara";
-
+	default: return "";
 	}
 }
 

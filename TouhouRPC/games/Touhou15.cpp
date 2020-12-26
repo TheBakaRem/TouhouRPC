@@ -276,6 +276,7 @@ std::string Touhou15::getMidbossName() const
 	case 5: return "Clownpiece";
 	case 6: return "Junko";
 	case 7: return "Doremy Sweet";
+	default: return "";
 	}
 }
 
@@ -299,6 +300,7 @@ std::string Touhou15::getBossName() const
 		case HECATIA: return "Hecatia Lapislazuli";
 		}
 	}
+	default: return "";
 	}
 }
 

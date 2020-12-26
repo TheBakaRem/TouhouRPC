@@ -233,6 +233,7 @@ std::string Touhou14::getMidbossName() const
 	case 5:
 	case 6: return "Seija Kijin";
 	case 7: return "Benben & Yatsuhashi Tsukumo";
+	default: return "";
 	}
 }
 
@@ -247,7 +248,7 @@ std::string Touhou14::getBossName() const
 	case 5: return "Seija Kijin";
 	case 6: return "Shinmyoumaru Sukuna";
 	case 7: return "Raiko Horikawa";
-
+	default: return "";
 	}
 }
 

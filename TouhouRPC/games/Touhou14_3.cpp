@@ -33,7 +33,7 @@ void Touhou14_3::readDataFromGameProcess()
     {
         state.gameState = GameState::Playing_CustomResources;
         state.character = Character::Seija;
-        state.difficulty == Difficulty::NoDifficultySettings;
+        state.difficulty = Difficulty::NoDifficultySettings;
     }
     else {
         switch (menuState) {

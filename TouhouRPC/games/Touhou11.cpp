@@ -270,6 +270,7 @@ std::string Touhou11::getMidbossName() const
 	case 5:
 	case 6: return "Rin Kaenbyou";
 	case 7: return "Sanae Kochiya";
+	default: return "";
 	}
 }
 
@@ -284,6 +285,7 @@ std::string Touhou11::getBossName() const
 	case 5: return "Rin Kaenbyou";
 	case 6: return "Utsuho Reiuji";
 	case 7: return "Koishi Komeiji";
+	default: return "";
 	}
 }
 
