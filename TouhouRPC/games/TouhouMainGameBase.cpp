@@ -66,6 +66,7 @@ void TouhouMainGameBase::setGameName(std::string & name) const
 		case MainMenuState::Replays: name = "Selecting a replay"; break;
 		case MainMenuState::PlayerData: name = "Viewing player data"; break;
 		case MainMenuState::Achievements: name = "Viewing achievements"; break;
+		case MainMenuState::AbilityCards: name = "Viewing ability cards"; break;
 		case MainMenuState::MusicRoom: name = "In the music room:"; break; // game info will specify track.
 		case MainMenuState::Options: name = "Changing options"; break;
 		case MainMenuState::Manual: name = "Viewing the manual"; break;

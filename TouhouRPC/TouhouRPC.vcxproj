@@ -185,6 +185,7 @@
     <ClCompile Include="games\Touhou15.cpp" />
     <ClCompile Include="games\Touhou16.cpp" />
     <ClCompile Include="games\Touhou17.cpp" />
+    <ClCompile Include="games\Touhou18.cpp" />
     <ClCompile Include="games\TouhouBase.cpp" />
     <ClCompile Include="games\TouhouMainGameBase.cpp" />
     <ClCompile Include="includes\discord-rpc\achievement_manager.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="games\Touhou15.h" />
     <ClInclude Include="games\Touhou16.h" />
     <ClInclude Include="games\Touhou17.h" />
+    <ClInclude Include="games\Touhou18.h" />
     <ClInclude Include="games\TouhouBase.h" />
     <ClInclude Include="games\TouhouMainGameBase.h" />
     <ClInclude Include="includes\discord-rpc\achievement_manager.h" />

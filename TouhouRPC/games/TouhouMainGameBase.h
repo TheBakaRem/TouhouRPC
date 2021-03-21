@@ -35,6 +35,7 @@ enum class MainMenuState
 	Replays,
 	PlayerData,
 	Achievements,
+	AbilityCards,
 	MusicRoom,
 	Options,
 	Manual,
