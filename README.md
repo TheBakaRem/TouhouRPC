@@ -23,6 +23,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 15 - Legacy of Lunatic Kingdom
 - Touhou 16 - Hidden Stars in Four Seasons
 - Touhou 17 - Wily Beast and Weakest Creature
+- Touhou 18 - Unconnected Marketeer - Trial
 
 If you want to see other games or fangames supported, contributions are welcome!
 
