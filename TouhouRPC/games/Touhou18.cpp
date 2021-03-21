@@ -122,53 +122,68 @@ void Touhou18Trial::readDataFromGameProcess() {
 			state.mainMenuState = MainMenuState::TitleScreen;
 			state.gameState = GameState::MainMenu;
 			break;
-		case 15: // ending
-			state.gameState = GameState::Ending;
-			break;
-		case 16: // staff roll
-			state.gameState = GameState::StaffRoll;
-			break;
 		default:
 			break;
 		}
 	}
+	
+	if (state.gameState != GameState::Playing)
+	{
+		// if we're not playing, reset seenMidboss.
+		seenMidboss = false;
+	}
 
-	if (state.stageState == StageState::Stage) {
-		// Enemy state object
-		// This object holds various information about general ecl state.
-		// Offset 2814h is some kind of enemy ID, which isn't consistent between runs except is always 0 when there's no boss, and non-zero when there is.
-		// Neither of these differentiate between midbosses and bosses.
-		DWORD enemy_state_ptr = 0;
+	if (state.stageState == StageState::Stage)
+	{
+		// We can check a stage state number that will confirm if we're in the stage or in the boss
 
-		ReadProcessMemory(processHandle, (LPCVOID)ENEMY_STATE_POINTER, (LPVOID)&enemy_state_ptr, 4, NULL);
-		if (enemy_state_ptr != 0)
+		// Stage state.
+		// 0 -> pre-midboss + midboss
+		// 2 -> post-midboss
+		// 41 -> pre-fight appearance conversations
+		// 43 -> boss
+		// 81 -> post-boss
+		DWORD stageState = 0;
+
+		ReadProcessMemory(processHandle, (LPCVOID)STAGE_STATE, (LPVOID)&stageState, 4, NULL);
+		if (stageState == 0)
 		{
-			DWORD enemyID = 0;
-			ReadProcessMemory(processHandle, (LPCVOID)(enemy_state_ptr + 0x2814), (LPVOID)&enemyID, 4, NULL);
-
-			if (enemyID > 0)
+			if (seenMidboss)
 			{
-				// Since music only kicks in a little bit after the boss appears, until that happens we'll be showing the midboss by accident.
-				// ... not that it's an issue except for stage 6 and EX, since otherwise all the bosses are also the midbosses.
-				// We can check a stage state number that will confirm if the boss we're looking at is midboss or not.
+				state.stageState = StageState::Midboss;
+			}
+			else
+			{
+				// If we're in stage state 0, we might be facing a midboss. We can check this to find out:
 
-				// Stage state.
-				// 0 -> pre-midboss + midboss
-				// 2 -> post-midboss
-				// 41 -> pre-fight appearance conversations
-				// 43 -> boss
-				// 81 -> post-boss
-				DWORD stageState = 0;
+				// Enemy state object
+				// This object holds various information about general ecl state.
+				// Offset 210 is some kind of 'boss attack active' flag, so it briefly flicks to 0 between attacks
 
-				ReadProcessMemory(processHandle, (LPCVOID)STAGE_STATE, (LPVOID)&stageState, 4, NULL);
-				if (stageState == 0)
+				// Since it flickers, we can remember that we saw it and just assume we're in a midboss until the stage state or game state changes.
+				DWORD enemy_state_ptr = 0;
+
+				ReadProcessMemory(processHandle, (LPCVOID)ENEMY_STATE_POINTER, (LPVOID)&enemy_state_ptr, 4, NULL);
+				if (enemy_state_ptr != 0)
 				{
-					state.stageState = StageState::Midboss;
+					DWORD enemyID = 0;
+					ReadProcessMemory(processHandle, (LPCVOID)(enemy_state_ptr + 0x210), (LPVOID)&enemyID, 4, NULL);
+
+					if (enemyID > 0)
+					{
+						state.stageState = StageState::Midboss;
+						seenMidboss = true;
+					}
 				}
-				else if (stageState == 43)
-				{
-					state.stageState = StageState::Boss;
-				}
+			}
+		}
+		else
+		{
+			// reset once we've finished fighting the midboss.
+			seenMidboss = false;
+			if (stageState == 43)
+			{
+				state.stageState = StageState::Boss;
 			}
 		}
 
@@ -206,7 +221,7 @@ std::string Touhou18Trial::getMidbossName() const
 {
 	switch (stage)
 	{
-	case 1: return "Mike Goutokujiu";
+	case 1: return "Mike Goutokuji";
 	case 2: return "Takane Yamashiro";
 	case 3: return "Sannyo Komakusa";
 	default: return "";

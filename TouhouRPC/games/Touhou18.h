@@ -36,6 +36,7 @@ protected:
 	int spellCardID{ -1 };
 	int gameMode{ 0 };
 	int bgm{ 1 };
+	bool seenMidboss{ false };
 
 private:
 	// addresses correct for v0.01b
@@ -45,7 +46,7 @@ private:
 		STAGE                       = 0x004C0CB4L,
 		MENU_POINTER                = 0x004C2F2CL,
 		BGM_STR                     = 0x00543E6CL,
-		ENEMY_STATE_POINTER         = 0x004C2DA4L,
+		ENEMY_STATE_POINTER         = 0x004C2DD0L,
 		STAGE_STATE                 = 0x004C0CBCL,
 		LIVES                       = 0x004C0D20L,
 		BOMBS                       = 0x004C0D30L,
