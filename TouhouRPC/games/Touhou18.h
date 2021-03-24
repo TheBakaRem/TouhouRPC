@@ -39,20 +39,20 @@ protected:
 	bool seenMidboss{ false };
 
 private:
-	// addresses correct for v0.01b
+	// addresses correct for v0.02a
 	enum address {
-		CHARACTER                   = 0x004C0CCCL,
-		DIFFICULTY                  = 0x004C0CD8L,
-		STAGE                       = 0x004C0CB4L,
-		MENU_POINTER                = 0x004C2F2CL,
-		BGM_STR                     = 0x00543E6CL,
-		ENEMY_STATE_POINTER         = 0x004C2DD0L,
-		STAGE_STATE                 = 0x004C0CBCL,
-		LIVES                       = 0x004C0D20L,
-		BOMBS                       = 0x004C0D30L,
-		SCORE                       = 0x004C0CD4L,
-		GAMEOVERS                   = 0x004C0CDCL,
-		GAME_MODE                   = 0x004C2F28L,
+		CHARACTER                   = 0x004C112CL,
+		DIFFICULTY                  = 0x004C1138L,
+		STAGE                       = 0x004C1114L,
+		MENU_POINTER                = 0x004C338CL,
+		BGM_STR                     = 0x005442CCL,
+		ENEMY_STATE_POINTER         = 0x004C3230L,
+		STAGE_STATE                 = 0x004C111CL,
+		LIVES                       = 0x004C1180L,
+		BOMBS                       = 0x004C1190L,
+		SCORE                       = 0x004C1134L,
+		GAMEOVERS                   = 0x004C113CL,
+		GAME_MODE                   = 0x004C3388L,
 	};
 };
 
