@@ -1,10 +1,10 @@
-// TouhouRPC.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
+// TouhouRPC.cpp : Main file
 //
 
 // Version definition
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 3
-#define VERSION_REVISION 0
+#define VERSION_REVISION 1
 
 // Includes
 #include <iostream>
