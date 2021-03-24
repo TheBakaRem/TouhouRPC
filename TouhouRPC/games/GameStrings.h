@@ -1412,3 +1412,18 @@ const std::string th17_musicNames[19] = {
 	"The Shining Law of the Strong Eating the Weak",
 	"Prince Shoutoku's Pegasus ~ Dark Pegasus",
 };
+
+// Touhou 18
+
+// Touhou 18 Music
+const std::string th18_musicNames[] = {
+	"unused",
+	"A Rainbow-Spanning Gensokyo",
+	"unused",
+	"A Shower of Strange Occurrences",
+	"Kitten of Great Fortune",
+	"The Cliff Hidden in Deep Green",
+	"Banditry Technology",
+	"The Perpetual Snow of Komakusa Blossoms",
+	"Smoking Dragon",
+};

@@ -24,6 +24,7 @@
 #include "games/Touhou15.h"
 #include "games/Touhou16.h"
 #include "games/Touhou17.h"
+#include "games/Touhou18.h"
 
 enum class SupportedGame
 {
@@ -42,6 +43,7 @@ enum class SupportedGame
 	LoLK_15,
 	HSiFS_16,
 	WBaWC_17,
+	UM_18_Trial,
 
 	Invalid,
 };
@@ -52,7 +54,7 @@ struct ProcessNameGamePair
 	const wchar_t* processName;
 };
 
-const int PROCESS_NAME_LIST_SIZE = 21;
+const int PROCESS_NAME_LIST_SIZE = 23;
 
 // Executables name list and associated game
 static const ProcessNameGamePair processNameList[PROCESS_NAME_LIST_SIZE] =
@@ -78,6 +80,8 @@ static const ProcessNameGamePair processNameList[PROCESS_NAME_LIST_SIZE] =
 	{ SupportedGame::LoLK_15, L"th15.exe" },
 	{ SupportedGame::HSiFS_16, L"th16.exe" },
 	{ SupportedGame::WBaWC_17, L"th17.exe" },
+	{ SupportedGame::UM_18_Trial, L"th18.exe"},
+	{ SupportedGame::UM_18_Trial, L"th18tr.exe"},
 };
 
 std::unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence = false);
