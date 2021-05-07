@@ -44,6 +44,7 @@ enum class SupportedGame
 	HSiFS_16,
 	WBaWC_17,
 	UM_18_Trial,
+	UM_18,
 
 	Invalid,
 };
@@ -80,8 +81,8 @@ static const ProcessNameGamePair processNameList[PROCESS_NAME_LIST_SIZE] =
 	{ SupportedGame::LoLK_15, L"th15.exe" },
 	{ SupportedGame::HSiFS_16, L"th16.exe" },
 	{ SupportedGame::WBaWC_17, L"th17.exe" },
-	{ SupportedGame::UM_18_Trial, L"th18.exe"},
 	{ SupportedGame::UM_18_Trial, L"th18tr.exe"},
+	{ SupportedGame::UM_18, L"th18.exe"},
 };
 
 std::unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence = false);
