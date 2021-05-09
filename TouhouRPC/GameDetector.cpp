@@ -70,6 +70,7 @@ std::unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence)
         case SupportedGame::HSiFS_16:   thGame = std::make_unique<Touhou16::Touhou16>(pe32); break;
         case SupportedGame::WBaWC_17:   thGame = std::make_unique<Touhou17::Touhou17>(pe32); break;
         case SupportedGame::UM_18_Trial:thGame = std::make_unique<Touhou18::Touhou18Trial>(pe32); break;
+        case SupportedGame::UM_18:      thGame = std::make_unique<Touhou18::Touhou18>(pe32); break;
 
         case SupportedGame::Invalid:
         {
