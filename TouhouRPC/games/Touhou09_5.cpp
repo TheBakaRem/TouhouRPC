@@ -152,7 +152,7 @@ std::string Touhou09_5::getCustomMenuResources() const
 
     // Formatted score 
     std::string scoreString = std::to_string(combinedPhotoScore);
-    size_t insertPosition = scoreString.length() - 3;
+    int insertPosition = scoreString.length() - 3;
     while (insertPosition > 0)
     {
         scoreString.insert(insertPosition, ",");
