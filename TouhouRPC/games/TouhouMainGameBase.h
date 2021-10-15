@@ -78,6 +78,9 @@ enum class Character
 	Komachi,
 	Eiki,
 
+	// DS
+	Hatate,
+
 	// ISC
 	Seija,
 };

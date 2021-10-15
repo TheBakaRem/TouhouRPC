@@ -16,6 +16,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 10 - Mountain of Faith
 - Touhou 11 - Subterranean Animism
 - Touhou 12 - Undefined Fantastic Object
+- Touhou 12.5 - Double Spoiler
 - Touhou 12.8 - Great Fairy Wars
 - Touhou 13 - Ten Desires
 - Touhou 14 - Double Dealing Character
