@@ -28,6 +28,12 @@ void TouhouMainGameBase::StateData::updateImportantData(StateData const& b)
 
 	lives = b.lives;
 	bombs = b.bombs;
+
+	currentPhotoCount = b.currentPhotoCount;
+	requiredPhotoCount = b.requiredPhotoCount;
+
+	mainItemUses = b.mainItemUses;
+	subItemUses = b.subItemUses;
 }
 
 bool TouhouMainGameBase::StateData::isImportantDataEqual(StateData const& b) const
@@ -36,9 +42,14 @@ bool TouhouMainGameBase::StateData::isImportantDataEqual(StateData const& b) con
 		&& stageState == b.stageState
 		&& gameOvers == b.gameOvers
 
-		// are lives/bombs actually important?
 		&& lives == b.lives
 		&& bombs == b.bombs
+
+		&& currentPhotoCount == b.currentPhotoCount
+		&& requiredPhotoCount == b.requiredPhotoCount
+
+		&& mainItemUses == b.mainItemUses
+		&& subItemUses == b.subItemUses
 	;
 }
 

@@ -185,6 +185,14 @@ protected:
 		int score{ 0 };
 		int gameOvers{ 0 };
 
+		// Photo details: Only used in photo-based games.
+		int currentPhotoCount{ 0 };
+		int requiredPhotoCount{ 0 };
+
+		// ISC details : Main and sub items
+		int mainItemUses{ 0 };
+		int subItemUses{ 0 };
+
 		// The following strictly used for data that we care about changing for the sake of immediate update (i.e. not score)
 		void updateImportantData(StateData const& b);
 		bool isImportantDataEqual(StateData const& b) const;

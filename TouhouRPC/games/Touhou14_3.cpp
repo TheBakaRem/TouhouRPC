@@ -110,10 +110,10 @@ void Touhou14_3::readDataFromGameProcess()
         ReadProcessMemory(processHandle, (LPCVOID)ITEM_DATA_PTR, (LPVOID)&itemDataPtr, 4, NULL);
 
         ReadProcessMemory(processHandle, (LPCVOID)MAIN_ITEM, (LPVOID)&currMainItem, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID)(itemDataPtr + ITEM_DATA_MAIN_NB_USES_OFFSET), (LPVOID)&currMainItemUses, 4, NULL);
+        ReadProcessMemory(processHandle, (LPCVOID)(itemDataPtr + ITEM_DATA_MAIN_NB_USES_OFFSET), (LPVOID)&state.mainItemUses, 4, NULL);
 
         ReadProcessMemory(processHandle, (LPCVOID)SUB_ITEM, (LPVOID)&currSubItem, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID)(itemDataPtr + ITEM_DATA_SUB_NB_USES_OFFSET), (LPVOID)&currSubItemUses, 4, NULL);
+        ReadProcessMemory(processHandle, (LPCVOID)(itemDataPtr + ITEM_DATA_SUB_NB_USES_OFFSET), (LPVOID)&state.subItemUses, 4, NULL);
 
         // Check player death
         if (playerState == -1 && pauseType == PauseType::WIN_LOSE)
@@ -251,7 +251,7 @@ void Touhou14_3::setLargeImageInfo(std::string& icon, std::string& text) const
         break;
     }
 
-    text.append(" - "); text.append(std::to_string(currMainItemUses)); text.append(" uses left.");
+    text.append(" - "); text.append(std::to_string(state.mainItemUses)); text.append(" uses left.");
 }
 
 void Touhou14_3::setSmallImageInfo(std::string& icon, std::string& text) const
@@ -311,7 +311,7 @@ void Touhou14_3::setSmallImageInfo(std::string& icon, std::string& text) const
         }
 
         if (hasUses) {
-            text.append(" - "); text.append(std::to_string(currSubItemUses)); text.append(" uses left.");
+            text.append(" - "); text.append(std::to_string(state.subItemUses)); text.append(" uses left.");
         }
     }
 }

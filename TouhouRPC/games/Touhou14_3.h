@@ -60,10 +60,10 @@ protected:
 	int subItemLock{ 0 };				// Check if the sub items are locked. if value == 0 then sub items are locked. if value > 0 then sub items are unlocked.
 
 	int currMainItem{ Items::FABRIC };	// Current main item
-	int currMainItemUses{ 0 };			// Current number of main item uses left
 
 	int currSubItem{ Items::FABRIC };	// Current sub item
-	int currSubItemUses{ 0 };			// Current number of sub item uses left
+
+	// Main and sub item uses are listed in the game state
 
 private:
 	// Note: Replay, music room and nicknames are not supported yet.

@@ -39,9 +39,7 @@ protected:
 	int combinedPhotoScore{ 0 }; // Total score from all scenes
 	int completedScenes{ 0 }; // Number of completed scenes
 
-	// For in-stage displays
-	int currPhotoNb{ 0 }; // Current number of photos
-	int reqPhotoNb{ 0 }; // Number of photos required to complete the scene
+	// In-stage photo counts are listed in the game state.
 private:
 	// Adresses correct for v1.02a
 	enum address {

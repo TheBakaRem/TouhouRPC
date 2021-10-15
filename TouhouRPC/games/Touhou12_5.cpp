@@ -134,18 +134,18 @@ void Touhou12_5::readDataFromGameProcess()
 
         if (photoDataPtr != 0)
         {
-            ReadProcessMemory(processHandle, (LPCVOID)(photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET), (LPVOID)&currPhotoNb, 4, NULL);
-            ReadProcessMemory(processHandle, (LPCVOID)(photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET), (LPVOID)&reqPhotoNb, 4, NULL);
+            ReadProcessMemory(processHandle, (LPCVOID)(photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET), (LPVOID)&state.currentPhotoCount, 4, NULL);
+            ReadProcessMemory(processHandle, (LPCVOID)(photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET), (LPVOID)&state.requiredPhotoCount, 4, NULL);
         }
 
         // Check player death
-        if (playerState == PauseType::WIN_LOSE_TUTORIAL && currPhotoNb < reqPhotoNb)
+        if (playerState == PauseType::WIN_LOSE_TUTORIAL && state.currentPhotoCount < state.requiredPhotoCount)
         {
             state.gameState = GameState::Fail;
         }
 
         // Check player completion
-        if (playerState == PauseType::WIN_LOSE_TUTORIAL && currPhotoNb == reqPhotoNb)
+        if (playerState == PauseType::WIN_LOSE_TUTORIAL && state.currentPhotoCount == state.requiredPhotoCount)
         {
             state.score /= 10; // getFormattedScore multiplies the given score by 10.
             state.gameState = GameState::Completed;
@@ -180,9 +180,9 @@ std::string Touhou12_5::getCustomResources() const
 {
 
     std::string resources = "Photo No ";
-    resources.append(std::to_string(currPhotoNb));
+    resources.append(std::to_string(state.currentPhotoCount));
     resources.append("/");
-    resources.append(std::to_string(reqPhotoNb));
+    resources.append(std::to_string(state.requiredPhotoCount));
     return resources;
 }
 
