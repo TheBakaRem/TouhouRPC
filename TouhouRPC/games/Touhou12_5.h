@@ -33,6 +33,7 @@ public:
 
 
 protected:
+	std::string createFormattedScore() const override;
 
 	char bgm_playing[20] = "\0"; // Background music for music room
 	int player{ 0 }; // Player selected (Aya or Hatate)
@@ -48,7 +49,6 @@ protected:
 	// In-stage photo counts are listed in the game state.
 
 	int lastSelectionValue{ 0 }; // Used to store the last menu value. We use it to know if we're in-game or in a replay when the game starts
-
 private:
 	// Adresses correct for v1.00a
 	enum address {

@@ -147,7 +147,6 @@ void Touhou12_5::readDataFromGameProcess()
         // Check player completion
         if (playerState == PauseType::WIN_LOSE_TUTORIAL && state.currentPhotoCount == state.requiredPhotoCount)
         {
-            state.score /= 10; // getFormattedScore multiplies the given score by 10.
             state.gameState = GameState::Completed;
         }
     }
@@ -265,6 +264,18 @@ std::string const& Touhou12_5::getBGMName() const
     else if (fileName.rfind("bgm/th125_05", 0) == 0)  { return th125_musicNames[4]; }
     else if (fileName.rfind("bgm/th125_06", 0) == 0) { return th125_musicNames[5]; }
     else { return notSupported; } // In case an error occurs
+}
+
+std::string Touhou12_5::createFormattedScore() const
+{
+    std::string scoreString = std::to_string(state.score);
+    int insertPosition = scoreString.length() - 3; // Do NOT use size_t as it is unsigned and can't be properly tested in the loop after, causing std::out_of_range exceptions.
+    while (insertPosition > 0)
+    {
+        scoreString.insert(insertPosition, ",");
+        insertPosition -= 3;
+    }
+    return scoreString;
 }
 
 }

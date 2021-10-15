@@ -165,7 +165,7 @@ public:
 	void setSmallImageInfo(std::string& icon, std::string& text) const override;
 
 protected:
-	std::string createFormattedScore() const;
+	virtual std::string createFormattedScore() const;
 	bool shouldShowCoverIcon() const;
 
 	// Everything in this struct should get a value assigned to it.
