@@ -628,7 +628,7 @@ const std::string th125_bossAndSpells[140] = {
 	"Momiji Inubashiri - Dog Sign \"Rabies Bite\"",
 	"Nitori Kawashiro - River Sign \"Dividing Edge\"",
 	"Momiji Inubashiri - Mountain Nomad \"Expellee's Canaan\"",
-	"Kappa \"Dried Shirikodama\"",
+	"Nitori Kawashiro - Kappa \"Dried Shirikodama\"",
 	"",
 	"",
 	"",
