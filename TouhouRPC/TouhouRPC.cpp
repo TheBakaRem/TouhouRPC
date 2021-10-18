@@ -1,9 +1,22 @@
 // TouhouRPC.cpp : Main file
-//
+
+// Copyright (C) 2020  Rem
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // Version definition
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 4
+#define VERSION_MINOR 5
 #define VERSION_REVISION 0
 
 // Includes
@@ -97,16 +110,20 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 }
 
 void startDisplay() {
-    cout << "TOUHOU RPC - Discord Rich Presence status for Touhou games - Version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << endl;
-    cout << "Available on GitHub: https://www.github.com/FrDarky/TouhouRPC" << endl;
+    cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << endl;
+    cout << "Available on GitHub: https://www.github.com/TheBakaRem/TouhouRPC" << endl;
+    cout << "Copyright (C) 2020  Rem" << endl;
+    cout << "Licensed under the GNU General Public License v3.0. This program comes with ABSOLUTELY NO WARRANTY; for details see the LICENSE file." << endl;
+    cout << "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License." << endl;
+    cout << endl;
+
     cout << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer." << endl;
-    cout << "The program automatically detects when you change betwen supported games." << endl;
+    cout << "The program automatically detects when you change between supported games." << endl;
     cout << "You can close this program at any time by pressing (Ctrl+C)." << endl;
     cout << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB), 10 (MoF), 11 (SA), 12 (UFO), 12.5 (DS), 12.8 (GFW), 13 (TD), 14 (DDC), 14.3 (ISC), 15 (LoLK), 16 (HSiFS), 17 (WBaWC), 18 (UM)." << endl;
     cout << endl;
     
     cout << "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!" << endl;
-    cout << endl;
 }
 
 int main(int argc, char** argv)

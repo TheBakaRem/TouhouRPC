@@ -43,3 +43,6 @@ If you want to see other games or fangames supported, contributions are welcome!
 
 ## Additional notes
 This program supports games patched using the [Touhou Community Reliant Automatic Patcher](https://github.com/thpatch/thcrap). It also supports games using the vpatch.
+
+## License
+TouhouRPC is licensed under the [GNU General Public License v3.0](LICENSE).
