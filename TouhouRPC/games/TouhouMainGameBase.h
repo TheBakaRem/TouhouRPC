@@ -83,6 +83,9 @@ enum class Character
 
 	// ISC
 	Seija,
+
+	// VD
+	Sumireko,
 };
 
 enum class SubCharacter

@@ -23,6 +23,7 @@ Make sure the *discord_game_sdk.dll* file is in the same folder as the *TouhouRP
 - Touhou 14.3 - Impossible Spell Card
 - Touhou 15 - Legacy of Lunatic Kingdom
 - Touhou 16 - Hidden Stars in Four Seasons
+- Touhou 16.5 - Violet Detector
 - Touhou 17 - Wily Beast and Weakest Creature
 - Touhou 18 - Unconnected Marketeers - Trial v0.02a (you must name the game "th18tr.exe")
 - Touhou 18 - Unconnected Marketeers

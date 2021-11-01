@@ -1447,6 +1447,148 @@ const std::string th16_musicNames[18] = {
 	"Secret God Matara ~ Hidden Star in All Seasons.",
 };
 
+// Touhou 16.3 Bosses and Spells
+const std::string th165_bossAndSpells[103] = {
+	// Sunday
+	"Reimu Hakurei",
+	"Reimu Hakurei",
+	// Monday
+	"Seiran - Bullet Sign \"Eagle Shooting\"",
+	"Ringo - Rabbit Sign \"Strawberry Big Dango\"",
+	"Seiran - Bullet Sign \"Rabbit Falconer\"",
+	"Ringo - Rabbit Sign \"Three Dango Sisters\"",
+	// Tuedsay
+	"Eternity Larva",
+	"Eternity Larva - Butterfly Sign \"Butterfly Dream\"",
+	"Eternity Larva - Butterfly Sign \"Surrounding Scales\"",
+	// Wednesday
+	"Marisa Kirisame",
+	"Narumi Yatadera - Magic Sign \"Merciful Jizo\"",
+	"Narumi Yatadera - Jizo \"Bodhisattva Stomp\"",
+	"Narumi Yatadera - Jizo \"Lively Bullet Golem\"",
+	// Thursday
+	"Nemuno Sakata",
+	"Nemuno Sakata - Sharpen Sign \"Madly Glinting Oni Kitchen Knife\"",
+	"Nemuno Sakata - Murder Sign \"Deeply-Secluded Yamanba\"",
+	// Friday
+	"Aunn Komano",
+	"Aunn Komano - Spinning Top \"Koma-Inu Giant Slalom Spin\"",
+	"Aunn Komano - Spinning Top \"A-Un Flash\"",
+	// Saturday
+	"Doremy Sweet",
+	// Wrong Sunday
+	"Reimu Hakurei",
+	"Seiran - Dream Bullet \"Lunatic Dream Shot\"",
+	"Ringo - Dango \"Dango Flower\"",
+	"Eternity Larva - Dream Butterfly \"Crazy Butterfly\"",
+	"Narumi Yatadera - Dream Jizo \"Kalpagni's Hope\"",
+	"Nemuno Sakata - Dream Blade Exhaustion \"Demonic Killer's Retreat\"",
+	"Aunn Komano - Dream Dog \"101 Stray Dogs\"",
+	// Wrong Monday
+	"Clownpiece",
+	"Clownpiece - Hell Sign \"Bursting Grudge\"",
+	"Clownpiece - Hell Sign \"Double Stripe\"",
+	"Clownpiece - Moon Dream \"Eclipse Nightmare\"",
+	// Wrong Tuedsay
+	"Sagume Kishin",
+	"Sagume Kishin - Orb Sign \"Impregnable Fortress' Yin-Yang Orbs\"",
+	"Sagume Kishin - Orb Sign \"Hard-to-Photograph Shotgun Coronation of the Gods\"",
+	"Sagume Kishin - Dream Heron \"One-Winged Dream Heron\"",
+	// Wrong Wednesday
+	"Doremy Sweet",
+	"Mai Teireida - Bamboo Sign \"Bamboo Labyrinth\"",
+	"Satono Nishida - Myōga Ginger \"Mesmerism Dance\"",
+	"Mai Teireida - Broadleaf Sign \"Tanabata Star Dream\"",
+	"Satono Nishida - Myōga Blessing \"Behind Nightmare\"",
+	"Mai Teireida & Satono Nishida",
+	// Wrong Thursday
+	"Hecatia Lapislazuli - Otherworld \"Distorted Fire\"",
+	"Hecatia Lapislazuli - Otherworld \"Resentful Rain of Hell\"",
+	"Hecatia Lapislazuli - Moon \"Cosmic Radiation\"",
+	"Hecatia Lapislazuli - Otherworld \"Ōmagatoki-Dream-\"",
+	"Hecatia Lapislazuli - \"The Moon is Falling!\"",
+	// Wrong Friday
+	"Junko",
+	"Junko - \"Trembling, Shivering Nightmare\"",
+	"Junko - \"Psychedelic Mandala\"",
+	"Junko - \"Pure Light with Extreme Majesty\"",
+	"Junko - \"Danmaku for Killing with Certainty via Nightmares\"",
+	// Wrong Saturday
+	"Okina Matara - Secret Ceremony \"Matarah Sukkha\"",
+	"Okina Matara - Secret Ceremony \"The Rear Face's Wicked Flames\"",
+	"Okina Matara - Back Sign \"Halo of the Absolute Secret God\"",
+	"Okina Matara - Secret Ceremony \"Secret God's Behind-the-Scenes Danmaku\"",
+	"Okina Matara - Secret Ceremony \"Arcane Dupion\"",
+	"Okina Matara",
+	// Nightmare Sunday
+	"Remilia Scarlet & Flandre Scarlet - Scarlet Devil Sign \"Bloody Catastrophe\"",
+	"Byakuren Hijiri & Toyosatomimi no Miko - Star Divine Sign \"Superhuman of Seventeen Articles\"",
+	"Remilia Scarlet & Byakuren Hijiri - Scarlet Star Sign \"Superhuman's Bloody Knife\"",
+	"Flandre Scarlet & Toyosatomimi no Miko - Scarlet Divine Sign \"Catastrophe of Seventeen Articles\"",
+	"Remilia Scarlet & Toyosatomimi no Miko - Divine Scarlet Sign \"Bloody Laser of Seventeen Articles\"",
+	"Flandre Scarlet & Byakuren Hijiri - Scarlet Star Sign \"Superhuman Catastrophe Pilgrimage\"",
+	// Nightmare Monday
+	"Yuyuko Saigyouji & Eiki Shiki, Yamaxanadu - Mystic Flower Sign \"Butterfly Storm Yama Scepter\"",
+	"Kanako Yasaka & Suwako Moriya - Wind God Sign \"Mishabashira\"",
+	"Yuyuko Saigyouji & Kanako Yasaka - Wind Mystic Sign \"Dead Butterfly Onbashira\"",
+	"Eiki Shiki, Yamaxanadu & Suwako Moriya - Wind Flower Sign \"Mishaguji-sama's Right and Wrong\"",
+	"Yuyuko Saigyouji & Suwako Moriya - Mystic Wind Sign \"Native Butterfly Storm\"",
+	"Eiki Shiki, Yamaxanadu & Kanako Yasaka - Wind Flower Sign \"Onbashira Trial\"",
+	// Nightmare Tuedsay
+	"Eirin Yagokoro & Kaguya Houraisan - Eternal Night Sign \"Bullet Branch of Hourai in a Pot\"",
+	"Tenshi Hinanawi & Shinmyoumaru Sukuna - Scarlet Needle Sign \"Keystones Grow Bigger, Too!\"",
+	"Eirin Yagokoro & Tenshi Hinanawi - Eternal Scarlet Sign \"Plummeting Bhava-agra in a Pot\"",
+	"Kaguya Houraisan & Shinmyoumaru Sukuna - Shining Night Sign \"Big Bullet Branch of Hourai\"",
+	"Eirin Yagokoro & Shinmyoumaru Sukuna - Eternal Shining Sign \"Pot Growing Bigger\"",
+	"Kaguya Houraisan & Tenshi Hinanawi - Scarlet Night Sign \"Bullet Keystones of Hourai\"",
+	// Nightmare Wednesday
+	"Satori Komeiji & Utsuho Reiuji - Earth Spirit Sign \"Mind Stellar Steal\"",
+	"Ran Yakumo & Koishi Komeiji - Earth Mystic Sign \"Shikigami of the Id\"",
+	"Satori Komeiji & Koishi Komeiji - \"Perfect Mind Control\"",
+	"Ran Yakumo & Utsuho Reiuji - Earth Mystic Sign \"Shikigami's Giant Star\"",
+	"Ran Yakumo & Satori Komeiji - Earth Mystic Sign \"Shikigami of the Ego\"",
+	"Utsuho Reiuji & Koishi Komeiji - Earth Spirit Sign \"Mind Stellar Relief\"",
+	// Nightmare Thursday
+	"Nue Houjuu & Mamizou Futatsuiwa - Divine Star Sign \"Unidentified Ghost-Light Crowd\"",
+	"Iku Nagae & Raiko Horikawa - Shining Heaven Sign \"Thunderclap Dondoko Drum\"",
+	"Mamizou Futatsuiwa & Raiko Horikawa - Shining Divine Sign \"Mysterious Dondoko Crowd\"",
+	"Iku Nagae & Nue Houjuu - Scarlet Star Sign \"Unidentified Lightning Strike\"",
+	"Iku Nagae & Mamizou Futatsuiwa - Divine Scarlet Sign \"Stalker in a Thunderstorm\"",
+	"Nue Houjuu & Raiko Horikawa - Shining Star Sign \"Unidentified Dondoko Drum\"",
+	// Nightmare Friday
+	"Suika Ibuki & Fujiwara no Mokou - Gathering Night Sign \"Precious Life Scatters like Mist\"",
+	"Junko & Hecatia Lapislazuli - Ultramarine Orb Sign \"Pure and Impure Danmaku\"",
+	"Suika Ibuki & Junko - Gathering Orb Sign \"Purely Beyond All in the Fog\"",
+	"Fujiwara no Mokou & Hecatia Lapislazuli - Eternal Orb Sign \"Reckless Sacrifice's Reflection\"",
+	"Suika Ibuki & Hecatia Lapislazuli - Gathering Orb Sign \"Mist Ray\"",
+	"Fujiwara no Mokou & Junko - Eternal Orb Sign \"An Unsullied Orb and a Much-Sullied Spirit\"",
+	// Nightmare Saturday
+	"Yukari Yakumo & Okina Matara - \"Secret God Barrier\"",
+	"Reimu Hakurei & Marisa Kirisame - \"Sneak-Photographer Exorcism Master Spark\"",
+	"Reimu Hakurei & Okina Matara - \"Sneak-Photographer Exorcism from the Back\"",
+	"Marisa Kirisame & Yukari Yakumo - \"Shoot the Danmaku Barrier!\"",
+	"Marisa Kirisame & Okina Matara - \"Coward's Master Spark\"",
+	"Reimu Hakurei & Yukari Yakumo - \"Unauthorized Danmaku Photography is Strictly Prohibited\"",
+	// Nightmare Diary
+	"Doremy Sweet - \"The Nightmare One Has on Their Final Sunday\"",
+	"Sumireko Usami - Paper Sign \"Zener Card Shuriken\"",
+	"Sumireko Usami & Yukari Yakumo - Paper Sign \"Barrier-Enclosed Zener Card Shuriken\"",
+	"Sumireko Usami",
+};
+
+// Touhou 16.5 Music
+const std::string th165_musicNames[8] = {
+	"Diary of Nightmares",
+	"Lucid Dreamer",
+	"Lunatic Dreamer",
+	"Nightmare Diary",
+	"\"Old Adam\" Bar",
+	"The Darkness Brought in by Swallowstone Naturalis Historia",
+	"Eternal Spring Dream",
+	"The Concealed Four Seasons",
+};
+
+
 // Touhou 17
 const std::string th17_spellCardName[101] = {
 	// stage 1 (1-8, 8 cards)
