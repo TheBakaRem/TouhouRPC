@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -171,9 +171,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="DiscordRPC.cpp" />
-    <ClCompile Include="GameDetector.cpp" />
+    <ClCompile Include="Config.ixx" />
+    <ClCompile Include="DiscordRPC.ixx" />
+    <ClCompile Include="GameDetector.ixx" />
     <ClCompile Include="games\Touhou06.cpp" />
     <ClCompile Include="games\Touhou07.cpp" />
     <ClCompile Include="games\Touhou08.cpp" />
@@ -193,28 +193,24 @@
     <ClCompile Include="games\Touhou18.cpp" />
     <ClCompile Include="games\TouhouBase.cpp" />
     <ClCompile Include="games\TouhouMainGameBase.cpp" />
-    <ClCompile Include="includes\discord-rpc\achievement_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\activity_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\application_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\core.cpp" />
-    <ClCompile Include="includes\discord-rpc\image_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\lobby_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\network_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\overlay_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\relationship_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\storage_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\store_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\types.cpp" />
-    <ClCompile Include="includes\discord-rpc\user_manager.cpp" />
-    <ClCompile Include="includes\discord-rpc\voice_manager.cpp" />
-    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="includes\discord-files\achievement_manager.cpp" />
+    <ClCompile Include="includes\discord-files\activity_manager.cpp" />
+    <ClCompile Include="includes\discord-files\application_manager.cpp" />
+    <ClCompile Include="includes\discord-files\core.cpp" />
+    <ClCompile Include="includes\discord-files\image_manager.cpp" />
+    <ClCompile Include="includes\discord-files\lobby_manager.cpp" />
+    <ClCompile Include="includes\discord-files\network_manager.cpp" />
+    <ClCompile Include="includes\discord-files\overlay_manager.cpp" />
+    <ClCompile Include="includes\discord-files\relationship_manager.cpp" />
+    <ClCompile Include="includes\discord-files\storage_manager.cpp" />
+    <ClCompile Include="includes\discord-files\store_manager.cpp" />
+    <ClCompile Include="includes\discord-files\types.cpp" />
+    <ClCompile Include="includes\discord-files\user_manager.cpp" />
+    <ClCompile Include="includes\discord-files\voice_manager.cpp" />
+    <ClCompile Include="Log.ixx" />
     <ClCompile Include="TouhouRPC.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="DiscordRPC.h" />
-    <ClInclude Include="GameDetector.h" />
-    <ClInclude Include="games\GameStrings.h" />
     <ClInclude Include="games\Touhou06.h" />
     <ClInclude Include="games\Touhou07.h" />
     <ClInclude Include="games\Touhou08.h" />
@@ -234,24 +230,23 @@
     <ClInclude Include="games\Touhou18.h" />
     <ClInclude Include="games\TouhouBase.h" />
     <ClInclude Include="games\TouhouMainGameBase.h" />
-    <ClInclude Include="includes\discord-rpc\achievement_manager.h" />
-    <ClInclude Include="includes\discord-rpc\activity_manager.h" />
-    <ClInclude Include="includes\discord-rpc\application_manager.h" />
-    <ClInclude Include="includes\discord-rpc\core.h" />
-    <ClInclude Include="includes\discord-rpc\discord.h" />
-    <ClInclude Include="includes\discord-rpc\event.h" />
-    <ClInclude Include="includes\discord-rpc\ffi.h" />
-    <ClInclude Include="includes\discord-rpc\image_manager.h" />
-    <ClInclude Include="includes\discord-rpc\lobby_manager.h" />
-    <ClInclude Include="includes\discord-rpc\network_manager.h" />
-    <ClInclude Include="includes\discord-rpc\overlay_manager.h" />
-    <ClInclude Include="includes\discord-rpc\relationship_manager.h" />
-    <ClInclude Include="includes\discord-rpc\storage_manager.h" />
-    <ClInclude Include="includes\discord-rpc\store_manager.h" />
-    <ClInclude Include="includes\discord-rpc\types.h" />
-    <ClInclude Include="includes\discord-rpc\user_manager.h" />
-    <ClInclude Include="includes\discord-rpc\voice_manager.h" />
-    <ClInclude Include="Log.h" />
+    <ClInclude Include="includes\discord-files\achievement_manager.h" />
+    <ClInclude Include="includes\discord-files\activity_manager.h" />
+    <ClInclude Include="includes\discord-files\application_manager.h" />
+    <ClInclude Include="includes\discord-files\core.h" />
+    <ClInclude Include="includes\discord-files\discord.h" />
+    <ClInclude Include="includes\discord-files\event.h" />
+    <ClInclude Include="includes\discord-files\ffi.h" />
+    <ClInclude Include="includes\discord-files\image_manager.h" />
+    <ClInclude Include="includes\discord-files\lobby_manager.h" />
+    <ClInclude Include="includes\discord-files\network_manager.h" />
+    <ClInclude Include="includes\discord-files\overlay_manager.h" />
+    <ClInclude Include="includes\discord-files\relationship_manager.h" />
+    <ClInclude Include="includes\discord-files\storage_manager.h" />
+    <ClInclude Include="includes\discord-files\store_manager.h" />
+    <ClInclude Include="includes\discord-files\types.h" />
+    <ClInclude Include="includes\discord-files\user_manager.h" />
+    <ClInclude Include="includes\discord-files\voice_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />

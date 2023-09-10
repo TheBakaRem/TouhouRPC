@@ -1,6 +1,6 @@
 #include "TouhouMainGameBase.h"
 
-#include "../Log.h"
+import Log;
 
 TouhouMainGameBase::TouhouMainGameBase(PROCESSENTRY32W const& pe32)
 	: TouhouBase(pe32)

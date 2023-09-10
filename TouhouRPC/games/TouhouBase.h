@@ -1,5 +1,5 @@
 #pragma once
-#include "../DiscordRPC.h"
+import DiscordRPC;
 #include "GameStrings.h"
 #include <string>
 #include <Windows.h>

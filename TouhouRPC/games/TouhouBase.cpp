@@ -6,7 +6,7 @@
 #include <handleapi.h>
 #include <processthreadsapi.h>
 
-#include "../Log.h"
+import Log;
 
 // CHANGE INITIALIZER
 TouhouBase::TouhouBase(PROCESSENTRY32W const& pe32)
@@ -14,11 +14,10 @@ TouhouBase::TouhouBase(PROCESSENTRY32W const& pe32)
     // Process opening
     processHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, pe32.th32ProcessID);
     if (processHandle != nullptr) {
-        logSystem->print(Log::LOG_DEBUG, "PID %d: Read access granted!", pe32.th32ProcessID);
+        Log::debug("PID {}: Read access granted!", pe32.th32ProcessID);
         linkedToProcess = true;
-    }
-    else {
-        logSystem->print(Log::LOG_DEBUG, "PID %d: Read access not granted!", pe32.th32ProcessID);
+    } else {
+        Log::debug("PID {}: Read access not granted!", pe32.th32ProcessID);
         linkedToProcess = false;
     }
 }
