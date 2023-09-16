@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Fichiers sources">
@@ -22,6 +22,9 @@
     <Filter Include="Fichiers sources\Modules">
       <UniqueIdentifier>{8251aa37-664b-4220-bfb0-a0263ac8ee37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers sources\Modules\Games">
+      <UniqueIdentifier>{02de8663-fa90-4f1a-a361-728ceef8d630}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Discord Files">
       <UniqueIdentifier>{66dcce89-4c66-478b-a01e-84b7fc105e08}</UniqueIdentifier>
     </Filter>
@@ -40,9 +43,6 @@
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
     <ClCompile Include="games\Touhou15.cpp">
-      <Filter>Fichiers sources\game-classes</Filter>
-    </ClCompile>
-    <ClCompile Include="games\Touhou06.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
     <ClCompile Include="games\Touhou08.cpp">
@@ -93,6 +93,9 @@
     <ClCompile Include="Log.ixx">
       <Filter>Fichiers sources\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Games-Strings.ixx">
+      <Filter>Fichiers sources\Modules\Games</Filter>
+    </ClCompile>
     <ClCompile Include="includes\discord-files\achievement_manager.cpp">
       <Filter>Discord Files\Source Files</Filter>
     </ClCompile>
@@ -141,10 +144,16 @@
     <ClCompile Include="GameDetector.ixx">
       <Filter>Fichiers sources\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="games\TouhouMainGameBase.cpp">
-      <Filter>Fichiers sources\game-classes</Filter>
+    <ClCompile Include="Games.ixx">
+      <Filter>Fichiers sources\Modules\Games</Filter>
     </ClCompile>
-    <ClCompile Include="games\TouhouBase.cpp">
+    <ClCompile Include="Games-Enums.ixx">
+      <Filter>Fichiers sources\Modules\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Games-TouhouBase.ixx">
+      <Filter>Fichiers sources\Modules\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou06.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -153,9 +162,6 @@
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
     <ClInclude Include="games\Touhou15.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou06.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
     <ClInclude Include="games\Touhou08.h">
@@ -251,10 +257,7 @@
     <ClInclude Include="includes\discord-files\voice_manager.h">
       <Filter>Discord Files\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="games\TouhouBase.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\TouhouMainGameBase.h">
+    <ClInclude Include="games\Touhou06.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
     </ClInclude>
   </ItemGroup>

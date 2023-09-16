@@ -15,9 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // Version definition
-constexpr auto VERSION_MAJOR = 1;
-constexpr auto VERSION_MINOR = 5;
-constexpr auto VERSION_REVISION = 0;
+constexpr auto VERSION = "1.5.0";
 
 // Includes
 import <iostream>;
@@ -105,7 +103,8 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
 }
 
 void startDisplay() {
-    cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << "\n"
+    ios_base::sync_with_stdio(false);
+    cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION << "\n"
     << "Available on GitHub: https://www.github.com/TheBakaRem/TouhouRPC\n"
     << "Copyright (C) 2020-2023  Rem\n"
     << "Licensed under the GNU General Public License v3.0. This program comes with ABSOLUTELY NO WARRANTY; for details see the LICENSE file.\n"

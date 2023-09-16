@@ -1,6 +1,5 @@
 ﻿module;
 
-#include "games/TouhouBase.h"
 #include "games/Touhou06.h"
 #include "games/Touhou07.h"
 #include "games/Touhou08.h"
@@ -19,12 +18,18 @@
 #include "games/Touhou17.h"
 #include "games/Touhou18.h"
 
+#include <Windows.h>
+#include <memoryapi.h>
+#include <TlHelp32.h>
+#include <handleapi.h>
+
 export module GameDetector;
 
 import <vector>;
 import <string>;
 import <memory>;
 import Log;
+import Games;
 
 using namespace std;
 
@@ -130,24 +135,23 @@ export unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence) {
 
         // Game check
         switch (game) {
-            case SupportedGame::EoSD_6:      thGame = make_unique<Touhou06::Touhou06>(pe32);      break;
-            case SupportedGame::PCB_7:       thGame = make_unique<Touhou07::Touhou07>(pe32);      break;
-            case SupportedGame::IN_8:        thGame = make_unique<Touhou08::Touhou08>(pe32);      break;
-            case SupportedGame::PoFV_9:      thGame = make_unique<Touhou09::Touhou09>(pe32);      break;
-            case SupportedGame::StB_9_5:     thGame = make_unique<Touhou09_5::Touhou09_5>(pe32);  break;
-            case SupportedGame::MoF_10:      thGame = make_unique<Touhou10::Touhou10>(pe32);      break;
-            case SupportedGame::SA_11:       thGame = make_unique<Touhou11::Touhou11>(pe32);      break;
-            case SupportedGame::UFO_12:      thGame = make_unique<Touhou12::Touhou12>(pe32);      break;
-            case SupportedGame::DS_12_5:     thGame = make_unique<Touhou12_5::Touhou12_5>(pe32);  break;
-            case SupportedGame::GFW_12_8:    thGame = make_unique<Touhou12_8::Touhou12_8>(pe32);  break;
-            case SupportedGame::TD_13:       thGame = make_unique<Touhou13::Touhou13>(pe32);      break;
-            case SupportedGame::DDC_14:      thGame = make_unique<Touhou14::Touhou14>(pe32);      break;
-            case SupportedGame::ISC_14_3:    thGame = make_unique<Touhou14_3::Touhou14_3>(pe32);  break;
-            case SupportedGame::LoLK_15:     thGame = make_unique<Touhou15::Touhou15>(pe32);      break;
-            case SupportedGame::HSiFS_16:    thGame = make_unique<Touhou16::Touhou16>(pe32);      break;
-            case SupportedGame::WBaWC_17:    thGame = make_unique<Touhou17::Touhou17>(pe32);      break;
-            case SupportedGame::UM_18_Trial: thGame = make_unique<Touhou18::Touhou18Trial>(pe32); break;
-            case SupportedGame::UM_18:       thGame = make_unique<Touhou18::Touhou18>(pe32);      break;
+            case SupportedGame::EoSD_6:      thGame = make_unique<Touhou06>(pe32);      break;
+            case SupportedGame::PCB_7:       thGame = make_unique<Touhou07>(pe32);      break;
+            case SupportedGame::IN_8:        thGame = make_unique<Touhou08>(pe32);      break;
+            case SupportedGame::PoFV_9:      thGame = make_unique<Touhou09>(pe32);      break;
+            case SupportedGame::StB_9_5:     thGame = make_unique<Touhou09_5>(pe32);  break;
+            case SupportedGame::MoF_10:      thGame = make_unique<Touhou10>(pe32);      break;
+            case SupportedGame::SA_11:       thGame = make_unique<Touhou11>(pe32);      break;
+            case SupportedGame::UFO_12:      thGame = make_unique<Touhou12>(pe32);      break;
+            case SupportedGame::DS_12_5:     thGame = make_unique<Touhou12_5>(pe32);  break;
+            case SupportedGame::GFW_12_8:    thGame = make_unique<Touhou12_8>(pe32);  break;
+            case SupportedGame::TD_13:       thGame = make_unique<Touhou13>(pe32);      break;
+            case SupportedGame::DDC_14:      thGame = make_unique<Touhou14>(pe32);      break;
+            case SupportedGame::ISC_14_3:    thGame = make_unique<Touhou14_3>(pe32);  break;
+            case SupportedGame::LoLK_15:     thGame = make_unique<Touhou15>(pe32);      break;
+            case SupportedGame::HSiFS_16:    thGame = make_unique<Touhou16>(pe32);      break;
+            case SupportedGame::WBaWC_17:    thGame = make_unique<Touhou17>(pe32);      break;
+            case SupportedGame::UM_18:       thGame = make_unique<Touhou18>(pe32);      break;
 
             case SupportedGame::Invalid:
             {
