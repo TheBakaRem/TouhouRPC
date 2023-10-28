@@ -246,6 +246,6 @@ std::string Touhou09::getBGMName() const {
     return th09_musicNames[bgm];
 }
 
-std::string Touhou09::getCharacterName(int character) const {
-    return th09_characterNames[character];
+std::string Touhou09::getCharacterName(int chara) const {
+    return th09_characterNames[chara];
 }

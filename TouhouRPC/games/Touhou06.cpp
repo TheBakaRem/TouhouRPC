@@ -21,7 +21,7 @@ void Touhou06::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
 
     // Character
-    int character = ReadProcessMemoryInt(processHandle, CHARACTER, 1);
+    character = ReadProcessMemoryInt(processHandle, CHARACTER, 1);
     switch (character) {
         default:
         case 0: state.character = Character::Reimu; break;
@@ -37,7 +37,7 @@ void Touhou06::readDataFromGameProcess() {
     }
 
     // Difficulty
-    int difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY, 1);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY, 1);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -48,16 +48,16 @@ void Touhou06::readDataFromGameProcess() {
     }
 
     // Stage
-    int stage = ReadProcessMemoryInt(processHandle, STAGE, 1);
+    stage = ReadProcessMemoryInt(processHandle, STAGE, 1);
 
     // Game state
-    int gameState = ReadProcessMemoryInt(processHandle, GAME_STATE, 1);
+    gameState = ReadProcessMemoryInt(processHandle, GAME_STATE, 1);
 
     // Game state 2 (boss life)
-    int gameState2 = ReadProcessMemoryInt(processHandle, GAME_STATE_2, 1);
+    gameState2 = ReadProcessMemoryInt(processHandle, GAME_STATE_2, 1);
 
     // Read menu state
-    int menuState = ReadProcessMemoryInt(processHandle, MENU_STATE);
+    menuState = ReadProcessMemoryInt(processHandle, MENU_STATE);
 
     int practiceFlag = ReadProcessMemoryInt(processHandle, PRACTICE_FLAG, 1);
 

@@ -77,7 +77,7 @@ void Touhou09_5::readDataFromGameProcess() {
     // Custom menu display
     if (state.gameState == GameState::MainMenu && state.mainMenuState == MainMenuState::GameStart_Custom) {
         // Setting total score and completed scenes
-        if (menuDataPtr != 0) {
+        if (menuDataPtr) {
             combinedPhotoScore = 0;
             completedScenes = 0;
 
@@ -104,7 +104,7 @@ void Touhou09_5::readDataFromGameProcess() {
 
         TouhouAddress photoDataPtr = ReadProcessMemoryInt(processHandle, gameDataPtr + GAME_PHOTO_STATS_PTR_OFFSET);
 
-        if (photoDataPtr != 0) {
+        if (photoDataPtr) {
             state.currentPhotoCount = ReadProcessMemoryInt(processHandle, photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET);
             state.requiredPhotoCount = ReadProcessMemoryInt(processHandle, photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET);
         }
@@ -126,12 +126,7 @@ void Touhou09_5::readDataFromGameProcess() {
 std::string Touhou09_5::getCustomMenuResources() const {
 
     // Formatted score 
-    std::string scoreString = std::to_string(combinedPhotoScore);
-    int insertPosition = scoreString.length() - 3;
-    while (insertPosition > 0) {
-        scoreString.insert(insertPosition, ",");
-        insertPosition -= 3;
-    }
+    std::string scoreString = formatScore(combinedPhotoScore);
 
     // Resource string
     std::string resources = std::to_string(completedScenes);

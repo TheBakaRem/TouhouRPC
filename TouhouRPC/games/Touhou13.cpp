@@ -43,7 +43,7 @@ void Touhou13::readDataFromGameProcess() {
     // and they kind of behave awkwardly in DDC. For now we mainly care about whether we're in the music room or not.
 
     TouhouAddress menu_pointer = ReadProcessMemoryInt(processHandle, MENU_POINTER);
-    if (state.gameState == GameState::Playing && menu_pointer != 0) {
+    if (state.gameState == GameState::Playing && menu_pointer) {
         // The most reliable way of determining our current menu state is through the combination of
         // menu display state, option count, and extra flags that get set.
         // This is because of a bug detailed in the mini-documentation below the code

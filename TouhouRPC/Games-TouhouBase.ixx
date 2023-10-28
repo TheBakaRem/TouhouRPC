@@ -46,7 +46,7 @@ export {
     class TouhouBase {
     public:
         TouhouBase(PROCESSENTRY32W const& pe32);
-        ~TouhouBase();
+        virtual ~TouhouBase();
 
         // Check if the program is still linked to the game
         bool isLinkedToProcess() const { return linkedToProcess; };
@@ -99,6 +99,7 @@ export {
         int menuState{ 1 };
 
         // Functions only used internally for display.
+        string formatScore(int score) const;
         virtual string createFormattedScore() const;
         bool shouldShowCoverIcon() const;
 
@@ -683,13 +684,18 @@ export {
             ;
     }
 
-    string TouhouBase::createFormattedScore() const {
-        string scoreString = to_string((state.score * 10) + state.gameOvers);
-        int insertPosition = scoreString.length() - 3; // Do NOT use size_t as it is unsigned and can't be properly tested in the loop after, causing out_of_range exceptions.
+    string TouhouBase::formatScore(int score) const {
+        string scoreString = to_string(score);
+        size_t insertPosition = scoreString.length();
+        insertPosition -= 3;
         while (insertPosition > 0) {
             scoreString.insert(insertPosition, ",");
             insertPosition -= 3;
         }
         return scoreString;
+    }
+
+    string TouhouBase::createFormattedScore() const {
+        return formatScore((state.score * 10) + state.gameOvers);
     }
 };

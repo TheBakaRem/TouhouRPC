@@ -21,7 +21,7 @@ void Touhou12_5::readDataFromGameProcess() {
     bgm_playing = ReadProcessMemoryString(processHandle, BGM_STR, 20);
 
     // If we have mainMenuStatePtr, then we are in the main menu
-    if (mainMenuStatePtr != 0) {
+    if (mainMenuStatePtr) {
         menuState = ReadProcessMemoryInt(processHandle, (mainMenuStatePtr + MENU_STATE_OFFSET));
         switch (menuState) {
             default:
@@ -77,7 +77,7 @@ void Touhou12_5::readDataFromGameProcess() {
     // Custom menu display
     if (state.gameState == GameState::MainMenu && state.mainMenuState == MainMenuState::GameStart_Custom) {
         // Setting total score and completed scenes
-        if (menuDataPtr != 0) {
+        if (menuDataPtr) {
             combinedPhotoScoreAya = 0;
             completedScenesAya = 0;
 
@@ -115,7 +115,7 @@ void Touhou12_5::readDataFromGameProcess() {
 
         TouhouAddress photoDataPtr = ReadProcessMemoryInt(processHandle, GAME_PHOTO_STATS_PTR);
 
-        if (photoDataPtr != 0) {
+        if (photoDataPtr) {
             state.currentPhotoCount = ReadProcessMemoryInt(processHandle, (photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET));
             state.requiredPhotoCount = ReadProcessMemoryInt(processHandle, (photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET));
         }
@@ -136,12 +136,7 @@ void Touhou12_5::readDataFromGameProcess() {
 std::string Touhou12_5::getCustomMenuResources() const {
 
     // Formatted score
-    std::string scoreString = std::to_string(state.character == Character::Aya ? combinedPhotoScoreAya : combinedPhotoScoreHatate);
-    int insertPosition = scoreString.length() - 3;
-    while (insertPosition > 0) {
-        scoreString.insert(insertPosition, ",");
-        insertPosition -= 3;
-    }
+    std::string scoreString = formatScore(state.character == Character::Aya ? combinedPhotoScoreAya : combinedPhotoScoreHatate);
 
     // Resource string
     std::string resources = std::to_string(state.character == Character::Aya ? completedScenesAya : completedScenesHatate);
@@ -232,11 +227,5 @@ std::string Touhou12_5::getBGMName() const {
 }
 
 std::string Touhou12_5::createFormattedScore() const {
-    std::string scoreString = std::to_string(state.score);
-    int insertPosition = scoreString.length() - 3; // Do NOT use size_t as it is unsigned and can't be properly tested in the loop after, causing std::out_of_range exceptions.
-    while (insertPosition > 0) {
-        scoreString.insert(insertPosition, ",");
-        insertPosition -= 3;
-    }
-    return scoreString;
+    return formatScore(state.score);
 }

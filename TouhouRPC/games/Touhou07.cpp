@@ -13,7 +13,7 @@ void Touhou07::readDataFromGameProcess() {
     // since these are minor and PCB's data is laid out in a pretty hellish way, tempted to just leave it
 
     // Reset mainMenuState, bgm will tell us if we're in the menu
-    char mainMenuState = -1;
+    int mainMenuState = -1;
     state.gameState = GameState::Playing;
     state.stageState = StageState::Stage;
 
@@ -25,7 +25,7 @@ void Touhou07::readDataFromGameProcess() {
         state.gameState = GameState::MainMenu;
 
         int menu_pointer = ReadProcessMemoryInt(processHandle, MENU_POINTER);
-        if (menu_pointer != 0) {
+        if (menu_pointer) {
             // this menu state seems to be all over the place. might be tied to background image being displayed
             mainMenuState = ReadProcessMemoryInt(processHandle, (menu_pointer + 0x0C));
 
@@ -93,7 +93,7 @@ void Touhou07::readDataFromGameProcess() {
         case 1: state.subCharacter = SubCharacter::B; break;
     }
 
-    int difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
