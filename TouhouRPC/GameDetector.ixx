@@ -1,23 +1,5 @@
 ﻿module;
 
-#include "games/Touhou06.h"
-#include "games/Touhou07.h"
-#include "games/Touhou08.h"
-#include "games/Touhou09.h"
-#include "games/Touhou09_5.h"
-#include "games/Touhou10.h"
-#include "games/Touhou11.h"
-#include "games/Touhou12.h"
-#include "games/Touhou12_5.h"
-#include "games/Touhou12_8.h"
-#include "games/Touhou13.h"
-#include "games/Touhou14.h"
-#include "games/Touhou14_3.h"
-#include "games/Touhou15.h"
-#include "games/Touhou16.h"
-#include "games/Touhou17.h"
-#include "games/Touhou18.h"
-
 #include <Windows.h>
 #include <memoryapi.h>
 #include <TlHelp32.h>
@@ -25,6 +7,23 @@
 
 export module GameDetector;
 
+import "games/Touhou06.h";
+import "games/Touhou07.h";
+import "games/Touhou08.h";
+import "games/Touhou09.h";
+import "games/Touhou09_5.h";
+import "games/Touhou10.h";
+import "games/Touhou11.h";
+import "games/Touhou12.h";
+import "games/Touhou12_5.h";
+import "games/Touhou12_8.h";
+import "games/Touhou13.h";
+import "games/Touhou14.h";
+import "games/Touhou14_3.h";
+import "games/Touhou15.h";
+import "games/Touhou16.h";
+import "games/Touhou17.h";
+import "games/Touhou18.h";
 import <vector>;
 import <string>;
 import <memory>;
@@ -32,6 +31,10 @@ import Log;
 import Games;
 
 using namespace std;
+
+export unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence);
+
+module : private;
 
 enum class SupportedGame {
     EoSD_6,
@@ -63,7 +66,7 @@ struct ProcessNameGamePair {
 };
 
 // Executables name list and associated game
-const vector<ProcessNameGamePair> processNameList =
+const vector<ProcessNameGamePair> processNameList
 {
     { SupportedGame::EoSD_6,      L"eosd.exe" },
     { SupportedGame::EoSD_6,      L"th06e.exe" },
@@ -93,16 +96,13 @@ const vector<ProcessNameGamePair> processNameList =
 
 bool findRunningTouhouProcess(PROCESSENTRY32W& processEntry, SupportedGame& processGame) {
     WCHAR* compare;
-    bool procRunning = false;
+    bool procRunning{ false };
 
-    HANDLE hProcessSnap;
     PROCESSENTRY32W pe32;
-    hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    HANDLE hProcessSnap{ CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0) };
 
-    if (hProcessSnap == INVALID_HANDLE_VALUE) {
-        procRunning = false;
-    }
-    else {
+    if (hProcessSnap != INVALID_HANDLE_VALUE) {
+
         pe32.dwSize = sizeof(PROCESSENTRY32W);
         if (Process32FirstW(hProcessSnap, &pe32)) {
             // Check every process
@@ -126,12 +126,12 @@ bool findRunningTouhouProcess(PROCESSENTRY32W& processEntry, SupportedGame& proc
     return procRunning;
 }
 
-export unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence) {
-    PROCESSENTRY32W pe32{};
+unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence) {
+    PROCESSENTRY32W pe32;
     SupportedGame game{ SupportedGame::Invalid };
 
     if (findRunningTouhouProcess(pe32, game)) {
-        unique_ptr<TouhouBase> thGame{};
+        unique_ptr<TouhouBase> thGame;
 
         // Game check
         switch (game) {
@@ -139,15 +139,15 @@ export unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence) {
             case SupportedGame::PCB_7:       thGame = make_unique<Touhou07>(pe32);      break;
             case SupportedGame::IN_8:        thGame = make_unique<Touhou08>(pe32);      break;
             case SupportedGame::PoFV_9:      thGame = make_unique<Touhou09>(pe32);      break;
-            case SupportedGame::StB_9_5:     thGame = make_unique<Touhou09_5>(pe32);  break;
+            case SupportedGame::StB_9_5:     thGame = make_unique<Touhou09_5>(pe32);    break;
             case SupportedGame::MoF_10:      thGame = make_unique<Touhou10>(pe32);      break;
             case SupportedGame::SA_11:       thGame = make_unique<Touhou11>(pe32);      break;
             case SupportedGame::UFO_12:      thGame = make_unique<Touhou12>(pe32);      break;
-            case SupportedGame::DS_12_5:     thGame = make_unique<Touhou12_5>(pe32);  break;
-            case SupportedGame::GFW_12_8:    thGame = make_unique<Touhou12_8>(pe32);  break;
+            case SupportedGame::DS_12_5:     thGame = make_unique<Touhou12_5>(pe32);    break;
+            case SupportedGame::GFW_12_8:    thGame = make_unique<Touhou12_8>(pe32);    break;
             case SupportedGame::TD_13:       thGame = make_unique<Touhou13>(pe32);      break;
             case SupportedGame::DDC_14:      thGame = make_unique<Touhou14>(pe32);      break;
-            case SupportedGame::ISC_14_3:    thGame = make_unique<Touhou14_3>(pe32);  break;
+            case SupportedGame::ISC_14_3:    thGame = make_unique<Touhou14_3>(pe32);    break;
             case SupportedGame::LoLK_15:     thGame = make_unique<Touhou15>(pe32);      break;
             case SupportedGame::HSiFS_16:    thGame = make_unique<Touhou16>(pe32);      break;
             case SupportedGame::WBaWC_17:    thGame = make_unique<Touhou17>(pe32);      break;

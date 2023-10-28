@@ -1,21 +1,19 @@
-#include <Windows.h>
-#include "Touhou09.h"
+import "Touhou09.h";
+
 
 Touhou09::Touhou09(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
 Touhou09::~Touhou09() {}
 
 void Touhou09::readDataFromGameProcess() {
-    unsigned char mainMenuState = 0;
     gameMode = GameModePoFV::Normal;
     state.gameState = GameState::Playing;
     state.stageState = StageState::Stage;
     state.mainMenuState = MainMenuState::TitleScreen;
 
     // MENUS
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_MODE, (LPVOID) &menuState, 1, NULL);
-    unsigned char inMenu = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) IN_MENU, (LPVOID) &inMenu, 1, NULL);
+    menuState = ReadProcessMemoryInt(processHandle, MENU_MODE, 1);
+    int inMenu = ReadProcessMemoryInt(processHandle, IN_MENU, 1);
     if (inMenu == 0 || inMenu == 14) {
         state.gameState = GameState::MainMenu;
         switch (menuState) {
@@ -28,17 +26,16 @@ void Touhou09::readDataFromGameProcess() {
             {
                 state.mainMenuState = MainMenuState::MusicRoom;
 
-                DWORD musicRoomPtr = 0;
-                ReadProcessMemory(processHandle, (LPCVOID) MUSIC_ROOM_POINTER, (LPVOID) &musicRoomPtr, 4, NULL);
+                TouhouAddress musicRoomPtr = ReadProcessMemoryInt(processHandle, MUSIC_ROOM_POINTER);
                 if (musicRoomPtr) {
-                    ReadProcessMemory(processHandle, (LPCVOID) (musicRoomPtr + MUSIC_ROOM_SELECTION_OFFSET), (LPVOID) &bgm, 4, NULL);
+                    bgm = ReadProcessMemoryInt(processHandle, (musicRoomPtr + MUSIC_ROOM_SELECTION_OFFSET));
                 }
                 break;
             }
         }
     }
     else {
-        switch (mainMenuState) {
+        switch (menuState) {
             case 180: gameMode = GameModePoFV::Match; // fallthrough
             default:
             case 196: state.gameState = GameState::Playing; break;
@@ -47,26 +44,25 @@ void Touhou09::readDataFromGameProcess() {
     }
 
     // GENERAL
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) LOCATION, (LPVOID) &location, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) ROUND_NUMBER, (LPVOID) &roundNum, 4, NULL);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
+    stage = ReadProcessMemoryInt(processHandle, STAGE);
+    location = ReadProcessMemoryInt(processHandle, LOCATION);
+    roundNum = ReadProcessMemoryInt(processHandle, ROUND_NUMBER);
 
-    int matchModeMode = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) MATCH_MODE_MODE, (LPVOID) &matchModeMode, 4, NULL);
+    int matchModeMode = ReadProcessMemoryInt(processHandle, MATCH_MODE_MODE);
     if (gameMode == GameModePoFV::Match && matchModeMode == 2) {
         gameMode = GameModePoFV::MatchAsP2;
     }
 
     // PLAYER 1
-    ReadProcessMemory(processHandle, (LPCVOID) P1_CHARACTER, (LPVOID) &p1.chara, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) P1_ALT_COLOUR, (LPVOID) &p1.altCol, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) P1_WIN_COUNT, (LPVOID) &p1.wins, 4, NULL);
-    DWORD p1StatePtr = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) P1_STATE_POINTER, (LPVOID) &p1StatePtr, 4, NULL);
+
+    p1.chara = ReadProcessMemoryInt(processHandle, P1_CHARACTER);
+    p1.altCol = ReadProcessMemoryInt(processHandle, P1_ALT_COLOUR);
+    p1.wins = ReadProcessMemoryInt(processHandle, P1_WIN_COUNT);
+
+    TouhouAddress p1StatePtr = ReadProcessMemoryInt(processHandle, P1_STATE_POINTER);
     if (p1StatePtr) {
-        short attempts = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (p1StatePtr + P1_ATTEMPTS_REMAINING), (LPVOID) &attempts, 2, NULL);
+        int attempts = ReadProcessMemoryInt(processHandle, (p1StatePtr + P1_ATTEMPTS_REMAINING), 2);
         switch (attempts) {
             default:
             case 0: p1.attempts = 0; break;
@@ -76,29 +72,29 @@ void Touhou09::readDataFromGameProcess() {
             case 16512: p1.attempts = 4; break;
         }
 
-        ReadProcessMemory(processHandle, (LPCVOID) (p1StatePtr + P1_SCORE_OFFSET), (LPVOID) &p1.score, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (p1StatePtr + P1_GAMEOVERS_OFFSET), (LPVOID) &p1.gameOvers, 4, NULL);
+        p1.score = ReadProcessMemoryInt(processHandle, (p1StatePtr + P1_SCORE_OFFSET));
+        p1.gameOvers = ReadProcessMemoryInt(processHandle, (p1StatePtr + P1_GAMEOVERS_OFFSET));
     }
-    DWORD p1LivesPtr = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) P1_LIVES_POINTER, (LPVOID) &p1LivesPtr, 4, NULL);
+
+    TouhouAddress p1LivesPtr = ReadProcessMemoryInt(processHandle, P1_LIVES_POINTER);
     if (p1LivesPtr) {
-        ReadProcessMemory(processHandle, (LPCVOID) (p1LivesPtr + P1_LIVES_OFFSET), (LPVOID) &p1.lives, 4, NULL);
+        p1.lives = ReadProcessMemoryInt(processHandle, (p1StatePtr + P1_LIVES_OFFSET));
     }
 
     // PLAYER 2
-    ReadProcessMemory(processHandle, (LPCVOID) P2_CHARACTER, (LPVOID) &p2.chara, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) P2_ALT_COLOUR, (LPVOID) &p2.altCol, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) P2_WIN_COUNT, (LPVOID) &p2.wins, 4, NULL);
-    DWORD p2StatePtr = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) P2_STATE_POINTER, (LPVOID) &p2StatePtr, 4, NULL);
+    p2.chara = ReadProcessMemoryInt(processHandle, P2_CHARACTER);
+    p2.altCol = ReadProcessMemoryInt(processHandle, P2_ALT_COLOUR);
+    p2.wins = ReadProcessMemoryInt(processHandle, P2_WIN_COUNT);
+
+    TouhouAddress p2StatePtr = ReadProcessMemoryInt(processHandle, P2_STATE_POINTER);
     if (p2StatePtr) {
-        ReadProcessMemory(processHandle, (LPCVOID) (p2StatePtr + P2_SCORE_OFFSET), (LPVOID) &p2.score, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (p2StatePtr + P2_GAMEOVERS_OFFSET), (LPVOID) &p2.gameOvers, 4, NULL);
+        p2.score = ReadProcessMemoryInt(processHandle, (p2StatePtr + P2_SCORE_OFFSET));
+        p2.gameOvers = ReadProcessMemoryInt(processHandle, (p2StatePtr + P2_GAMEOVERS_OFFSET));
     }
-    DWORD p2LivesPtr = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) P2_LIVES_POINTER, (LPVOID) &p2LivesPtr, 4, NULL);
+
+    TouhouAddress p2LivesPtr = ReadProcessMemoryInt(processHandle, P2_LIVES_POINTER);
     if (p2LivesPtr) {
-        ReadProcessMemory(processHandle, (LPCVOID) (p2LivesPtr + P2_LIVES_OFFSET), (LPVOID) &p2.lives, 4, NULL);
+        p2.lives = ReadProcessMemoryInt(processHandle, (p2StatePtr + P2_LIVES_OFFSET));
     }
 
     bool const useP1 = (gameMode != GameModePoFV::MatchAsP2);

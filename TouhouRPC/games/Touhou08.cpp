@@ -1,5 +1,5 @@
-#include <Windows.h>
-#include "Touhou08.h"
+import "Touhou08.h";
+
 
 Touhou08::Touhou08(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {
     isBoss = 0;
@@ -18,7 +18,7 @@ void Touhou08::readDataFromGameProcess() {
     state.mainMenuState = MainMenuState::TitleScreen;
 
     // PLAYER
-    ReadProcessMemory(processHandle, (LPCVOID) CHARACTER, (LPVOID) &character, 2, NULL);
+    character = ReadProcessMemoryInt(processHandle, CHARACTER, 2);
     state.subCharacter = (character <= 3) ? SubCharacter::Team : SubCharacter::Solo;
     switch (character) {
         case 0: state.character = Character::Border; break;
@@ -36,7 +36,7 @@ void Touhou08::readDataFromGameProcess() {
     }
 
     // DIFFICULTY
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 1, NULL);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY, 1);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -48,44 +48,36 @@ void Touhou08::readDataFromGameProcess() {
 
     // FRAMES
     oldStageFrames = stageFrames;
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE_FRAMES, (LPVOID) &stageFrames, 4, NULL);
+    stageFrames = ReadProcessMemoryInt(processHandle, STAGE_FRAMES);
 
     // STAGE
     oldStage = stage;
     if (oldStageFrames - stageFrames > 0) {
         oldStage = -1;
     }
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 1, NULL);
+    stage = ReadProcessMemoryInt(processHandle, STAGE, 1);
     if (stage != oldStage) {
         bossStateChange = 0;
     }
 
     // BOSS
     oldIsBoss = isBoss;
-    ReadProcessMemory(processHandle, (LPCVOID) BOSS_APPEARANCE, (LPVOID) &isBoss, 1, NULL);
+    isBoss = ReadProcessMemoryInt(processHandle, BOSS_APPEARANCE, 1);
     if (oldIsBoss != isBoss) {
         bossStateChange++;
     }
 
-    unsigned int menuMode = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_MODE, (LPVOID) &menuMode, 4, NULL);
+    int menuMode = ReadProcessMemoryInt(processHandle, MENU_MODE);
     // menu mode being 2 implies we're in-game
 
-    unsigned int stageMode = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE_MODE, (LPVOID) &stageMode, 4, NULL);
+    int stageMode = ReadProcessMemoryInt(processHandle, STAGE_MODE);
 
     // SPELL_CARD_ID
-    // Technically this is not needed and it could just always read the id into a 4-byte var (initialized to 0 beforehand),
-    // but reading 2 byte values into a 2 byte variable and 4 byte values into 4 byte variables just... makes more sense.
-    UINT32 spellIdNormal;
-    UINT16 spellIdSpellprac;
     if (stageMode & STAGE_MODE_SPELL_PRACTICE_FLAG) {
-        ReadProcessMemory(processHandle, (LPVOID) SPELLPRAC_CARD_ID, &spellIdSpellprac, sizeof(spellIdSpellprac), NULL);
-        spellCardID = spellIdSpellprac;
+        spellCardID = ReadProcessMemoryInt(processHandle, SPELLPRAC_CARD_ID, 2);
     }
     else {
-        ReadProcessMemory(processHandle, (LPVOID) SPELL_CARD_ID, &spellIdNormal, sizeof(spellIdNormal), NULL);
-        spellCardID = spellIdNormal;
+        spellCardID = ReadProcessMemoryInt(processHandle, SPELL_CARD_ID);;
     }
 
     if (menuMode != 2 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0) {
@@ -99,7 +91,7 @@ void Touhou08::readDataFromGameProcess() {
         }
 
         if (state.mainMenuState == MainMenuState::MusicRoom) {
-            ReadProcessMemory(processHandle, (LPCVOID) MUSIC_ROOM_TRACK, (LPVOID) &bgm, 4, NULL);
+            bgm = ReadProcessMemoryInt(processHandle, MUSIC_ROOM_TRACK);
         }
     }
 
@@ -135,23 +127,13 @@ void Touhou08::readDataFromGameProcess() {
     }
 
     // Read current game progress
-    DWORD player_pointer = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) PLAYER_POINTER, (LPVOID) &player_pointer, 4, NULL);
-
+    int player_pointer = ReadProcessMemoryInt(processHandle, PLAYER_POINTER);
     if (player_pointer) {
-        float lives = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x74), (LPVOID) &lives, 4, NULL);
-        state.lives = (int) lives;
-
-        float bombs = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x80), (LPVOID) &bombs, 4, NULL);
-        state.bombs = (int) bombs;
-
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x00), (LPVOID) &state.score, 4, NULL);
-
-        char gameOvers = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x28), (LPVOID) &gameOvers, 1, NULL);
-        state.gameOvers = gameOvers;
+        // Behold zungramming: Lives and bombs are actually floats in memory.
+        state.lives = static_cast<int>(ReadProcessMemoryFloat(processHandle, (player_pointer + 0x74)));
+        state.bombs = static_cast<int>(ReadProcessMemoryFloat(processHandle, (player_pointer + 0x80)));
+        state.score = ReadProcessMemoryInt(processHandle, player_pointer);
+        state.gameOvers = ReadProcessMemoryInt(processHandle, (player_pointer + 0x28), 1);
     }
 }
 

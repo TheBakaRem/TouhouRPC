@@ -153,113 +153,114 @@
     <ClCompile Include="Games-TouhouBase.ixx">
       <Filter>Fichiers sources\Modules\Games</Filter>
     </ClCompile>
+    <ClCompile Include="WindowsUtils.ixx">
+      <Filter>Fichiers sources\Modules</Filter>
+    </ClCompile>
     <ClCompile Include="games\Touhou06.cpp">
       <Filter>Fichiers sources\game-classes</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="games\Touhou11.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou15.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou08.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou17.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou16.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou14.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou07.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou13.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou12.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou10.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou12_8.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou09.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou09_5.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou14_3.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou18.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou12_5.h">
-      <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\achievement_manager.h">
+    <ClCompile Include="includes\discord-files\achievement_manager.h">
       <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\activity_manager.h">
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\activity_manager.h">
       <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\application_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\core.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\discord.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\event.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\ffi.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\image_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\lobby_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\network_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\overlay_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\relationship_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\storage_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\store_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\types.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\user_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\discord-files\voice_manager.h">
-      <Filter>Discord Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="games\Touhou06.h">
+    </ClCompile>
+    <ClCompile Include="games\Touhou06.h">
       <Filter>Fichiers d%27en-tête\game-classes</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="games\Touhou07.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou08.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou09.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou09_5.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou10.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou11.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou12.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou12_5.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou12_8.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou13.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou14.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou14_3.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou15.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou16.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou17.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou18.h">
+      <Filter>Fichiers d%27en-tête\game-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\application_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\core.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\discord.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\event.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\ffi.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\image_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\lobby_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\network_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\overlay_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\relationship_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\storage_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\store_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\types.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\user_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\discord-files\voice_manager.h">
+      <Filter>Discord Files\Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini">

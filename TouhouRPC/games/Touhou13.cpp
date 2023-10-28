@@ -1,5 +1,4 @@
-﻿#include <Windows.h>
-#include "Touhou13.h"
+﻿import "Touhou13.h";
 
 Touhou13::Touhou13(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -13,29 +12,20 @@ void Touhou13::readDataFromGameProcess() {
     gameMode = GAME_MODE_STANDARD;
 
     // The BGM playing will be used to determine a lot of things
-    char bgm_playing[20];
-    ReadProcessMemory(processHandle, (LPCVOID) BGM_STR, bgm_playing, 20, NULL);
+    std::string bgm_playing = ReadProcessMemoryString(processHandle, BGM_STR, 20);
 
     // Check if the game over music is playing.
-    if (std::strncmp(bgm_playing, "th128_08.wav", std::strlen("th128_08.wav")) == 0) {
+    if (bgm_playing == "th128_08.wav") {
         state.gameState = GameState::GameOver;
     }
-
-    // Read stage value
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 4, NULL);
 
     // Convert the part after the _ and before the . to int
     // That way it is possible to switch case the BGM playing
     bool prefixBGM = bgm_playing[0] == 'b';
-    char bgm_id_str[3];
-    bgm_id_str[0] = bgm_playing[prefixBGM ? 9 : 5];
-    bgm_id_str[1] = bgm_playing[prefixBGM ? 10 : 6];
-    bgm_id_str[2] = '\x00';
-    int bgm_id = atoi(bgm_id_str);
+    char bgm_id_str[3]{ bgm_playing[prefixBGM ? 9 : 5], bgm_playing[prefixBGM ? 10 : 6], '\0' };
+    bgm = atoi(bgm_id_str);
 
-    bgm = bgm_id;
-
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 4, NULL);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -46,11 +36,13 @@ void Touhou13::readDataFromGameProcess() {
         case 5: state.difficulty = Difficulty::Overdrive; break;
     }
 
+    // Read stage value
+    stage = ReadProcessMemoryInt(processHandle, STAGE);
+
     // Update menu state. The object at menu_pointer contains many things to do with the main menu,
     // and they kind of behave awkwardly in DDC. For now we mainly care about whether we're in the music room or not.
 
-    unsigned int menu_pointer = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_POINTER, (LPVOID) &menu_pointer, 4, NULL);
+    TouhouAddress menu_pointer = ReadProcessMemoryInt(processHandle, MENU_POINTER);
     if (state.gameState == GameState::Playing && menu_pointer != 0) {
         // The most reliable way of determining our current menu state is through the combination of
         // menu display state, option count, and extra flags that get set.
@@ -80,8 +72,7 @@ void Touhou13::readDataFromGameProcess() {
             11 /  7 -> replay stage select
         */
 
-        DWORD ds = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (menu_pointer + 0x1C), (LPVOID) &ds, 4, NULL);
+        int ds = ReadProcessMemoryInt(processHandle, (menu_pointer + 0x1C));
 
         switch (ds) {
             default: state.mainMenuState = MainMenuState::TitleScreen; break;
@@ -94,8 +85,7 @@ void Touhou13::readDataFromGameProcess() {
                     state.mainMenuState = MainMenuState::ExtraStart;
                 }
                 else {
-                    DWORD practiceFlag = 0;
-                    ReadProcessMemory(processHandle, (LPCVOID) PRACTICE_SELECT_FLAG, (LPVOID) &practiceFlag, 4, NULL);
+                    int practiceFlag = ReadProcessMemoryInt(processHandle, PRACTICE_SELECT_FLAG);
                     state.mainMenuState = (practiceFlag != 0) ? MainMenuState::StagePractice : MainMenuState::GameStart;
                 }
                 break;
@@ -133,7 +123,7 @@ void Touhou13::readDataFromGameProcess() {
 
     if (state.gameState == GameState::Playing) {
         // Note that ZUN's naming for the BGM file names is not very consistent
-        switch (bgm_id) {
+        switch (bgm) {
             case 0:
                 mainMenuState = 0;
                 state.mainMenuState = MainMenuState::TitleScreen;
@@ -153,8 +143,7 @@ void Touhou13::readDataFromGameProcess() {
     // We know the main stage boss is triggered when music changes
     // So if the state isn't already defined, we check if the mid-boss is present
     if (state.stageState == StageState::Stage) {
-        DWORD boss_mode = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (ENEMY_STATE), (LPVOID) &boss_mode, 4, NULL);
+        int boss_mode = ReadProcessMemoryInt(processHandle, ENEMY_STATE);
         // If it's 0 there is no main boss, if it's 4 it's a mid-boss, 6 is boss, 7 is post-boss
         if (boss_mode == 4) {
             state.stageState = StageState::Midboss;
@@ -165,10 +154,10 @@ void Touhou13::readDataFromGameProcess() {
     }
 
     // Read Spell Card ID (for Spell Practice)
-    ReadProcessMemory(processHandle, (LPCVOID) SPELL_CARD_ID, (LPVOID) &spellCardID, 4, NULL);
+    spellCardID = ReadProcessMemoryInt(processHandle, SPELL_CARD_ID);
 
     // Read character and difficulty info
-    ReadProcessMemory(processHandle, (LPCVOID) CHARACTER, (LPVOID) &character, 4, NULL);
+    character = ReadProcessMemoryInt(processHandle, CHARACTER);
     switch (character) {
         default:
         case 0: state.character = Character::Reimu; break;
@@ -178,13 +167,13 @@ void Touhou13::readDataFromGameProcess() {
     }
 
     // Read current game progress
-    ReadProcessMemory(processHandle, (LPCVOID) LIVES, (LPVOID) &state.lives, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) BOMBS, (LPVOID) &state.bombs, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) SCORE, (LPVOID) &state.score, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) GAMEOVERS, (LPVOID) &state.gameOvers, 4, NULL);
+    state.lives = ReadProcessMemoryInt(processHandle, LIVES);
+    state.bombs = ReadProcessMemoryInt(processHandle, BOMBS);
+    state.score = ReadProcessMemoryInt(processHandle, SCORE);
+    state.gameOvers = ReadProcessMemoryInt(processHandle, GAMEOVERS);
 
     // Read game mode
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_MODE, (LPVOID) &gameMode, 4, NULL);
+    gameMode = static_cast<GameMode>(ReadProcessMemoryInt(processHandle, GAME_MODE));
     switch (gameMode) {
         case GAME_MODE_STANDARD: break; // could be main menu or playing, no need to overwrite anything
         case GAME_MODE_REPLAY: state.gameState = GameState::WatchingReplay; break;
@@ -199,7 +188,7 @@ std::string Touhou13::getMidbossName() const {
         case 1: return "\"Divine spirit\"";
         case 2: return "Kyouko Kasodani";
         case 3: return "Kogasa Tatara";
-        case 4: return "Seiga Kaku‎";
+        case 4: return "Seiga Kaku";
         case 5: return "Soga no Tojiko";
             // case 6: none
         case 7: return "Nue Houjuu";
@@ -211,7 +200,7 @@ std::string Touhou13::getBossName() const {
     switch (stage) {
         case 1: return "Yuyuko Saigyouji";
         case 2: return "Kyouko Kasodani";
-        case 3: return "Yoshika Miyako‎";
+        case 3: return "Yoshika Miyako";
         case 4: return "Seiga Kaku";
         case 5: return "Mononobe no Futo";
         case 6: return "Toyosatomimi no Miko";

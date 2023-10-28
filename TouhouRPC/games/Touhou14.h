@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 class Touhou14 : public TouhouBase {
 public:
@@ -25,7 +26,7 @@ protected:
 
 private:
     // addresses correct for v1.00b
-    enum address {
+    enum address : TouhouAddress {
         MENU_POINTER = 0x004DB6A4L, // offsets and data detailed in code
         CHARACTER = 0x004F5828L, // the menu also remembers last chosen at 0x004DB6ACL
         SUB_CHARACTER = 0x004F582CL, // the menu also remembers last chosen at 0x004DB6A8L

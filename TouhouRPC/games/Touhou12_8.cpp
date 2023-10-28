@@ -1,5 +1,4 @@
-#include <Windows.h>
-#include "Touhou12_8.h"
+import "Touhou12_8.h";
 
 Touhou12_8::Touhou12_8(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -11,25 +10,19 @@ void Touhou12_8::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
 
     // The BGM playing will be used to determine some things
-    char bgm_playing[20];
-    ReadProcessMemory(processHandle, (LPCVOID) BGM_STR_1, bgm_playing, 20, NULL);
+    std::string bgm_playing = ReadProcessMemoryString(processHandle, BGM_STR_1, 20);
 
     // Convert the part after the _ and before the . to int
     // That way it is possible to switch case the BGM playing
     bool prefixBGM = bgm_playing[0] == 'b';
-    char bgm_id_str[3];
-    bgm_id_str[0] = bgm_playing[prefixBGM ? 10 : 6];
-    bgm_id_str[1] = bgm_playing[prefixBGM ? 11 : 7];
-    bgm_id_str[2] = '\x00';
-    int bgm_id = atoi(bgm_id_str);
-
-    bgm = bgm_id;
+    char bgm_id_str[3]{ bgm_playing[prefixBGM ? 9 : 5], bgm_playing[prefixBGM ? 10 : 6], '\0' };
+    bgm = atoi(bgm_id_str);
 
     // Character
     state.character = Character::Cirno;
 
     // Difficulty
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 4, NULL);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -40,23 +33,21 @@ void Touhou12_8::readDataFromGameProcess() {
     }
 
     // Stage
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 4, NULL);
+    stage = ReadProcessMemoryInt(processHandle, STAGE);
 
     // Stage (number of frames in this stage)
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE_FRAMES, (LPVOID) &stageFrames, 4, NULL);
+    stageFrames = ReadProcessMemoryInt(processHandle, STAGE_FRAMES);
 
     // Game state
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_STATE, (LPVOID) &gameState, 4, NULL);
+    gameState = ReadProcessMemoryInt(processHandle, GAME_STATE);
 
     // Game state (number of frames in this current state)
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_STATE_FRAMES, (LPVOID) &gameStateFrames, 4, NULL);
+    gameStateFrames = ReadProcessMemoryInt(processHandle, GAME_STATE_FRAMES);
 
     // Menu state
-    DWORD menuPtr = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_POINTER, &menuPtr, 4, NULL); // Get menu class address
+    TouhouAddress menuPtr = ReadProcessMemoryInt(processHandle, MENU_POINTER); // Get menu class address
     if (state.gameState == GameState::Playing && menuPtr) {
-        unsigned int displayState = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (menuPtr + 0x1C), (LPVOID) &displayState, 4, NULL);
+        int displayState = ReadProcessMemoryInt(processHandle, (menuPtr + 0x1C));
 
         switch (displayState) {
             default:
@@ -75,7 +66,7 @@ void Touhou12_8::readDataFromGameProcess() {
 
     if (state.gameState == GameState::Playing) {
         // Note that ZUN's naming for the BGM file names is not very consistent
-        switch (bgm_id) {
+        switch (bgm) {
             case 7:
                 mainMenuState = 0;
                 state.mainMenuState = MainMenuState::TitleScreen;
@@ -84,7 +75,7 @@ void Touhou12_8::readDataFromGameProcess() {
             case 8:
                 state.gameState = GameState::GameOver;
                 break;
-            case 9: // ending
+            case 9:
                 state.gameState = GameState::Ending;
                 break;
             default:
@@ -153,15 +144,14 @@ void Touhou12_8::readDataFromGameProcess() {
     }
 
     // Read current game progress
-    ReadProcessMemory(processHandle, (LPCVOID) MOTIVATION, (LPVOID) &motivation, 4, NULL);
+    motivation = ReadProcessMemoryInt(processHandle, MOTIVATION);
     state.lives = motivation / (100 * 100); // to get auto update from death, trigger every 100% in difference.
-    ReadProcessMemory(processHandle, (LPCVOID) PERFECT_FREEZE, (LPVOID) &perfectFreeze, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) SCORE, (LPVOID) &state.score, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) GAMEOVERS, (LPVOID) &state.gameOvers, 4, NULL);
+    perfectFreeze = ReadProcessMemoryInt(processHandle, PERFECT_FREEZE);
+    state.score = ReadProcessMemoryInt(processHandle, SCORE);
+    state.gameOvers = ReadProcessMemoryInt(processHandle, GAMEOVERS);
 
     if (state.gameState == GameState::Playing) {
-        unsigned int replayFlag = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) REPLAY_FLAG, (LPVOID) &replayFlag, 4, NULL);
+        int replayFlag = ReadProcessMemoryInt(processHandle, REPLAY_FLAG);
 
         if (replayFlag == 2) {
             state.gameState = GameState::WatchingReplay;
@@ -244,7 +234,7 @@ std::string Touhou12_8::getBossName() const {
         case B1_3:
         case B2_3:
         case C1_3:
-        case C2_3: return "Three Faires of Light";
+        case C2_3: return "Three Fairies of Light";
 
         default:
         case EX: return "Marisa Kirisame";

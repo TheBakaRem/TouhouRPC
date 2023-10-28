@@ -1,5 +1,7 @@
 #pragma once
 import Games;
+import WindowsUtils;
+
 
 enum GameType {
     POINT_DEVICE,
@@ -45,7 +47,7 @@ protected:
     ExtraBossState prevExtraBossState{ ExtraBossState::JUNKO_AND_HECATIA }; // for checking if it changed since last time
 
 private:
-    enum address {
+    enum address : TouhouAddress {
         CHARACTER = 0x004E7404L,
         GAME_TYPE = 0x004E9BECL,
         DIFFICULTY = 0x004E7410L,

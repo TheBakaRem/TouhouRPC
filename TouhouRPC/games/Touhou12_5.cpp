@@ -1,5 +1,4 @@
-﻿#include <Windows.h>
-#include "Touhou12_5.h"
+﻿import "Touhou12_5.h";
 
 Touhou12_5::Touhou12_5(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -11,22 +10,19 @@ void Touhou12_5::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
     state.mainMenuState = MainMenuState::TitleScreen;
 
-    int menuDataPtr;
-    int mainMenuStatePtr;
-
     // MENUS
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_STATE_PTR, (LPVOID) &mainMenuStatePtr, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_DATA_PTR, (LPVOID) &menuDataPtr, 4, NULL);
+    TouhouAddress menuDataPtr = ReadProcessMemoryInt(processHandle, MENU_DATA_PTR);
+    TouhouAddress mainMenuStatePtr = ReadProcessMemoryInt(processHandle, MENU_STATE_PTR);
 
     // CHARACTER
-    ReadProcessMemory(processHandle, (LPCVOID) PLAYER_SELECT, (LPVOID) &player, 4, NULL);
+    player = ReadProcessMemoryInt(processHandle, PLAYER_SELECT);
 
     // MUSIC PLAYING
-    ReadProcessMemory(processHandle, (LPCVOID) BGM_STR, bgm_playing, 20, NULL);
+    bgm_playing = ReadProcessMemoryString(processHandle, BGM_STR, 20);
 
     // If we have mainMenuStatePtr, then we are in the main menu
     if (mainMenuStatePtr != 0) {
-        ReadProcessMemory(processHandle, (LPCVOID) (mainMenuStatePtr + MENU_STATE_OFFSET), (LPVOID) &menuState, 4, NULL);
+        menuState = ReadProcessMemoryInt(processHandle, (mainMenuStatePtr + MENU_STATE_OFFSET));
         switch (menuState) {
             default:
             case mainMenuStateValues::MAIN_MENU:
@@ -90,8 +86,7 @@ void Touhou12_5::readDataFromGameProcess() {
 
             for (size_t i = 0; i < 139; i++) // Iterating over all scores for Aya
             {
-                int levelScore = 0;
-                ReadProcessMemory(processHandle, (LPCVOID) (menuDataPtr + MENU_DATA_FIRST_SCORE_OFFSET_AYA + (MENU_DATA_NEXT_SCORE_OFFSET_ADD * i)), (LPVOID) &levelScore, 4, NULL);
+                int levelScore = ReadProcessMemoryInt(processHandle, (menuDataPtr + MENU_DATA_FIRST_SCORE_OFFSET_AYA + (MENU_DATA_NEXT_SCORE_OFFSET_ADD * i)));
                 if (levelScore > 0) {
                     completedScenesAya++;
                     combinedPhotoScoreAya += levelScore;
@@ -100,8 +95,7 @@ void Touhou12_5::readDataFromGameProcess() {
 
             for (size_t i = 0; i < 129; i++) // Iterating over all scores for Hatate
             {
-                int levelScore = 0;
-                ReadProcessMemory(processHandle, (LPCVOID) (menuDataPtr + MENU_DATA_FIRST_SCORE_OFFSET_HATATE + (MENU_DATA_NEXT_SCORE_OFFSET_ADD * i)), (LPVOID) &levelScore, 4, NULL);
+                int levelScore = ReadProcessMemoryInt(processHandle, (menuDataPtr + MENU_DATA_FIRST_SCORE_OFFSET_HATATE + (MENU_DATA_NEXT_SCORE_OFFSET_ADD * i)));
                 if (levelScore > 0) {
                     completedScenesHatate++;
                     combinedPhotoScoreHatate += levelScore;
@@ -114,18 +108,16 @@ void Touhou12_5::readDataFromGameProcess() {
     if (state.gameState == GameState::Playing_CustomResources) {
 
         // Read current game progress
-        int playerState = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) GAME_DATA_SCORE, (LPVOID) &state.score, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) GAME_DATA_STAGE, (LPVOID) &stage, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) GAME_DATA_TIMER, (LPVOID) &stageFrames, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) GAME_DATA_PLAYER_STATE, (LPVOID) &playerState, 1, NULL);
+        int playerState = ReadProcessMemoryInt(processHandle, GAME_DATA_PLAYER_STATE, 1);
+        state.score = ReadProcessMemoryInt(processHandle, GAME_DATA_SCORE);
+        stage = ReadProcessMemoryInt(processHandle, GAME_DATA_STAGE);
+        stageFrames = ReadProcessMemoryInt(processHandle, GAME_DATA_TIMER);
 
-        int photoDataPtr = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) GAME_PHOTO_STATS_PTR, (LPVOID) &photoDataPtr, 4, NULL);
+        TouhouAddress photoDataPtr = ReadProcessMemoryInt(processHandle, GAME_PHOTO_STATS_PTR);
 
         if (photoDataPtr != 0) {
-            ReadProcessMemory(processHandle, (LPCVOID) (photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET), (LPVOID) &state.currentPhotoCount, 4, NULL);
-            ReadProcessMemory(processHandle, (LPCVOID) (photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET), (LPVOID) &state.requiredPhotoCount, 4, NULL);
+            state.currentPhotoCount = ReadProcessMemoryInt(processHandle, (photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET));
+            state.requiredPhotoCount = ReadProcessMemoryInt(processHandle, (photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET));
         }
 
         // Check player death
@@ -228,7 +220,7 @@ std::string Touhou12_5::getStageName() const {
 }
 
 std::string Touhou12_5::getBGMName() const {
-    std::string fileName(bgm_playing);
+    std::string fileName = bgm_playing;
 
     if (fileName.rfind("bgm/th125_00", 0) == 0) { return th125_musicNames[0]; }
     else if (fileName.rfind("bgm/th125_01", 0) == 0) { return th125_musicNames[1]; }

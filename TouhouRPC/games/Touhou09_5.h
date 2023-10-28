@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 class Touhou09_5 : public TouhouBase {
 public:
@@ -25,7 +26,7 @@ public:
 
 protected:
 
-    char bgm_playing[20] = "\0"; // Background music for music room
+    std::string bgm_playing; // Background music for music room
 
     // For score displays
     int combinedPhotoScore{ 0 }; // Total score from all scenes
@@ -34,7 +35,7 @@ protected:
     // In-stage photo counts are listed in the game state.
 private:
     // Adresses correct for v1.02a
-    enum address {
+    enum address : TouhouAddress {
         // Menus
         MENU_DATA_PTR = 0x004C4E78L, // Pointer on the in-game data. Stores info about all levels completed
         MENU_DATA_FIRST_SCORE_OFFSET = 0x470,       // Highest score on Level 1 - Scene 1

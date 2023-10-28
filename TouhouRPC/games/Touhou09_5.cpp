@@ -1,5 +1,4 @@
-﻿#include <Windows.h>
-#include "Touhou09_5.h"
+﻿import "Touhou09_5.h";
 
 Touhou09_5::Touhou09_5(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -11,16 +10,11 @@ void Touhou09_5::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
     state.mainMenuState = MainMenuState::TitleScreen;
 
-    int gameDataPtr;
-    int menuDataPtr;
-
-    int othermainMenuStatePtr = 0;
-
     // MENUS
-    ReadProcessMemory(processHandle, (LPCVOID) IN_MENU, (LPVOID) &menuState, 1, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_DATA_PTR, (LPVOID) &gameDataPtr, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_DATA_PTR, (LPVOID) &menuDataPtr, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) OTHER_MENU_STATE_PTR, (LPVOID) &othermainMenuStatePtr, 4, NULL);
+    menuState = ReadProcessMemoryInt(processHandle, IN_MENU, 1);
+    TouhouAddress gameDataPtr = ReadProcessMemoryInt(processHandle, GAME_DATA_PTR);
+    TouhouAddress menuDataPtr = ReadProcessMemoryInt(processHandle, MENU_DATA_PTR);
+    TouhouAddress othermainMenuStatePtr = ReadProcessMemoryInt(processHandle, OTHER_MENU_STATE_PTR);
 
     switch (menuState) {
         default:
@@ -30,7 +24,7 @@ void Touhou09_5::readDataFromGameProcess() {
                 int othermainMenuStateValue = 0;
 
                 // When in the main menu, othermainMenuStatePtr isn't nullptr, so we can use it here.
-                ReadProcessMemory(processHandle, (LPCVOID) (othermainMenuStatePtr + OTHER_MENU_STATE_OFFSET), (LPVOID) &othermainMenuStateValue, 4, NULL);
+                othermainMenuStateValue = ReadProcessMemoryInt(processHandle, othermainMenuStatePtr + OTHER_MENU_STATE_OFFSET);
 
                 // Check which type of main menu we're in (we don't)
                 switch (othermainMenuStateValue) {
@@ -46,7 +40,7 @@ void Touhou09_5::readDataFromGameProcess() {
                     case OthermainMenuStateValues::MUSIC_ROOM:
                         state.gameState = GameState::MainMenu;
                         state.mainMenuState = MainMenuState::MusicRoom;
-                        ReadProcessMemory(processHandle, (LPCVOID) BGM_STR, (LPVOID) &bgm_playing, 20, NULL);
+                        bgm_playing = ReadProcessMemoryString(processHandle, BGM_STR, 20);
                         break;
                     case OthermainMenuStateValues::MANUAL:
                         state.gameState = GameState::MainMenu;
@@ -89,8 +83,7 @@ void Touhou09_5::readDataFromGameProcess() {
 
             for (size_t i = 0; i < 108; i++) // Iterating over all levels scores
             {
-                int levelScore = 0;
-                ReadProcessMemory(processHandle, (LPCVOID) (menuDataPtr + MENU_DATA_FIRST_SCORE_OFFSET + (MENU_DATA_NEXT_SCORE_OFFSET_ADD * i)), (LPVOID) &levelScore, 4, NULL);
+                int levelScore = ReadProcessMemoryInt(processHandle, menuDataPtr + MENU_DATA_FIRST_SCORE_OFFSET);
                 if (levelScore > 0) {
                     completedScenes++;
                     combinedPhotoScore += levelScore;
@@ -104,18 +97,16 @@ void Touhou09_5::readDataFromGameProcess() {
     if (state.gameState == GameState::Playing_CustomResources) {
 
         // Read current game progress
-        int playerState = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (gameDataPtr + GAME_DATA_SCORE_OFFSET), (LPVOID) &state.score, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (gameDataPtr + GAME_DATA_STAGE_OFFSET), (LPVOID) &stage, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (gameDataPtr + GAME_DATA_TIMER_OFFSET), (LPVOID) &stageFrames, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (gameDataPtr + GAME_DATA_PLAYER_STATE_OFFSET), (LPVOID) &playerState, 1, NULL);
+        int playerState = ReadProcessMemoryInt(processHandle, gameDataPtr + GAME_DATA_PLAYER_STATE_OFFSET, 1);
+        state.score = ReadProcessMemoryInt(processHandle, gameDataPtr + GAME_DATA_SCORE_OFFSET);
+        stage = ReadProcessMemoryInt(processHandle, gameDataPtr + GAME_DATA_STAGE_OFFSET);
+        stageFrames = ReadProcessMemoryInt(processHandle, gameDataPtr + GAME_DATA_TIMER_OFFSET);
 
-        int photoDataPtr = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (gameDataPtr + GAME_PHOTO_STATS_PTR_OFFSET), (LPVOID) &photoDataPtr, 4, NULL);
+        TouhouAddress photoDataPtr = ReadProcessMemoryInt(processHandle, gameDataPtr + GAME_PHOTO_STATS_PTR_OFFSET);
 
         if (photoDataPtr != 0) {
-            ReadProcessMemory(processHandle, (LPCVOID) (photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET), (LPVOID) &state.currentPhotoCount, 4, NULL);
-            ReadProcessMemory(processHandle, (LPCVOID) (photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET), (LPVOID) &state.requiredPhotoCount, 4, NULL);
+            state.currentPhotoCount = ReadProcessMemoryInt(processHandle, photoDataPtr + GAME_PHOTO_STATS_CURR_PHOTOS_OFFSET);
+            state.requiredPhotoCount = ReadProcessMemoryInt(processHandle, photoDataPtr + GAME_PHOTO_STATS_REQUIRED_PHOTOS_OFFSET);
         }
 
         // Check player death
@@ -200,7 +191,7 @@ std::string Touhou09_5::getStageName() const {
 }
 
 std::string Touhou09_5::getBGMName() const {
-    std::string fileName(bgm_playing);
+    std::string fileName{ bgm_playing };
 
     if (fileName.rfind("th095_00", 0) == 0 || fileName.rfind("th09_00", 0) == 0) return th095_musicNames[0]; // When started by the main menu and not the music room, the filename is "th09_00.wav".
     else if (fileName.rfind("th095_01", 0) == 0) return th095_musicNames[1];

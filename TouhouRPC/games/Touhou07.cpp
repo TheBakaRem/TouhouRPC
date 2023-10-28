@@ -1,5 +1,5 @@
-﻿#include <Windows.h>
-#include "Touhou07.h"
+﻿import "Touhou07.h";
+
 
 Touhou07::Touhou07(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -18,20 +18,16 @@ void Touhou07::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
 
     // this is 0 only if we're not playing currently
-    DWORD inGameFlagB = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) IN_GAME_FLAG_B, (LPVOID) &inGameFlagB, 4, NULL);
-
-    char stageMode = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE_MODE, (LPVOID) &stageMode, 1, NULL);
+    int inGameFlagB = ReadProcessMemoryInt(processHandle, IN_GAME_FLAG_B);
+    int stageMode = ReadProcessMemoryInt(processHandle, STAGE_MODE, 1);
 
     if (inGameFlagB == 0 || (stageMode & STAGE_MODE_DEMO_FLAG) != 0) {
         state.gameState = GameState::MainMenu;
 
-        DWORD menu_pointer = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) MENU_POINTER, (LPVOID) &menu_pointer, 4, NULL);
+        int menu_pointer = ReadProcessMemoryInt(processHandle, MENU_POINTER);
         if (menu_pointer != 0) {
             // this menu state seems to be all over the place. might be tied to background image being displayed
-            ReadProcessMemory(processHandle, (LPCVOID) (menu_pointer + 0x0C), (LPVOID) &mainMenuState, 4, NULL);
+            mainMenuState = ReadProcessMemoryInt(processHandle, (menu_pointer + 0x0C));
 
             switch (mainMenuState) {
                 default:
@@ -54,12 +50,11 @@ void Touhou07::readDataFromGameProcess() {
         }
 
         if (state.mainMenuState == MainMenuState::MusicRoom) {
-            ReadProcessMemory(processHandle, (LPCVOID) MUSIC_ROOM_TRACK, (LPVOID) &bgm, 4, NULL);
+            bgm = ReadProcessMemoryInt(processHandle, MUSIC_ROOM_TRACK);
         }
     }
 
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 4, NULL);
-
+    stage = ReadProcessMemoryInt(processHandle, STAGE);
     if (state.gameState == GameState::Playing) {
         if ((stageMode & STAGE_MODE_PRACTICE_FLAG) != 0) {
             state.gameState = GameState::StagePractice;
@@ -68,26 +63,22 @@ void Touhou07::readDataFromGameProcess() {
             state.gameState = GameState::WatchingReplay;
         }
 
-        DWORD bossFlag = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) BOSS_FLAG, (LPVOID) &bossFlag, 4, NULL);
+        int bossFlag = ReadProcessMemoryInt(processHandle, BOSS_FLAG);
         if (bossFlag == 1) {
             // fighting either a boss or a midboss, check which it is
-            char midBossFlag = 0;
-            ReadProcessMemory(processHandle, (LPCVOID) IS_MAIN_BOSS, (LPVOID) &midBossFlag, 1, NULL);
+            int midBossFlag = ReadProcessMemoryInt(processHandle, IS_MAIN_BOSS, 1);
             state.stageState = (midBossFlag == 3) ? StageState::Boss : StageState::Midboss;
             if (stage == 6) {
                 // For some reason stage 6 youmu also has flag == 3 so let's take a guess based on frame counter
                 // from testing, 5200 seems a reasonable cutoff
-                unsigned int frameCounter = 0;
-                ReadProcessMemory(processHandle, (LPCVOID) FRAME_COUNTER, (LPVOID) &frameCounter, 4, NULL);
+                int frameCounter = ReadProcessMemoryInt(processHandle, FRAME_COUNTER);
                 state.stageState = (frameCounter < 5200) ? StageState::Midboss : StageState::Boss;
             }
         }
     }
 
     // Read character and difficulty info
-    unsigned char chara = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) CHARACTER, (LPVOID) &chara, 1, NULL);
+    int chara = ReadProcessMemoryInt(processHandle, CHARACTER, 1);
     switch (chara) {
         default:
         case 0: state.character = Character::Reimu; break;
@@ -95,16 +86,14 @@ void Touhou07::readDataFromGameProcess() {
         case 2: state.character = Character::Sakuya; break;
     }
 
-    unsigned char charaSub = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) SUB_CHARACTER, (LPVOID) &charaSub, 1, NULL);
+    int charaSub = ReadProcessMemoryInt(processHandle, SUB_CHARACTER, 1);
     switch (charaSub) {
         default:
         case 0: state.subCharacter = SubCharacter::A; break;
         case 1: state.subCharacter = SubCharacter::B; break;
     }
 
-    unsigned int difficulty = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 4, NULL);
+    int difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -116,23 +105,13 @@ void Touhou07::readDataFromGameProcess() {
     }
 
     // Read current game progress
-    DWORD player_pointer = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) PLAYER_POINTER, (LPVOID) &player_pointer, 4, NULL);
-
+    int player_pointer = ReadProcessMemoryInt(processHandle, PLAYER_POINTER);
     if (player_pointer) {
-        float lives = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x5C), (LPVOID) &lives, 4, NULL);
-        state.lives = (int) lives;
-
-        float bombs = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x68), (LPVOID) &bombs, 4, NULL);
-        state.bombs = (int) bombs;
-
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x00), (LPVOID) &state.score, 4, NULL);
-
-        char gameOvers = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (player_pointer + 0x20), (LPVOID) &gameOvers, 1, NULL);
-        state.gameOvers = gameOvers;
+        // Behold zungramming: Lives and bombs are actually floats in memory.
+        state.lives = static_cast<int>(ReadProcessMemoryFloat(processHandle, (player_pointer + 0x5C)));
+        state.bombs = static_cast<int>(ReadProcessMemoryFloat(processHandle, (player_pointer + 0x68)));
+        state.score = ReadProcessMemoryInt(processHandle, player_pointer);
+        state.gameOvers = ReadProcessMemoryInt(processHandle, (player_pointer + 0x20), 1);
     }
 }
 

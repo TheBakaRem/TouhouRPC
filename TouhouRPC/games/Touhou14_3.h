@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 
 class Touhou14_3 : public TouhouBase {
@@ -49,7 +50,7 @@ protected:
     // For score displays
     int completedScenes{ 0 }; // Number of completed scenes
 
-    char bgm_playing[20] = "\0"; // Current music file played (used in the music room)
+    std::string bgm_playing = ""; // Current music file played (used in the music room)
 
     // For in-stage displays
     int subItemLock{ 0 };				// Check if the sub items are locked. if value == 0 then sub items are locked. if value > 0 then sub items are unlocked.
@@ -62,7 +63,7 @@ protected:
 
 private:
     // Note: Replay, music room and nicknames are not supported yet.
-    enum address {
+    enum address : TouhouAddress {
         // Menus
         MENU_DATA_PTR = 0x004E6B9CL, // Pointer on the in-game data. Stores info about all levels completed
         MENU_DATA_FIRST_LEVEL_OFFSET = 0x31C,				// Data on Day 1 - Scene 1

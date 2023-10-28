@@ -1,5 +1,4 @@
-#include <Windows.h>
-#include "Touhou14_3.h"
+import "Touhou14_3.h";
 
 Touhou14_3::Touhou14_3(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -11,15 +10,13 @@ void Touhou14_3::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
     state.mainMenuState = MainMenuState::TitleScreen;
 
-    int inMenuPtr;      // Pointer to menu data, most notably which menu is currently open. If nullptr, we're in game, else we're in the menus.
-    int menuDataPtr;    // Pointer to the data available in the menu (stage completion, scenes completed, etc.)
-
     // MENUS
-    ReadProcessMemory(processHandle, (LPCVOID) IN_MENU_PTR, (LPVOID) &inMenuPtr, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) (inMenuPtr + IN_MENU_STATUS_OFFSET), (LPVOID) &menuState, 4, NULL);
+    TouhouAddress inMenuPtr = ReadProcessMemoryInt(processHandle, IN_MENU_PTR); // Pointer to menu data, most notably which menu is currently open. If nullptr, we're in game, else we're in the menus.
+    menuState = ReadProcessMemoryInt(processHandle, (inMenuPtr + IN_MENU_STATUS_OFFSET));
 
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_DATA_PTR, (LPVOID) &menuDataPtr, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) (menuDataPtr + MENU_DATA_SUB_ITEM_LOCK_OFFSET), (LPVOID) &subItemLock, 4, NULL); // If == 0, we don't have sub-items. Else if > 0, we have access to sub-items. (Counts the number of completions in Stage 6-1)
+    TouhouAddress menuDataPtr = ReadProcessMemoryInt(processHandle, MENU_DATA_PTR); // Pointer to the data available in the menu (stage completion, scenes completed, etc.)
+    subItemLock = ReadProcessMemoryInt(processHandle, (menuDataPtr + MENU_DATA_SUB_ITEM_LOCK_OFFSET)); // If == 0, we don't have sub-items. Else if > 0, we have access to sub-items. (Counts the number of completions in Stage 6-1)
+
 
     if (inMenuPtr == 0) {
         state.gameState = GameState::Playing_CustomResources;
@@ -49,7 +46,7 @@ void Touhou14_3::readDataFromGameProcess() {
                 // We are in the music room
                 state.gameState = GameState::MainMenu;
                 state.mainMenuState = MainMenuState::MusicRoom;
-                ReadProcessMemory(processHandle, (LPCVOID) MUSIC_FILE_PLAYED, (LPVOID) &bgm_playing, 20, NULL);
+                bgm_playing = ReadProcessMemoryString(processHandle, MUSIC_FILE_PLAYED, 20);
                 break;
             case 7:
                 // We are selecting a replay
@@ -74,8 +71,8 @@ void Touhou14_3::readDataFromGameProcess() {
         // Setting total score and completed scenes
         completedScenes = 0;
 
-        if (menuDataPtr != 0) {
-            ReadProcessMemory(processHandle, (LPCVOID) (menuDataPtr + MENU_DATA_NB_SCENES_COMPLETED_OFFSET), (LPVOID) &completedScenes, 4, NULL);
+        if (menuDataPtr) {
+            completedScenes = ReadProcessMemoryInt(processHandle, (menuDataPtr + MENU_DATA_NB_SCENES_COMPLETED_OFFSET));
         }
     }
 
@@ -83,24 +80,20 @@ void Touhou14_3::readDataFromGameProcess() {
     if (state.gameState == GameState::Playing_CustomResources) {
 
         // Read current game progress
-        int playerState = 0;
-        int pauseType = PauseType::IN_GAME;
+        int playerState = ReadProcessMemoryInt(processHandle, LIFE_COUNT);
+        int pauseType = ReadProcessMemoryInt(processHandle, PAUSE);
 
-        ReadProcessMemory(processHandle, (LPCVOID) PAUSE, (LPVOID) &pauseType, 4, NULL);
+        state.score = ReadProcessMemoryInt(processHandle, CURRENT_SCORE);
+        stage = ReadProcessMemoryInt(processHandle, CURRENT_STAGE);
+        stageFrames = ReadProcessMemoryInt(processHandle, CURRENT_TIMER);
 
-        ReadProcessMemory(processHandle, (LPCVOID) CURRENT_SCORE, (LPVOID) &state.score, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) CURRENT_STAGE, (LPVOID) &stage, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) CURRENT_TIMER, (LPVOID) &stageFrames, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) LIFE_COUNT, (LPVOID) &playerState, 4, NULL);
+        TouhouAddress itemDataPtr = ReadProcessMemoryInt(processHandle, ITEM_DATA_PTR); // Item data pointer (number of uses on items).
 
-        int itemDataPtr = 0;    // Item data pointer (number of uses on items).
-        ReadProcessMemory(processHandle, (LPCVOID) ITEM_DATA_PTR, (LPVOID) &itemDataPtr, 4, NULL);
+        currMainItem = ReadProcessMemoryInt(processHandle, MAIN_ITEM);
+        state.mainItemUses = ReadProcessMemoryInt(processHandle, (itemDataPtr + ITEM_DATA_MAIN_NB_USES_OFFSET));
 
-        ReadProcessMemory(processHandle, (LPCVOID) MAIN_ITEM, (LPVOID) &currMainItem, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (itemDataPtr + ITEM_DATA_MAIN_NB_USES_OFFSET), (LPVOID) &state.mainItemUses, 4, NULL);
-
-        ReadProcessMemory(processHandle, (LPCVOID) SUB_ITEM, (LPVOID) &currSubItem, 4, NULL);
-        ReadProcessMemory(processHandle, (LPCVOID) (itemDataPtr + ITEM_DATA_SUB_NB_USES_OFFSET), (LPVOID) &state.subItemUses, 4, NULL);
+        currSubItem = ReadProcessMemoryInt(processHandle, SUB_ITEM);
+        state.subItemUses = ReadProcessMemoryInt(processHandle, (itemDataPtr + ITEM_DATA_SUB_NB_USES_OFFSET));
 
         // Check player death
         if (playerState == -1 && pauseType == PauseType::WIN_LOSE) {
@@ -113,13 +106,12 @@ void Touhou14_3::readDataFromGameProcess() {
         }
 
         // Read game mode (done in last, so we can overwrite other game states in case we're in a replay)
-        ReadProcessMemory(processHandle, (LPCVOID) GAME_MODE, (LPVOID) &gameMode, 4, NULL);
+        gameMode = ReadProcessMemoryInt(processHandle, GAME_MODE);
         switch (gameMode) {
             case GAME_MODE_STANDARD: break; // could be main menu or playing, no need to overwrite anything
             case GAME_MODE_REPLAY: state.gameState = GameState::WatchingReplay; break;
         }
     }
-
 }
 
 // Custom mission select resources
@@ -313,7 +305,7 @@ std::string Touhou14_3::getStageName() const {
 
 // Music name
 std::string Touhou14_3::getBGMName() const {
-    std::string fileName(bgm_playing);
+    std::string fileName = bgm_playing;
     if (bgm_playing[0] == 'b') fileName = fileName.substr(4); // Remove the "bgm/" part if it exists
 
     if (fileName.rfind("th143_01", 0) == 0) { return th143_musicNames[0]; }

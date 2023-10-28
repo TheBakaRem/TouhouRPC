@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 class Touhou10 : public TouhouBase {
 public:
@@ -24,7 +25,7 @@ protected:
 
 private:
     // addresses correct for v1.00a
-    enum address {
+    enum address : TouhouAddress {
         CHARACTER = 0x00474C68L,
         SUB_CHARACTER = 0x00474C6CL,
         DIFFICULTY = 0x00474C74L,

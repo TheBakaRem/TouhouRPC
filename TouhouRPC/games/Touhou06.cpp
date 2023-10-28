@@ -1,5 +1,4 @@
-#include <Windows.h>
-#include "Touhou06.h"
+import "Touhou06.h";
 
 Touhou06::Touhou06(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {
     gameState2 = 0;
@@ -22,8 +21,7 @@ void Touhou06::readDataFromGameProcess() {
     state.stageState = StageState::Stage;
 
     // Character
-    unsigned char character = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) CHARACTER, (LPVOID) &character, 1, NULL);
+    int character = ReadProcessMemoryInt(processHandle, CHARACTER, 1);
     switch (character) {
         default:
         case 0: state.character = Character::Reimu; break;
@@ -31,8 +29,7 @@ void Touhou06::readDataFromGameProcess() {
     }
 
     // Teammate
-    unsigned char subCharacter;
-    ReadProcessMemory(processHandle, (LPCVOID) SUB_CHARACTER, (LPVOID) &subCharacter, 1, NULL);
+    int subCharacter = ReadProcessMemoryInt(processHandle, SUB_CHARACTER, 1);
     switch (subCharacter) {
         default:
         case 0: state.subCharacter = SubCharacter::A; break;
@@ -40,8 +37,7 @@ void Touhou06::readDataFromGameProcess() {
     }
 
     // Difficulty
-    unsigned char difficulty;
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 1, NULL);
+    int difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY, 1);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -52,31 +48,24 @@ void Touhou06::readDataFromGameProcess() {
     }
 
     // Stage
-    unsigned char stage;
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 1, NULL);
+    int stage = ReadProcessMemoryInt(processHandle, STAGE, 1);
 
     // Game state
-    unsigned char gameState;
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_STATE, (LPVOID) &gameState, 1, NULL);
+    int gameState = ReadProcessMemoryInt(processHandle, GAME_STATE, 1);
 
     // Game state 2 (boss life)
-    unsigned char gameState2;
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_STATE_2, (LPVOID) &gameState2, 1, NULL);
+    int gameState2 = ReadProcessMemoryInt(processHandle, GAME_STATE_2, 1);
 
     // Read menu state
-    unsigned int menuState = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_STATE, (LPVOID) &menuState, 4, NULL);
+    int menuState = ReadProcessMemoryInt(processHandle, MENU_STATE);
 
-    unsigned char practiceFlag = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) PRACTICE_FLAG, (LPVOID) &practiceFlag, 1, NULL);
+    int practiceFlag = ReadProcessMemoryInt(processHandle, PRACTICE_FLAG, 1);
 
     // Are we in the menu?
-    int aMenu = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) CHECK_IN_MENU_VALUE, &aMenu, 4, NULL); // == 0 when we are in-game
+    int aMenu = ReadProcessMemoryInt(processHandle, CHECK_IN_MENU_VALUE); // == 0 when we are in-game
     if (stage > 0 && aMenu == 0 && !InvalidmainMenuStateForGame(menuState)) {
         // We are in-game
-        char replayFlag = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) REPLAY_FLAG, (LPVOID) &replayFlag, 1, NULL);
+        int replayFlag = ReadProcessMemoryInt(processHandle, REPLAY_FLAG, 1);
 
         if (practiceFlag == 1) {
             state.gameState = GameState::StagePractice;
@@ -169,7 +158,7 @@ void Touhou06::readDataFromGameProcess() {
             {
                 state.mainMenuState = MainMenuState::MusicRoom;
 
-                ReadProcessMemory(processHandle, (LPCVOID) MUSIC_ROOM_TRACK, (LPVOID) &bgm, 4, NULL);
+                bgm = ReadProcessMemoryInt(processHandle, MUSIC_ROOM_TRACK);
                 break;
             }
 
@@ -178,20 +167,17 @@ void Touhou06::readDataFromGameProcess() {
     }
 
     // Read current game progress
-    char lives = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) LIVES, (LPVOID) &lives, 1, NULL);
+    int lives = ReadProcessMemoryInt(processHandle, LIVES, 1);
     state.lives = lives;
 
-    char bombs = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) BOMBS, (LPVOID) &bombs, 1, NULL);
+    int bombs = ReadProcessMemoryInt(processHandle, BOMBS, 1);
     state.bombs = bombs;
 
-    char gameOvers = 0;
-    ReadProcessMemory(processHandle, (LPCVOID) GAMEOVERS, (LPVOID) &gameOvers, 1, NULL);
+    int gameOvers = ReadProcessMemoryInt(processHandle, GAMEOVERS, 1);
     state.gameOvers = gameOvers;
 
-    ReadProcessMemory(processHandle, (LPCVOID) SCORE, (LPVOID) &state.score, 4, NULL);
-    state.score = (state.score - gameOvers) / 10;
+    int score = ReadProcessMemoryInt(processHandle, SCORE);
+    state.score = (score - gameOvers) / 10;
 }
 
 std::string Touhou06::getMidbossName() const {

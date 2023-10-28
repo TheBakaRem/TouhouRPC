@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 
 enum class GameModePoFV {
@@ -52,7 +53,7 @@ protected:
 
 private:
     // addresses correct for v1.50a
-    enum address {
+    enum address : TouhouAddress {
         // Menus
         MENU_MODE = 0x004A6A5CL, // 1 byte
         IN_MENU = 0x004A7EC4L, // 1 byte, 0/14 on menu/demo, 4 in game, 12 in replay

@@ -10,10 +10,20 @@ import <charconv>;
 import Log;
 
 namespace Config {
+    // Read the config file
+    export void parseFile(const std::string& path = "./config.ini");
+
+    // Reads a value from the loaded configuration
+    export int getValue(const std::string& key);
+};
+
+module : private;
+
+namespace Config {
     using namespace std;
 
     // Private map where the loaded configuration is stored
-    map<string, int> configMap{
+    map<const string, const int> configMap{
         {"activateLogFiles", 1},
         {"logLevelConsole", Log::LOG_INFO},
         {"logLevelLogFile", Log::LOG_INFO}
@@ -28,8 +38,8 @@ namespace Config {
     }
 
     // Read the config file
-    export void parseFile(const string& path = "./config.ini") {
-        ifstream inputFile{};
+    void parseFile(const string& path) {
+        ifstream inputFile;
         inputFile.open(path);
 
         if (inputFile.fail()) {
@@ -45,9 +55,9 @@ namespace Config {
             if (line.size() == 0 || line.find_first_of(";[") == 0) continue;
 
             // Get key/value data
-            const auto delim_pos = line.find("=");
-            string key{};
-            string value{};
+            const auto delim_pos{ line.find("=") };
+            string key;
+            string value;
 
             if (delim_pos != string::npos) {
                 key = line.substr(0, delim_pos);
@@ -61,30 +71,29 @@ namespace Config {
             if (key.empty() || value.empty()) continue;
 
             // Replace the old value if it exist, we don't bother checking if the new value is different
-            const auto it = configMap.find(key);
+            const auto it{ configMap.find(key) };
             if (it != configMap.end()) {
                 configMap.erase(key);
             }
 
             // convert the read value to int
-            int int_value{};
+            int int_value;
             const auto [ptr, ec] = from_chars(value.data(), value.data() + value.size(), int_value);
 
             if (ec == errc()) {
-                configMap.insert(pair<string, int>(key, int_value));
+                configMap.insert({ key, int_value });
             }
             else if (ec == errc::invalid_argument) {
                 throw runtime_error("Error while reading the config file at " + path + ": the value of " + key + " = " + value + " is not an int.");
             }
             else if (ec == errc::result_out_of_range) {
                 throw runtime_error("Error while reading the config file at " + path + ": the value of " + key + " = " + value + " is too big to be read as int.");
-            }           
+            }
         }
     }
 
-    // Reads a value from the loaded configuration
-    export int getValue(const std::string& key) {
-        const auto it = configMap.find(key);
+    int getValue(const string& key) {
+        const auto it{ configMap.find(key) };
         if (it != configMap.end()) {
             return it->second;
         }

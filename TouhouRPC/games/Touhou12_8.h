@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 
 enum GFW_STAGE {
@@ -46,7 +47,7 @@ protected:
 
 private:
     // addresses correct for v1.00a
-    enum address {
+    enum address : TouhouAddress {
         DIFFICULTY = 0x004B4D0CL,
         STAGE = 0x004B4D14L,
         STAGE_FRAMES = 0x004B4D20L,

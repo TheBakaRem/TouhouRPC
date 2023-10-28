@@ -1,5 +1,4 @@
-#include <Windows.h>
-#include "Touhou15.h"
+import "Touhou15.h";
 
 Touhou15::Touhou15(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -12,30 +11,21 @@ void Touhou15::readDataFromGameProcess() {
     gameMode = GAME_MODE_STANDARD;
 
     // The BGM playing will be used to determine a lot of things
-    char bgm_playing[20];
-    ReadProcessMemory(processHandle, (LPCVOID) BGM_STR, bgm_playing, 20, NULL);
+    std::string bgm_playing = ReadProcessMemoryString(processHandle, BGM_STR, 20);
 
     // Check if the game over music is playing.
-    if (std::strncmp(bgm_playing, "th128_08.wav", std::strlen("th128_08.wav")) == 0) {
+    if (bgm_playing == "th128_08.wav") {
         state.gameState = GameState::GameOver;
     }
-
-    // Read stage value
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 4, NULL);
 
     // Convert the part after the _ and before the . to int
     // That way it is possible to switch case the BGM playing
     bool prefixBGM = bgm_playing[0] == 'b';
-    char bgm_id_str[3];
-    bgm_id_str[0] = bgm_playing[prefixBGM ? 9 : 5];
-    bgm_id_str[1] = bgm_playing[prefixBGM ? 10 : 6];
-    bgm_id_str[2] = '\x00';
-    int bgm_id = atoi(bgm_id_str);
-
-    bgm = bgm_id;
+    char bgm_id_str[3]{ bgm_playing[prefixBGM ? 9 : 5], bgm_playing[prefixBGM ? 10 : 6], '\0' };
+    bgm = atoi(bgm_id_str);
 
     // Character
-    ReadProcessMemory(processHandle, (LPCVOID) CHARACTER, (LPVOID) &character, 4, NULL);
+    character = ReadProcessMemoryInt(processHandle, CHARACTER);
     switch (character) {
         default:
         case 0: state.character = Character::Reimu; break;
@@ -45,13 +35,13 @@ void Touhou15::readDataFromGameProcess() {
     }
 
     // Stage
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE, (LPVOID) &stage, 4, NULL);
+    stage = ReadProcessMemoryInt(processHandle, STAGE);
 
     // Game type
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_TYPE, (LPVOID) &gameType, 4, NULL);
+    gameType = static_cast<GameType>(ReadProcessMemoryInt(processHandle, GAME_TYPE));
 
     // Difficulty
-    ReadProcessMemory(processHandle, (LPCVOID) DIFFICULTY, (LPVOID) &difficulty, 4, NULL);
+    difficulty = ReadProcessMemoryInt(processHandle, DIFFICULTY);
     switch (difficulty) {
         default:
         case 0: state.difficulty = Difficulty::Easy; break;
@@ -62,21 +52,20 @@ void Touhou15::readDataFromGameProcess() {
     }
 
     // Stage chapter
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE_CHAPTER, (LPVOID) &stageChapter, 4, NULL);
+    stageChapter = ReadProcessMemoryInt(processHandle, STAGE_CHAPTER);
 
     // Stage chapter frames (number of frames in this current state)
-    ReadProcessMemory(processHandle, (LPCVOID) STAGE_CHAPTER_FRAMES, (LPVOID) &currentStageChapterFrames, 4, NULL);
+    currentStageChapterFrames = ReadProcessMemoryInt(processHandle, STAGE_CHAPTER_FRAMES);
 
     // Global retry count
-    ReadProcessMemory(processHandle, (LPCVOID) GLOBAL_RETRY_COUNT, (LPVOID) &retryCount, 4, NULL);
+    retryCount = ReadProcessMemoryInt(processHandle, GLOBAL_RETRY_COUNT);
 
     // Chapter retry count
-    ReadProcessMemory(processHandle, (LPCVOID) CHAPTER_RETRY_COUNT, (LPVOID) &chapterRetryCount, 4, NULL);
+    chapterRetryCount = ReadProcessMemoryInt(processHandle, CHAPTER_RETRY_COUNT);
 
     // Menu state
-    DWORD menu_pointer{ NULL };
-    ReadProcessMemory(processHandle, (LPCVOID) MENU_POINTER, &menu_pointer, 4, NULL); // Get menu class address
-    if (state.gameState == GameState::Playing && menu_pointer != NULL) {
+    TouhouAddress menu_pointer = ReadProcessMemoryInt(processHandle, MENU_POINTER); // Get menu class address
+    if (state.gameState == GameState::Playing && menu_pointer) {
         // The most reliable way of determining our current menu state is through the combination of
         // menu display state and extra flags that get set.
         // This is because of a bug detailed in Touhou14's source file
@@ -102,8 +91,7 @@ void Touhou15::readDataFromGameProcess() {
             11 -> replay stage select
         */
 
-        DWORD ds = 0;
-        ReadProcessMemory(processHandle, (LPCVOID) (menu_pointer + 0x18), (LPVOID) &ds, 4, NULL);
+        int ds = ReadProcessMemoryInt(processHandle, (menu_pointer + 0x18));
 
         switch (ds) {
             default: state.mainMenuState = MainMenuState::TitleScreen; break;
@@ -116,8 +104,7 @@ void Touhou15::readDataFromGameProcess() {
                     state.mainMenuState = MainMenuState::ExtraStart;
                 }
                 else {
-                    DWORD practiceFlag = 0;
-                    ReadProcessMemory(processHandle, (LPCVOID) PRACTICE_SELECT_FLAG, (LPVOID) &practiceFlag, 4, NULL);
+                    int practiceFlag = ReadProcessMemoryInt(processHandle, PRACTICE_SELECT_FLAG);
                     state.mainMenuState = (practiceFlag != 0 && practiceFlag != 256) ? MainMenuState::StagePractice : MainMenuState::GameStart;
                 }
                 break;
@@ -136,7 +123,7 @@ void Touhou15::readDataFromGameProcess() {
 
     if (state.gameState == GameState::Playing) {
         // Note that ZUN's naming for the BGM file names is not very consistent
-        switch (bgm_id) {
+        switch (bgm) {
             case 0:
             case 1:
                 mainMenuState = 0;
@@ -211,13 +198,13 @@ void Touhou15::readDataFromGameProcess() {
     }
 
     // Read current game progress
-    ReadProcessMemory(processHandle, (LPCVOID) LIVES, (LPVOID) &state.lives, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) BOMBS, (LPVOID) &state.bombs, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) SCORE, (LPVOID) &state.score, 4, NULL);
-    ReadProcessMemory(processHandle, (LPCVOID) GAMEOVERS, (LPVOID) &state.gameOvers, 4, NULL);
+    state.lives = ReadProcessMemoryInt(processHandle, LIVES);
+    state.bombs = ReadProcessMemoryInt(processHandle, BOMBS);
+    state.score = ReadProcessMemoryInt(processHandle, SCORE);
+    state.gameOvers = ReadProcessMemoryInt(processHandle, GAMEOVERS);
 
     // Read game mode
-    ReadProcessMemory(processHandle, (LPCVOID) GAME_MODE, (LPVOID) &gameMode, 4, NULL);
+    gameMode = static_cast<GameMode>(ReadProcessMemoryInt(processHandle, GAME_MODE));
     switch (gameMode) {
         case GAME_MODE_STANDARD: break; // could be main menu or playing, no need to overwrite anything
         case GAME_MODE_REPLAY: state.gameState = GameState::WatchingReplay; break;

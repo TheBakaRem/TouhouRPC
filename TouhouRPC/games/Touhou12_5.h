@@ -1,5 +1,6 @@
 #pragma once
 import Games;
+import WindowsUtils;
 
 
 class Touhou12_5 : public TouhouBase {
@@ -28,7 +29,7 @@ public:
 protected:
     std::string createFormattedScore() const override;
 
-    char bgm_playing[20] = "\0"; // Background music for music room
+    std::string bgm_playing = ""; // Background music for music room
     int player{ 0 }; // Player selected (Aya or Hatate)
 
     // For score displays
@@ -42,7 +43,7 @@ protected:
     int lastSelectionValue{ 0 }; // Used to store the last menu value. We use it to know if we're in-game or in a replay when the game starts
 private:
     // Adresses correct for v1.00a
-    enum address {
+    enum address : TouhouAddress {
         // Player select
         PLAYER_SELECT = 0x004B308CL, // 0 is Aya, 1 is Hatate (available in the menu and in-game)
 
