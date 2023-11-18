@@ -181,10 +181,10 @@
     <ClCompile Include="Config.ixx" />
     <ClCompile Include="DiscordRPC.ixx" />
     <ClCompile Include="GameDetector.ixx" />
-    <ClCompile Include="Games-Enums.ixx" />
-    <ClCompile Include="Games-TouhouBase.ixx" />
-    <ClCompile Include="Games.ixx" />
-    <ClCompile Include="Games-Strings.ixx" />
+    <ClCompile Include="games\Games-Enums.ixx" />
+    <ClCompile Include="games\Games-Strings.ixx" />
+    <ClCompile Include="games\Games-TouhouBase.ixx" />
+    <ClCompile Include="games\Games.ixx" />
     <ClCompile Include="games\Touhou06.cpp" />
     <ClCompile Include="games\Touhou07.cpp" />
     <ClCompile Include="games\Touhou08.cpp" />
