@@ -8,6 +8,7 @@ module;
 export module Games:TouhouBase;
 
 import <string>;
+import <format>;
 import :Enums;
 import Log;
 
@@ -685,14 +686,7 @@ export {
     }
 
     string TouhouBase::formatScore(int score) const {
-        string scoreString = to_string(score);
-        size_t insertPosition = scoreString.length();
-        insertPosition -= 3;
-        while (insertPosition > 0) {
-            scoreString.insert(insertPosition, ",");
-            insertPosition -= 3;
-        }
-        return scoreString;
+        return format("{:L}", score);
     }
 
     string TouhouBase::createFormattedScore() const {

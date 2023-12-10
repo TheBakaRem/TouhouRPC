@@ -43,7 +43,7 @@ float ReadProcessMemoryFloat(HANDLE processHandle, TouhouAddress address, int si
 
 std::string ReadProcessMemoryString(HANDLE processHandle, TouhouAddress address, int size) {
     auto result{ std::make_unique_for_overwrite<char[]>(size) };
-    if (ReadProcessMemory(processHandle, reinterpret_cast<LPCVOID>(address), &result, 4, NULL) == 0) {
+    if (ReadProcessMemory(processHandle, reinterpret_cast<LPCVOID>(address), result.get(), size, NULL) == 0) {
         Log::error("Error while reading process memory at {:x}", address);
     }
     return std::string(result.get());

@@ -15,7 +15,7 @@ void Touhou12_8::readDataFromGameProcess() {
     // Convert the part after the _ and before the . to int
     // That way it is possible to switch case the BGM playing
     bool prefixBGM = bgm_playing[0] == 'b';
-    char bgm_id_str[3]{ bgm_playing[prefixBGM ? 9 : 5], bgm_playing[prefixBGM ? 10 : 6], '\0' };
+    char bgm_id_str[3]{ bgm_playing[prefixBGM ? 10 : 6], bgm_playing[prefixBGM ? 11 : 7], '\0' };
     bgm = atoi(bgm_id_str);
 
     // Character

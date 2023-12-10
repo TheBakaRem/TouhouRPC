@@ -19,8 +19,9 @@ constexpr auto VERSION{ "1.5.0" };
 
 // Includes
 import <iostream>;
-#include <thread>
 import <chrono>;
+#include <locale>
+#include <thread>
 #include <csignal>
 #include <Windows.h>
 
@@ -131,6 +132,11 @@ int main() {
     );
 
     SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
+
+    // Force locale to be "en_US.UTF8".
+    // This forces numbers to be displayed with the "," thousands separator.
+    // This makes sense since this is an English-only program.
+    locale::global(std::locale("en_US.UTF8"));
 
     // Config reading and log system initialization
     try {
