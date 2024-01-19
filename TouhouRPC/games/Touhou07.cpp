@@ -1,4 +1,4 @@
-﻿import "Touhou07.h";
+﻿#include "Touhou07.h"
 
 
 Touhou07::Touhou07(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}

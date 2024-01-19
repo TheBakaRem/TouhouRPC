@@ -1,4 +1,4 @@
-import "Touhou09.h";
+#include "Touhou09.h"
 
 
 Touhou09::Touhou09(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
@@ -36,8 +36,8 @@ void Touhou09::readDataFromGameProcess() {
     }
     else {
         switch (menuState) {
-            case 180: gameMode = GameModePoFV::Match; // fallthrough
-            default:
+        case 180: gameMode = GameModePoFV::Match; [[fallthrough]];
+            default: [[fallthrough]];
             case 196: state.gameState = GameState::Playing; break;
             case 40: state.gameState = GameState::WatchingReplay; break;
         }

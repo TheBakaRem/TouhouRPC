@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 import Games;
 import WindowsUtils;
 
@@ -42,8 +43,8 @@ public:
 
 protected:
     int bgm{ 1 };
-    unsigned int motivation{ 0 };
-    unsigned int perfectFreeze{ 0 };
+    int motivation{ 0 };
+    int perfectFreeze{ 0 };
 
 private:
     // addresses correct for v1.00a

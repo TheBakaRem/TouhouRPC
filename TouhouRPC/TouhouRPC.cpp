@@ -18,12 +18,12 @@
 constexpr auto VERSION{ "1.5.0" };
 
 // Includes
-import <iostream>;
-import <chrono>;
-#include <locale>
-#include <thread>
-#include <csignal>
 #include <Windows.h>
+#include <csignal> // SIGINT
+#include <cstdint>
+#include <thread>
+#include <iostream>
+#include <chrono>
 
 import Config;
 import Log;

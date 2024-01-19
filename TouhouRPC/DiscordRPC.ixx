@@ -1,11 +1,14 @@
+module;
+
+#include "includes/discord-files/discord.h"
+#include <memory>
+#include <string>
+#include <array>
+#include <chrono>
+
 export module DiscordRPC;
 
-import "includes/discord-files/discord.h";
 import Log;
-import <memory>;
-import <string>;
-import <array>;
-import <chrono>;
 
 using namespace std;
 
@@ -37,7 +40,7 @@ private:
     // Each instant submit has to tracked to make sure we don't go over rate limit.
     // timeSinceLastSubmits.size() is the max we can do before we have to wait for one to be free.
     static const int MIN_TIME_BETWEEN_SUBMITS_MS{ 20000 };
-    array<unsigned int, 3> timeSinceLastSubmits{ 0, 0, 0 };
+    array<int, 3> timeSinceLastSubmits{ 0, 0, 0 };
 };
 
 module : private;
@@ -64,7 +67,7 @@ DiscordRPC::DiscordRPC(int64_t clientID, int& lastErrorType) {
 
 // Code that should run every tick
 discord::Result DiscordRPC::tickUpdate(int msDeltaTime) {
-    for (unsigned int& time : timeSinceLastSubmits) {
+    for (int& time : timeSinceLastSubmits) {
         time += msDeltaTime;
     }
     return core->RunCallbacks();
@@ -74,7 +77,7 @@ discord::Result DiscordRPC::tickUpdate(int msDeltaTime) {
 void DiscordRPC::sendPresence(bool forceSend) {
     if (!forceSend) {
         bool cantSubmit{ true };
-        for (unsigned int& time : timeSinceLastSubmits) {
+        for (int& time : timeSinceLastSubmits) {
             if (time >= MIN_TIME_BETWEEN_SUBMITS_MS) {
                 cantSubmit = false;
                 time = 0;

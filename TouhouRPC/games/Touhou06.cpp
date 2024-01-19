@@ -1,4 +1,4 @@
-import "Touhou06.h";
+#include "Touhou06.h"
 
 Touhou06::Touhou06(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {
     gameState2 = 0;

@@ -1,13 +1,14 @@
-export module Log;
+module;
 
-import <fstream>;
-import <stdexcept>;
-import <filesystem>;
-import <format>;
-import <chrono>;
-import <string>;
-import <vector>;
-import <iostream>;
+#include <vector>
+#include <fstream>
+#include <string>
+#include <chrono>
+#include <iostream>
+#include <filesystem>
+#include <format>
+
+export module Log;
 
 namespace Log {
     using namespace std;
@@ -38,8 +39,8 @@ namespace Log {
 
         // We concatenate two formatted strings to avoid format string clashes like {0:} and {}. This way the caller of print() formats as they want.
         string message{
-            vformat("[{0:%T}] {1:}: ", make_format_args(local_time() , level_names.at(level)))
-            + vformat(format_string, make_format_args(args...))
+            /*vformat("[{0:%T}] {1:}: ", make_format_args(local_time() , level_names.at(level)))
+            +*/ vformat(format_string, make_format_args(args...))
         };
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 import Games;
 import WindowsUtils;
 
@@ -33,9 +34,9 @@ public:
 
 protected:
     GameModePoFV gameMode{ GameModePoFV::Normal };
-    unsigned int bgm{ 0 }; // correct in music room only
-    unsigned int location{ 0 };
-    unsigned int roundNum{ 0 };
+    int bgm{ 0 }; // correct in music room only
+    int location{ 0 };
+    int roundNum{ 0 };
 
     struct PlayerData {
         int attempts{ 0 };

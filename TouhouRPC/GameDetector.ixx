@@ -4,29 +4,29 @@
 #include <memoryapi.h>
 #include <TlHelp32.h>
 #include <handleapi.h>
+#include <vector>
+#include <memory>
+
+#include "games/Touhou06.h"
+#include "games/Touhou07.h"
+#include "games/Touhou08.h"
+#include "games/Touhou09.h"
+#include "games/Touhou09_5.h"
+#include "games/Touhou10.h"
+#include "games/Touhou11.h"
+#include "games/Touhou12.h"
+#include "games/Touhou12_5.h"
+#include "games/Touhou12_8.h"
+#include "games/Touhou13.h"
+#include "games/Touhou14.h"
+#include "games/Touhou14_3.h"
+#include "games/Touhou15.h"
+#include "games/Touhou16.h"
+#include "games/Touhou17.h"
+#include "games/Touhou18.h"
 
 export module GameDetector;
 
-import "games/Touhou06.h";
-import "games/Touhou07.h";
-import "games/Touhou08.h";
-import "games/Touhou09.h";
-import "games/Touhou09_5.h";
-import "games/Touhou10.h";
-import "games/Touhou11.h";
-import "games/Touhou12.h";
-import "games/Touhou12_5.h";
-import "games/Touhou12_8.h";
-import "games/Touhou13.h";
-import "games/Touhou14.h";
-import "games/Touhou14_3.h";
-import "games/Touhou15.h";
-import "games/Touhou16.h";
-import "games/Touhou17.h";
-import "games/Touhou18.h";
-import <vector>;
-import <string>;
-import <memory>;
 import Log;
 import Games;
 

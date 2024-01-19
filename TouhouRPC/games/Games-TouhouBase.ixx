@@ -4,11 +4,12 @@ module;
 #include <memoryapi.h>
 #include <TlHelp32.h>
 #include <handleapi.h>
+#include <cstdint>
+#include <string>
+#include <format>
 
 export module Games:TouhouBase;
 
-import <string>;
-import <format>;
 import :Enums;
 import Log;
 

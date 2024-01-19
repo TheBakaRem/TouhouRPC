@@ -1,6 +1,6 @@
 #pragma once
+#include <string>
 import Games;
-import <string>;
 import WindowsUtils;
 
 class Touhou06 : public TouhouBase {

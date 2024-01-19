@@ -1,4 +1,4 @@
-import "Touhou15.h";
+#include "Touhou15.h"
 
 Touhou15::Touhou15(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 

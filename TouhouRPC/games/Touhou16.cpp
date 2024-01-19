@@ -1,4 +1,4 @@
-import "Touhou16.h";
+#include "Touhou16.h"
 
 Touhou16::Touhou16(PROCESSENTRY32W const& pe32) : TouhouBase(pe32) {}
 
@@ -115,42 +115,49 @@ void Touhou16::readDataFromGameProcess() {
 
             case 3: // stage 1 boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 2: // stage 1
                 stage = 1;
                 break;
 
             case 5: // stage 2 boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 4: // stage 2
                 stage = 2;
                 break;
 
             case 7: // stage 3 boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 6:// stage 3
                 stage = 3;
                 break;
 
             case 9: // stage 4 boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 8: // stage 4
                 stage = 4;
                 break;
 
             case 11: // stage 5 boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 10: // stage 5
                 stage = 5;
                 break;
 
             case 12: // stage 6 boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 13: // stage 6
                 stage = 6;
                 break;
 
             case 17: // extra stage boss
                 state.stageState = StageState::Boss;
+                [[fallthrough]];
             case 16: // extra stage
                 stage = 7;
                 break;

@@ -1,11 +1,13 @@
-export module Config;
+module;
 
-// import header units. In C++23 this will become simple import std;
-import <string>;
-import <fstream>;
-import <map>;
-import <stdexcept>;
-import <charconv>;
+#include <string>
+#include <map>
+#include <fstream>
+#include <stdexcept>
+#include <charconv>
+#include <format>
+
+export module Config;
 
 import Log;
 

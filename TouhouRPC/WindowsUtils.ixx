@@ -2,21 +2,15 @@ module;
 
 #include <Windows.h>
 #include <memoryapi.h>
+#include <string>
+#include <cstdint>
+#include <memory>
 
 export module WindowsUtils;
 
-import <stdexcept>;
-import <memory>;
 import Log;
 
-
-// Declaring a custom Address type that changes size based on x64 or x86 architecture.
-// This removes warning C4312.
-#if _WIN64
-export using TouhouAddress = uint64_t;
-#else
-export using TouhouAddress = uint32_t;
-#endif // _WIN64
+export using TouhouAddress = std::uintptr_t;
 
 export int ReadProcessMemoryInt(HANDLE processHandle, TouhouAddress address, int size = 4);
 export float ReadProcessMemoryFloat(HANDLE processHandle, TouhouAddress address, int size = 4);
