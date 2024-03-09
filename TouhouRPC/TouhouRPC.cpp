@@ -1,6 +1,6 @@
 // TouhouRPC.cpp : Main file
 
-// Copyright (C) 2020  Rem
+// Copyright (C) 2020-2024  TheBakaRem
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // Version definition
-constexpr auto VERSION{ "1.5.0" };
+constexpr auto VERSION{ "2.0.0-beta1" };
 
 // Includes
 #include <Windows.h>
@@ -109,7 +109,7 @@ void startDisplay() {
     ios_base::sync_with_stdio(false);
     cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION << "\n"
         << "Available on GitHub: https://www.github.com/TheBakaRem/TouhouRPC\n"
-        << "Copyright (C) 2020-2023  Rem\n"
+        << "Copyright (C) 2020-2024  TheBakaRem\n"
         << "Licensed under the GNU General Public License v3.0. This program comes with ABSOLUTELY NO WARRANTY; for details see the LICENSE file.\n"
         << "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\n"
         << "\n"
