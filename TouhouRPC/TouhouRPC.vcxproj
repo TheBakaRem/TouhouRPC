@@ -206,6 +206,7 @@
     <ClCompile Include="games\Touhou16.cpp" />
     <ClCompile Include="games\Touhou17.cpp" />
     <ClCompile Include="games\Touhou18.cpp" />
+	<ClCompile Include="games\Touhou20.cpp" />
     <ClCompile Include="includes\discord-files\achievement_manager.cpp" />
     <ClCompile Include="includes\discord-files\activity_manager.cpp" />
     <ClCompile Include="includes\discord-files\application_manager.cpp" />
@@ -242,6 +243,7 @@
     <ClCompile Include="games\Touhou16.h" />
     <ClCompile Include="games\Touhou17.h" />
     <ClCompile Include="games\Touhou18.h" />
+	<ClCompile Include="games\Touhou20.h" />
     <ClCompile Include="includes\discord-files\achievement_manager.h">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsHeaderUnit</CompileAs>
     </ClCompile>

@@ -87,6 +87,9 @@
     <ClCompile Include="games\Touhou12_5.cpp">
       <Filter>Fichiers sources\Games</Filter>
     </ClCompile>
+    <ClCompile Include="games\Touhou20.cpp">
+      <Filter>Fichiers sources\Games</Filter>
+    </ClCompile>
     <ClCompile Include="Config.ixx">
       <Filter>Fichiers sources\Modules</Filter>
     </ClCompile>
@@ -202,6 +205,9 @@
       <Filter>Fichiers d%27en-tête\Games</Filter>
     </ClCompile>
     <ClCompile Include="games\Touhou18.h">
+      <Filter>Fichiers d%27en-tête\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="games\Touhou20.h">
       <Filter>Fichiers d%27en-tête\Games</Filter>
     </ClCompile>
     <ClCompile Include="includes\discord-files\application_manager.h">

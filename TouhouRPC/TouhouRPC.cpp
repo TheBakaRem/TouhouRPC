@@ -116,7 +116,7 @@ void startDisplay() {
         << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer.\n"
         << "The program automatically detects when you change between supported games.\n"
         << "You can close this program at any time by pressing (Ctrl+C).\n"
-        << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB), 10 (MoF), 11 (SA), 12 (UFO), 12.5 (DS), 12.8 (GFW), 13 (TD), 14 (DDC), 14.3 (ISC), 15 (LoLK), 16 (HSiFS), 17 (WBaWC), 18 (UM).\n"
+        << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB), 10 (MoF), 11 (SA), 12 (UFO), 12.5 (DS), 12.8 (GFW), 13 (TD), 14 (DDC), 14.3 (ISC), 15 (LoLK), 16 (HSiFS), 17 (WBaWC), 18 (UM), 20 (FW).\n"
         << "\n"
         << "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!\n";
 }

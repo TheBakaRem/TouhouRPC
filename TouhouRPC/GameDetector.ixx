@@ -24,6 +24,7 @@
 #include "games/Touhou16.h"
 #include "games/Touhou17.h"
 #include "games/Touhou18.h"
+#include "games/Touhou20.h"
 
 export module GameDetector;
 
@@ -55,6 +56,7 @@ enum class SupportedGame {
     WBaWC_17,
     UM_18_Trial,
     UM_18,
+    FW_20,
 
     Invalid,
 };
@@ -92,6 +94,7 @@ const vector<ProcessNameGamePair> processNameList
     { SupportedGame::WBaWC_17,    L"th17.exe" },
     { SupportedGame::UM_18_Trial, L"th18tr.exe"},
     { SupportedGame::UM_18,       L"th18.exe"},
+    { SupportedGame::FW_20,       L"th20.exe"},
 };
 
 bool findRunningTouhouProcess(PROCESSENTRY32W& processEntry, SupportedGame& processGame) {
@@ -135,30 +138,31 @@ unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence) {
 
         // Game check
         switch (game) {
-            case SupportedGame::EoSD_6:      thGame = make_unique<Touhou06>(pe32);      break;
-            case SupportedGame::PCB_7:       thGame = make_unique<Touhou07>(pe32);      break;
-            case SupportedGame::IN_8:        thGame = make_unique<Touhou08>(pe32);      break;
-            case SupportedGame::PoFV_9:      thGame = make_unique<Touhou09>(pe32);      break;
-            case SupportedGame::StB_9_5:     thGame = make_unique<Touhou09_5>(pe32);    break;
-            case SupportedGame::MoF_10:      thGame = make_unique<Touhou10>(pe32);      break;
-            case SupportedGame::SA_11:       thGame = make_unique<Touhou11>(pe32);      break;
-            case SupportedGame::UFO_12:      thGame = make_unique<Touhou12>(pe32);      break;
-            case SupportedGame::DS_12_5:     thGame = make_unique<Touhou12_5>(pe32);    break;
-            case SupportedGame::GFW_12_8:    thGame = make_unique<Touhou12_8>(pe32);    break;
-            case SupportedGame::TD_13:       thGame = make_unique<Touhou13>(pe32);      break;
-            case SupportedGame::DDC_14:      thGame = make_unique<Touhou14>(pe32);      break;
-            case SupportedGame::ISC_14_3:    thGame = make_unique<Touhou14_3>(pe32);    break;
-            case SupportedGame::LoLK_15:     thGame = make_unique<Touhou15>(pe32);      break;
-            case SupportedGame::HSiFS_16:    thGame = make_unique<Touhou16>(pe32);      break;
-            case SupportedGame::WBaWC_17:    thGame = make_unique<Touhou17>(pe32);      break;
-            case SupportedGame::UM_18:       thGame = make_unique<Touhou18>(pe32);      break;
+        case SupportedGame::EoSD_6:      thGame = make_unique<Touhou06>(pe32);      break;
+        case SupportedGame::PCB_7:       thGame = make_unique<Touhou07>(pe32);      break;
+        case SupportedGame::IN_8:        thGame = make_unique<Touhou08>(pe32);      break;
+        case SupportedGame::PoFV_9:      thGame = make_unique<Touhou09>(pe32);      break;
+        case SupportedGame::StB_9_5:     thGame = make_unique<Touhou09_5>(pe32);    break;
+        case SupportedGame::MoF_10:      thGame = make_unique<Touhou10>(pe32);      break;
+        case SupportedGame::SA_11:       thGame = make_unique<Touhou11>(pe32);      break;
+        case SupportedGame::UFO_12:      thGame = make_unique<Touhou12>(pe32);      break;
+        case SupportedGame::DS_12_5:     thGame = make_unique<Touhou12_5>(pe32);    break;
+        case SupportedGame::GFW_12_8:    thGame = make_unique<Touhou12_8>(pe32);    break;
+        case SupportedGame::TD_13:       thGame = make_unique<Touhou13>(pe32);      break;
+        case SupportedGame::DDC_14:      thGame = make_unique<Touhou14>(pe32);      break;
+        case SupportedGame::ISC_14_3:    thGame = make_unique<Touhou14_3>(pe32);    break;
+        case SupportedGame::LoLK_15:     thGame = make_unique<Touhou15>(pe32);      break;
+        case SupportedGame::HSiFS_16:    thGame = make_unique<Touhou16>(pe32);      break;
+        case SupportedGame::WBaWC_17:    thGame = make_unique<Touhou17>(pe32);      break;
+        case SupportedGame::UM_18:       thGame = make_unique<Touhou18>(pe32);      break;
+        case SupportedGame::FW_20:       thGame = make_unique<Touhou20>(pe32);      break;
 
-            case SupportedGame::Invalid:
-            {
-                Log::error("The game has been detected but isn't properly linked by the program. Exiting now...");
-                exit(-1);
-            }
-            // no default, forces compile error when supported game added to enum but this switch isn't updated.
+        case SupportedGame::Invalid:
+        {
+            Log::error("The game has been detected but isn't properly linked by the program. Exiting now...");
+            exit(-1);
+        }
+        // no default, forces compile error when supported game added to enum but this switch isn't updated.
         }
 
         Log::info("Supported game found: {}", thGame->getGameName());

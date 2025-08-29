@@ -24,6 +24,7 @@ You can use the .dll file available in the Discord Game SDK zip file provided by
 - Touhou 17 - Wily Beast and Weakest Creature
 - Touhou 18 - Unconnected Marketeers - Trial v0.02a (you must name the game "th18tr.exe")
 - Touhou 18 - Unconnected Marketeers
+- Touhou 20 - Fossilized Wonders
 
 If you want to see other games or fangames supported, contributions are welcome!
 

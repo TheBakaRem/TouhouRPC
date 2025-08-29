@@ -16,6 +16,31 @@ import Log;
 using namespace std;
 
 export {
+
+    //Gets the base address. To be used with relative addresses.
+    uintptr_t GetModuleBaseAddress(DWORD processId, const wchar_t* moduleName) {
+        uintptr_t baseAddress = 0;
+
+        HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processId);
+        if (snapshot != INVALID_HANDLE_VALUE) {
+            MODULEENTRY32W moduleEntry;
+            moduleEntry.dwSize = sizeof(MODULEENTRY32W);
+
+            if (Module32FirstW(snapshot, &moduleEntry)) {
+                do {
+                    if (_wcsicmp(moduleEntry.szModule, moduleName) == 0) {
+                        baseAddress = reinterpret_cast<uintptr_t>(moduleEntry.modBaseAddr);
+                        break;
+                    }
+                } while (Module32NextW(snapshot, &moduleEntry));
+            }
+            CloseHandle(snapshot);
+        }
+
+        return baseAddress;
+    }
+
+
     struct StateData {
         // States of play: for the most basic functionality, it is required that gameState must at least correctly switch between MainMenu and Playing.
         GameState gameState{ GameState::MainMenu };
@@ -86,6 +111,7 @@ export {
 
     protected:
         HANDLE processHandle;
+        uintptr_t moduleBase;
         StateData state;
         StateData prevState{ state };
 
@@ -152,6 +178,7 @@ export {
         if (processHandle != nullptr) {
             Log::debug("PID {}: Read access granted!", pe32.th32ProcessID);
             linkedToProcess = true;
+            moduleBase = GetModuleBaseAddress(pe32.th32ProcessID, pe32.szExeFile);
         }
         else {
             Log::debug("PID {}: Read access not granted!", pe32.th32ProcessID);
@@ -621,6 +648,47 @@ export {
             case SubCharacter::Eagle:
             {
                 text.append(" (Eagle)");
+                break;
+            }
+            //FW Stones
+            case SubCharacter::ScarletDevil:
+            {
+                text.append(" (R1)");
+                break;
+            }
+            case SubCharacter::CreatureRed:
+            {
+                text.append(" (R2)");
+                break;
+            }
+            case SubCharacter::SnowBlossom:
+            {
+                text.append(" (B1)");
+                break;
+            }
+            case SubCharacter::BlueSeason:
+            {
+                text.append(" (B2)");
+                break;
+            }
+            case SubCharacter::YellowSubterranean:
+            {
+                text.append(" (Y1)");
+                break;
+            }
+            case SubCharacter::ImperishableMoon:
+            {
+                text.append(" (Y2)");
+                break;
+            }
+            case SubCharacter::BeastHardness:
+            {
+                text.append(" (G1)");
+                break;
+            }
+            case SubCharacter::ShintoismWind:
+            {
+                text.append(" (G2)");
                 break;
             }
         }

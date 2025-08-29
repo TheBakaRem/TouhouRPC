@@ -116,6 +116,16 @@ export enum class SubCharacter {
     Wolf,
     Otter,
     Eagle,
+
+    //FW Stones
+    ScarletDevil,
+    CreatureRed,
+    SnowBlossom,
+    BlueSeason,
+    YellowSubterranean,
+    ImperishableMoon,
+    BeastHardness,
+    ShintoismWind,
 };
 
 export enum class Difficulty {
