@@ -14,109 +14,119 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
+// Includes
+#include <chrono>
+#include <csignal> // SIGINT
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+#include <locale>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <Windows.h>
+
+#include "Config.hpp"
+#include "discord.h"
+#include "DiscordRPC.hpp"
+#include "GameDetector.hpp"
+#include "Log.hpp"
+#include "TouhouBase.hpp"
+
 // Version definition
 constexpr auto VERSION{ "2.0.0-beta1" };
 
-// Includes
-#include <Windows.h>
-#include <csignal> // SIGINT
-#include <cstdint>
-#include <thread>
-#include <iostream>
-#include <chrono>
+namespace {
+    // used to avoid repeating the same error message twice
+    int discordLastErrorType{ -1 };
 
-#include "Config.hpp"
-#include "Log.hpp"
-#include "DiscordRPC.hpp"
-#include "GameDetector.hpp"
-#include "TouhouBase.hpp"
+    DiscordRPC getDiscord(int64_t clientID) {
+        Log::info("Connecting to the Discord client...");
 
-// used to avoid repeating the same error message twice
-int discordLastErrorType{ -1 };
+        DiscordRPC discordClient{ clientID, discordLastErrorType };
 
-DiscordRPC getDiscord(int64_t clientID) {
-    Log::info("Connecting to the Discord client...");
-
-    DiscordRPC d{ clientID, discordLastErrorType };
-
-    while (!d.isLaunched()) {
-        std::this_thread::sleep_for(std::chrono::seconds{ 1 });
-        d = DiscordRPC(clientID, discordLastErrorType);
+        while (!discordClient.isLaunched()) {
+            std::this_thread::sleep_for(std::chrono::seconds{ 1 });
+            discordClient = DiscordRPC(clientID, discordLastErrorType);
+        }
+        discordLastErrorType = -1; // Reset the value
+        return discordClient;
     }
-    discordLastErrorType = -1; // Reset the value
-    return d;
-}
 
-std::unique_ptr<TouhouBase> getTouhouGame() {
-    Log::info("Waiting for a supported game to start...");
+    std::unique_ptr<TouhouBase> getTouhouGame() {
+        Log::info("Waiting for a supported game to start...");
 
-    std::unique_ptr<TouhouBase> d{ initializeTouhouGame(false) };
+        std::unique_ptr<TouhouBase> ptrThBase{ initializeTouhouGame(false) };
 
-    while (d == nullptr) {
-        std::this_thread::sleep_for(std::chrono::seconds{ 1 });
-        d = initializeTouhouGame(true);
+        while (ptrThBase == nullptr) {
+            std::this_thread::sleep_for(std::chrono::seconds{ 1 });
+            ptrThBase = initializeTouhouGame(true);
+        }
+        return ptrThBase;
     }
-    return d;
-}
 
-bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord) {
-    if (touhouGame->isStillRunning()) {
-        // Update data in Touhou class
-        touhouGame->readDataFromGameProcess();
-        const bool stateHasChanged{ touhouGame->stateHasChangedSinceLastCheck() };
 
-        // Get data from Touhou class
-        std::string gameName;
-        touhouGame->setGameName(gameName);
+    bool touhouUpdate(const std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord) {
+        if (touhouGame->isStillRunning()) {
+            // Update data in Touhou class
+            touhouGame->readDataFromGameProcess();
+            const bool stateHasChanged{ touhouGame->stateHasChangedSinceLastCheck() };
 
-        std::string gameInfo;
-        touhouGame->setGameInfo(gameInfo);
+            // Get data from Touhou class
+            std::string gameName;
+            touhouGame->setGameName(gameName);
 
-        std::string largeImageIcon;
-        std::string largeImageText;
-        touhouGame->setLargeImageInfo(largeImageIcon, largeImageText);
+            std::string gameInfo;
+            touhouGame->setGameInfo(gameInfo);
 
-        std::string smallImageIcon;
-        std::string smallImageText;
-        touhouGame->setSmallImageInfo(smallImageIcon, smallImageText);
+            std::string largeImageIcon;
+            std::string largeImageText;
+            touhouGame->setLargeImageInfo(largeImageIcon, largeImageText);
 
-        // Update RPC data, always needs to run
-        discord.setActivityDetails(gameName, gameInfo, largeImageIcon, largeImageText, smallImageIcon, smallImageText);
+            std::string smallImageIcon;
+            std::string smallImageText;
+            touhouGame->setSmallImageInfo(smallImageIcon, smallImageText);
 
-        return stateHasChanged;
+            // Update RPC data, always needs to run
+            discord.setActivityDetails(gameName, gameInfo, largeImageIcon, largeImageText, smallImageIcon, smallImageText);
+
+            return stateHasChanged;
+        }
+        return false;
     }
-    return false;
-}
 
-// This code runs when a close event is detected (SIGINT or CTRL_CLOSE_EVENT)
-void programClose() {
+    // This code runs when a close event is detected (SIGINT or CTRL_CLOSE_EVENT)
+    void programClose() {
 
-}
-
-
-BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
-    if (int(dwCtrlType) == CTRL_CLOSE_EVENT) {
-        programClose();
-        return TRUE;
     }
-    return FALSE;
-}
 
-void startDisplay() {
-    std::cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION << "\n"
-        << "Available on GitHub: https://www.github.com/TheBakaRem/TouhouRPC\n"
-        << "Copyright (C) 2020-2024  TheBakaRem\n"
-        << "Licensed under the GNU General Public License v3.0. This program comes with ABSOLUTELY NO WARRANTY; for details see the LICENSE file.\n"
-        << "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\n"
-        << "\n"
-        << "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer.\n"
-        << "The program automatically detects when you change between supported games.\n"
-        << "You can close this program at any time by pressing (Ctrl+C).\n"
-        << "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB), 10 (MoF), 11 (SA), 12 (UFO), 12.5 (DS), 12.8 (GFW), 13 (TD), 14 (DDC), 14.3 (ISC), 15 (LoLK), 16 (HSiFS), 17 (WBaWC), 18 (UM).\n"
-        << "\n"
-        << "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!\n";
-}
 
+    BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
+        if (dwCtrlType == CTRL_CLOSE_EVENT) {
+            programClose();
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    void startDisplay() {
+        std::cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION << "\n"
+            "Available on GitHub: https://www.github.com/TheBakaRem/TouhouRPC\n"
+            "Copyright (C) 2020-2024  TheBakaRem\n"
+            "Licensed under the GNU General Public License v3.0. This program comes with ABSOLUTELY NO WARRANTY; for details see the LICENSE file.\n"
+            "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.\n"
+            "\n"
+            "Usage: Once started, the program will automatically attach to a Touhou game currently running on the computer.\n"
+            "The program automatically detects when you change between supported games.\n"
+            "You can close this program at any time by pressing (Ctrl+C).\n"
+            "Supported games: Touhou 06 (EoSD), 07 (PCB), 08 (IN), 09 (PoFV), 09.5 (StB), 10 (MoF), 11 (SA), 12 (UFO), 12.5 (DS), 12.8 (GFW), 13 (TD), 14 (DDC), 14.3 (ISC), 15 (LoLK), 16 (HSiFS), 17 (WBaWC), 18 (UM).\n"
+            "\n"
+            "!!THIS PROGRAM MIGHT BE ABLE TO TRIGGER ANTI-CHEAT SYSTEMS FROM OTHER GAMES, USE AT YOUR OWN RISK!!\n";
+    }
+
+} // namespace
 int main() {
     // Program start and SIGINT (Ctrl+C) handler
     startDisplay();
@@ -150,7 +160,7 @@ int main() {
     }
     catch (const std::runtime_error& e) {
         std::cerr << e.what();
-        std::exit(1);
+        return 1;
     }
 
 
@@ -161,7 +171,7 @@ int main() {
     DiscordRPC discord{ getDiscord(touhouGame->getClientId()) };
     if (!discord.isLaunched()) {
         Log::error("Discord is not running. Exiting program...");
-        std::exit(-1);
+        return -1;
     }
 
     Log::debug("Starting Discord Rich Presence display...");
@@ -174,10 +184,10 @@ int main() {
     int regularUpdateTickCount{ ticksBetweenRegularUpdates };
 
     while (true) {
-        discord::Result res{ discord.tickUpdate(msBetweenTicks) };
+        const discord::Result discordResult{ discord.tickUpdate(msBetweenTicks) };
 
-        if (res != discord::Result::Ok) {
-            DiscordRPC::showError(res, discordLastErrorType);
+        if (discordResult != discord::Result::Ok) {
+            DiscordRPC::showError(discordResult, discordLastErrorType);
             discord = getDiscord(touhouGame->getClientId());
 
             if (touhouUpdate(touhouGame, discord) && touhouGame->isStillRunning()) {

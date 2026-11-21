@@ -1,18 +1,26 @@
 #include "DiscordRPC.hpp"
 
+#include <chrono>
+#include <cstdint>
+#include <string>
+
+#include "discord.h"
+#include "Log.hpp"
+#include "types.h"
+
 // Constructor
 // The lastErrorType value is used to tell if the error was the same at the last construction. If it is, it's not logged.
-DiscordRPC::DiscordRPC(std::int64_t clientID, int& lastErrorType) {
-    discord::Core* core_init;
-    auto response{ discord::Core::Create(clientID, DiscordCreateFlags_NoRequireDiscord, &core_init) };
-
-    if (!core_init) {
+DiscordRPC::DiscordRPC(std::int64_t clientID, int& lastErrorType)
+: activity() {
+    discord::Core* core_init{ nullptr };
+    const auto response{ discord::Core::Create(clientID, DiscordCreateFlags_NoRequireDiscord, &core_init) };
+    
+    if (core_init == nullptr) {
         DiscordRPC::showError(response, lastErrorType);
         launched = false;
     }
     else {
         core.reset(core_init);
-        activity = discord::Activity{};
         timeSinceLastSubmits.fill(MIN_TIME_BETWEEN_SUBMITS_MS);
         resetActivityTimeStartedToNow(); // new discord app instance made so our "game time" starts from now
         Log::info("Discord client instantiated successfully!");
@@ -20,7 +28,6 @@ DiscordRPC::DiscordRPC(std::int64_t clientID, int& lastErrorType) {
     }
 }
 
-// Code that should run every tick
 discord::Result DiscordRPC::tickUpdate(int msDeltaTime) {
     for (int& time : timeSinceLastSubmits) {
         time += msDeltaTime;
@@ -28,33 +35,30 @@ discord::Result DiscordRPC::tickUpdate(int msDeltaTime) {
     return core->RunCallbacks();
 }
 
-// Send the presence to Discord servers
 void DiscordRPC::sendPresence(bool forceSend) {
-    if (!forceSend) {
-        bool cantSubmit{ true };
-        for (int& time : timeSinceLastSubmits) {
-            if (time >= MIN_TIME_BETWEEN_SUBMITS_MS) {
-                cantSubmit = false;
-                time = 0;
-                break;
-            }
-        }
-        if (cantSubmit) {
-            return;
+    // Check and update rate limit timers
+    bool isSubmittable{ false };
+    for (int& time : timeSinceLastSubmits) {
+        if (time >= MIN_TIME_BETWEEN_SUBMITS_MS) {
+            isSubmittable = true;
+            time = 0;
+            break;
         }
     }
-    core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
-        if (result != discord::Result::Ok && result != discord::Result::TransactionAborted) {
-            Log::warning("Failed updating RichPresence activity!");
 
-            int err{ -1 };
-            DiscordRPC::showError(result, err);
-        }
-        }
-    );
+    // Update Discord presence activity if allowed or forced
+    if (isSubmittable || forceSend) {
+        core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
+            if (result != discord::Result::Ok && result != discord::Result::TransactionAborted) {
+                Log::warning("Failed updating RichPresence activity!");
+                
+                int err{ -1 };
+                DiscordRPC::showError(result, err);
+            }
+        });
+    }
 }
 
-// Reset presence
 void DiscordRPC::resetPresence() {
     core->ActivityManager().ClearActivity([](discord::Result result) {
         if (result != discord::Result::Ok && result != discord::Result::TransactionAborted) {
@@ -63,8 +67,7 @@ void DiscordRPC::resetPresence() {
             int err{ -1 };
             DiscordRPC::showError(result, err);
         }
-        }
-    );
+    });
 }
 
 void DiscordRPC::closeApp() {
@@ -86,12 +89,10 @@ void DiscordRPC::resetActivityTimeStartedToNow() {
     activity.GetTimestamps().SetStart(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
-// Display a Discord error
 void DiscordRPC::showError(discord::Result res, int& lastErrorType) {
-
-    if (int(res) != lastErrorType) {
+    if (static_cast<int>(res) != lastErrorType) {
         Log::warning(getErrorString(res));
-        lastErrorType = int(res);
+        lastErrorType = static_cast<int>(res);
     }
 }
 

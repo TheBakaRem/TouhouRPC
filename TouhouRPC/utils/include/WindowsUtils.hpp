@@ -4,9 +4,6 @@
 #include <memoryapi.h>
 #include <string>
 #include <cstdint>
-#include <memory>
-
-#include "Log.hpp"
 
 using TouhouAddress = std::uintptr_t;
 
