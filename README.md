@@ -42,9 +42,10 @@ If you want to see other games or fangames supported, contributions are welcome!
 To compile the program by yourself, you will need:
 - Visual Studio 2022
 - MSVC v143 Build Tools
+- CMake v3.31 or higher
 
-Open the project in VS2022 and build the solution.  
-You can build for x64 or x86 architectures in Debug or Release mode.
+To generate the build system (recommended generator is Ninja): `cmake -S. -Bbuild -GNinja`  
+To compile the project (Release x64 only at the moment): `cmake --build build`
 
 ## Additional notes
 This program supports games patched using the [Touhou Community Reliant Automatic Patcher](https://github.com/thpatch/thcrap). It also supports games using the vpatch.

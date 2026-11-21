@@ -25,11 +25,11 @@ constexpr auto VERSION{ "2.0.0-beta1" };
 #include <iostream>
 #include <chrono>
 
-import Config;
-import Log;
-import DiscordRPC;
-import GameDetector;
-import Games;
+#include "Config.hpp"
+#include "Log.hpp"
+#include "DiscordRPC.hpp"
+#include "GameDetector.hpp"
+#include "TouhouBase.hpp"
 
 using namespace std;
 
@@ -142,8 +142,8 @@ int main() {
     try {
         Config::parseFile();
         const int activateLogFiles{ Config::getValue("activateLogFiles") };
-        const int logLevelConsole{ Config::getValue("logLevelConsole") };
-        const int logLevelLogFile{ Config::getValue("logLevelLogFile") };
+        const Log::LogLevel logLevelConsole{ static_cast<Log::LogLevel>(Config::getValue("logLevelConsole")) };
+        const Log::LogLevel logLevelLogFile{ static_cast<Log::LogLevel>(Config::getValue("logLevelLogFile")) };
 
         if (activateLogFiles == 1) {
             Log::openLogFile();
