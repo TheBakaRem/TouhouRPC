@@ -2,7 +2,7 @@
 
 // Constructor
 // The lastErrorType value is used to tell if the error was the same at the last construction. If it is, it's not logged.
-DiscordRPC::DiscordRPC(int64_t clientID, int& lastErrorType) {
+DiscordRPC::DiscordRPC(std::int64_t clientID, int& lastErrorType) {
     discord::Core* core_init;
     auto response{ discord::Core::Create(clientID, DiscordCreateFlags_NoRequireDiscord, &core_init) };
 
@@ -72,7 +72,7 @@ void DiscordRPC::closeApp() {
     launched = false;
 }
 
-void DiscordRPC::setActivityDetails(string const& details, string const& state, string const& largeIcon, string const& largeText, string const& smallIcon, string const& smallText) {
+void DiscordRPC::setActivityDetails(std::string const& details, std::string const& state, std::string const& largeIcon, std::string const& largeText, std::string const& smallIcon, std::string const& smallText) {
     activity.SetDetails(details.c_str());
     activity.SetState(state.c_str());
     activity.GetAssets().SetLargeImage(largeIcon.c_str());
@@ -83,7 +83,7 @@ void DiscordRPC::setActivityDetails(string const& details, string const& state, 
 
 void DiscordRPC::resetActivityTimeStartedToNow() {
     // discord timestamps expect seconds since epoch.
-    activity.GetTimestamps().SetStart(chrono::duration_cast<chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count());
+    activity.GetTimestamps().SetStart(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
 // Display a Discord error
@@ -95,8 +95,8 @@ void DiscordRPC::showError(discord::Result res, int& lastErrorType) {
     }
 }
 
-string DiscordRPC::getErrorString(discord::Result res) {
-    string errType = "Discord ";
+std::string DiscordRPC::getErrorString(discord::Result res) {
+    std::string errType = "Discord ";
 
     switch (res) {
         case discord::Result::ServiceUnavailable:
@@ -113,7 +113,7 @@ string DiscordRPC::getErrorString(discord::Result res) {
             break;
         default: // All other cases
             errType = "An unexpected error occured. Error code: ";
-            errType.append(to_string(static_cast<int>(res)));
+            errType.append(std::to_string(static_cast<int>(res)));
     }
 
     return errType;

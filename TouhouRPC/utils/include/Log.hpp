@@ -10,7 +10,6 @@
 
 
 namespace Log {
-    using namespace std;
 
     enum LogLevel {
         LOG_DEBUG = 0,
@@ -21,13 +20,13 @@ namespace Log {
 
     // static internal variables must be declared here because they are used in the templates 
     // and we can't declare a template without an immediate definition
-    const vector<string> level_names{ "DEBUG", "INFO", "WARNING", "ERROR" };
-    inline ofstream log_file;
+    const std::vector<std::string> level_names{ "DEBUG", "INFO", "WARNING", "ERROR" };
+    inline std::ofstream log_file;
     inline LogLevel file_level{ LOG_ERROR };
     inline LogLevel console_level{ LOG_ERROR };
 
     inline auto local_time() {
-        return chrono::floor<chrono::seconds>(chrono::zoned_time{ chrono::current_zone(), chrono::system_clock::now() }.get_local_time());
+        return std::chrono::floor<std::chrono::seconds>(std::chrono::zoned_time{ std::chrono::current_zone(), std::chrono::system_clock::now() }.get_local_time());
     }
 
     // Prints to console and log file at a specified level.
@@ -36,10 +35,10 @@ namespace Log {
     template<typename... Args>
         void print(LogLevel level, const std::string& format_string, Args&&... args) {
 
-        // We concatenate two formatted strings to avoid format string clashes like {0:} and {}. This way the caller of print() formats as they want.
-        string message{
+        // We concatenate two formatted strings to avoid format std::string clashes like {0:} and {}. This way the caller of print() formats as they want.
+        std::string message{
             /*vformat("[{0:%T}] {1:}: ", make_format_args(local_time() , level_names.at(level)))
-            +*/ vformat(format_string, make_format_args(args...))
+            +*/ std::vformat(format_string, std::make_format_args(args...))
         };
 
 
@@ -50,7 +49,7 @@ namespace Log {
 
         // Print in console
         if (level >= console_level) {
-            cout << message << "\n";
+            std::cout << message << "\n";
         }
     }
 

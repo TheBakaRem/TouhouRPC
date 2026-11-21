@@ -31,8 +31,6 @@ constexpr auto VERSION{ "2.0.0-beta1" };
 #include "GameDetector.hpp"
 #include "TouhouBase.hpp"
 
-using namespace std;
-
 // used to avoid repeating the same error message twice
 int discordLastErrorType{ -1 };
 
@@ -42,44 +40,44 @@ DiscordRPC getDiscord(int64_t clientID) {
     DiscordRPC d{ clientID, discordLastErrorType };
 
     while (!d.isLaunched()) {
-        this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(std::chrono::seconds{ 1 });
         d = DiscordRPC(clientID, discordLastErrorType);
     }
     discordLastErrorType = -1; // Reset the value
     return d;
 }
 
-unique_ptr<TouhouBase> getTouhouGame() {
+std::unique_ptr<TouhouBase> getTouhouGame() {
     Log::info("Waiting for a supported game to start...");
 
-    unique_ptr<TouhouBase> d{ initializeTouhouGame(false) };
+    std::unique_ptr<TouhouBase> d{ initializeTouhouGame(false) };
 
     while (d == nullptr) {
-        this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(std::chrono::seconds{ 1 });
         d = initializeTouhouGame(true);
     }
     return d;
 }
 
-bool touhouUpdate(unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord) {
+bool touhouUpdate(std::unique_ptr<TouhouBase>& touhouGame, DiscordRPC& discord) {
     if (touhouGame->isStillRunning()) {
         // Update data in Touhou class
         touhouGame->readDataFromGameProcess();
         const bool stateHasChanged{ touhouGame->stateHasChangedSinceLastCheck() };
 
         // Get data from Touhou class
-        string gameName;
+        std::string gameName;
         touhouGame->setGameName(gameName);
 
-        string gameInfo;
+        std::string gameInfo;
         touhouGame->setGameInfo(gameInfo);
 
-        string largeImageIcon;
-        string largeImageText;
+        std::string largeImageIcon;
+        std::string largeImageText;
         touhouGame->setLargeImageInfo(largeImageIcon, largeImageText);
 
-        string smallImageIcon;
-        string smallImageText;
+        std::string smallImageIcon;
+        std::string smallImageText;
         touhouGame->setSmallImageInfo(smallImageIcon, smallImageText);
 
         // Update RPC data, always needs to run
@@ -105,9 +103,7 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
 }
 
 void startDisplay() {
-    // just to spam logs in peace
-    ios_base::sync_with_stdio(false);
-    cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION << "\n"
+    std::cout << "TouhouRPC - Discord Rich Presence status for Touhou games - Version " << VERSION << "\n"
         << "Available on GitHub: https://www.github.com/TheBakaRem/TouhouRPC\n"
         << "Copyright (C) 2020-2024  TheBakaRem\n"
         << "Licensed under the GNU General Public License v3.0. This program comes with ABSOLUTELY NO WARRANTY; for details see the LICENSE file.\n"
@@ -125,9 +121,9 @@ int main() {
     // Program start and SIGINT (Ctrl+C) handler
     startDisplay();
 
-    signal(SIGINT, [](int) {
+    std::signal(SIGINT, [](int) {
         programClose();
-        exit(SIGINT);
+        std::exit(SIGINT);
         }
     );
 
@@ -136,7 +132,7 @@ int main() {
     // Force locale to be "en_US.UTF8".
     // This forces numbers to be displayed with the "," thousands separator.
     // This makes sense since this is an English-only program.
-    locale::global(std::locale("en_US.UTF8"));
+    std::locale::global(std::locale("en_US.UTF8"));
 
     // Config reading and log system initialization
     try {
@@ -152,20 +148,20 @@ int main() {
 
         Log::setLogLevelConsole(Log::LogLevel{ logLevelConsole });
     }
-    catch (const runtime_error& e) {
-        cerr << e.what();
-        exit(1);
+    catch (const std::runtime_error& e) {
+        std::cerr << e.what();
+        std::exit(1);
     }
 
 
     // GET TOUHOU GAME
-    unique_ptr<TouhouBase> touhouGame{ getTouhouGame() };
+    std::unique_ptr<TouhouBase> touhouGame{ getTouhouGame() };
 
     // GET DISCORD LINK
     DiscordRPC discord{ getDiscord(touhouGame->getClientId()) };
     if (!discord.isLaunched()) {
         Log::error("Discord is not running. Exiting program...");
-        exit(-1);
+        std::exit(-1);
     }
 
     Log::debug("Starting Discord Rich Presence display...");
@@ -219,6 +215,6 @@ int main() {
             Log::debug("Starting Discord Rich Presence display...");
         }
 
-        this_thread::sleep_for(chrono::milliseconds{ msBetweenTicks });
+        std::this_thread::sleep_for(std::chrono::milliseconds{ msBetweenTicks });
     }
 }

@@ -55,10 +55,10 @@ bool TouhouBase::isStillRunning() const {
     return GetExitCodeProcess(processHandle, &running) && running == STILL_ACTIVE;
 }
 
-string TouhouBase::getStageName() const {
+std::string TouhouBase::getStageName() const {
     if (stage <= 6) {
-        string name = "Stage ";
-        name.append(to_string(stage));
+        std::string name = "Stage ";
+        name.append(std::to_string(stage));
         return name;
     }
     else {
@@ -73,7 +73,7 @@ bool TouhouBase::stateHasChangedSinceLastCheck() {
     return changed;
 }
 
-void TouhouBase::setGameName(string& name) const {
+void TouhouBase::setGameName(std::string& name) const {
     switch (state.gameState) {
         case GameState::MainMenu:
         {
@@ -154,9 +154,9 @@ void TouhouBase::setGameName(string& name) const {
                 name.append(createFormattedScore());
             }
             else {
-                name.append(to_string(state.lives));
+                name.append(std::to_string(state.lives));
                 name.append("/");
-                name.append(to_string(state.bombs));
+                name.append(std::to_string(state.bombs));
             }
             name.append(")");
             break;
@@ -179,7 +179,7 @@ void TouhouBase::setGameName(string& name) const {
     }
 }
 
-void TouhouBase::setGameInfo(string& info) const {
+void TouhouBase::setGameInfo(std::string& info) const {
     switch (state.gameState) {
         case GameState::MainMenu:
         {
@@ -244,7 +244,7 @@ void TouhouBase::setGameInfo(string& info) const {
     }
 }
 
-void TouhouBase::setLargeImageInfo(string& icon, string& text) const {
+void TouhouBase::setLargeImageInfo(std::string& icon, std::string& text) const {
     icon.clear(), text.clear();
     if (shouldShowCoverIcon()) {
         icon.append("cover");
@@ -513,7 +513,7 @@ void TouhouBase::setLargeImageInfo(string& icon, string& text) const {
     }
 }
 
-void TouhouBase::setSmallImageInfo(string& icon, string& text) const {
+void TouhouBase::setSmallImageInfo(std::string& icon, std::string& text) const {
     icon.clear(), text.clear();
     if (shouldShowCoverIcon()) return;
 
@@ -573,10 +573,10 @@ bool TouhouBase::shouldShowCoverIcon() const {
         ;
 }
 
-string TouhouBase::formatScore(int score) const {
-    return format("{:L}", score);
+std::string TouhouBase::formatScore(int score) const {
+    return std::format("{:L}", score);
 }
 
-string TouhouBase::createFormattedScore() const {
+std::string TouhouBase::createFormattedScore() const {
     return formatScore((state.score * 10) + state.gameOvers);
 }

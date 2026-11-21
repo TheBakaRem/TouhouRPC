@@ -1,17 +1,16 @@
 #include "Config.hpp"
 
 namespace Config {
-    using namespace std;
 
     // Private map where the loaded configuration is stored
-    map<const string, const int> configMap{
+    std::map<const std::string, const int> configMap{
         {"activateLogFiles", 1},
         {"logLevelConsole", Log::LOG_INFO},
         {"logLevelLogFile", Log::LOG_INFO}
     };
 
-    // string custom trim
-    void trim(string& str) {
+    // std::string custom trim
+    void trim(std::string& str) {
         // Trim left
         str.erase(0, str.find_first_not_of(" \n\t\r"));
         // Trim right
@@ -19,16 +18,16 @@ namespace Config {
     }
 
     // Read the config file
-    void parseFile(const string& path) {
-        ifstream inputFile;
+    void parseFile(const std::string& path) {
+        std::ifstream inputFile;
         inputFile.open(path);
 
         if (inputFile.fail()) {
-            throw runtime_error("Error while loading the config file at " + path);
+            throw std::runtime_error("Error while loading the config file at " + path);
         }
 
-        string line;
-        while (getline(inputFile, line)) {
+        std::string line;
+        while (std::getline(inputFile, line)) {
             trim(line);
 
             // Check empty and comment lines (starts with ";")
@@ -37,10 +36,10 @@ namespace Config {
 
             // Get key/value data
             const auto delim_pos{ line.find("=") };
-            string key;
-            string value;
+            std::string key;
+            std::string value;
 
-            if (delim_pos != string::npos) {
+            if (delim_pos != std::string::npos) {
                 key = line.substr(0, delim_pos);
                 value = line.substr(delim_pos + 1);
 
@@ -59,26 +58,26 @@ namespace Config {
 
             // convert the read value to int
             int int_value;
-            const auto [ptr, ec] = from_chars(value.data(), value.data() + value.size(), int_value);
+            const auto [ptr, ec] = std::from_chars(value.data(), value.data() + value.size(), int_value);
 
-            if (ec == errc()) {
+            if (ec == std::errc()) {
                 configMap.insert({ key, int_value });
             }
-            else if (ec == errc::invalid_argument) {
-                throw runtime_error("Error while reading the config file at " + path + ": the value of " + key + " = " + value + " is not an int.");
+            else if (ec == std::errc::invalid_argument) {
+                throw std::runtime_error("Error while reading the config file at " + path + ": the value of " + key + " = " + value + " is not an int.");
             }
-            else if (ec == errc::result_out_of_range) {
-                throw runtime_error("Error while reading the config file at " + path + ": the value of " + key + " = " + value + " is too big to be read as int.");
+            else if (ec == std::errc::result_out_of_range) {
+                throw std::runtime_error("Error while reading the config file at " + path + ": the value of " + key + " = " + value + " is too big to be read as int.");
             }
         }
     }
 
-    int getValue(const string& key) {
+    int getValue(const std::string& key) {
         const auto it{ configMap.find(key) };
         if (it != configMap.end()) {
             return it->second;
         }
 
-        throw runtime_error("No value found in the config for key " + key);
+        throw std::runtime_error("No value found in the config for key " + key);
     }
 };

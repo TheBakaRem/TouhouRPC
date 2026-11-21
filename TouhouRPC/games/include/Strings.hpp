@@ -3,11 +3,10 @@
 #include <vector>
 #include <string>
 
-using namespace std;
 using namespace std::string_literals;
 
 // Touhou 06
-const vector<string> th06_musicNames = {
+const std::vector<std::string> th06_musicNames = {
     "A Dream More Scarlet than Red"s,
     "A Soul as Scarlet as a Ground Cherry"s,
     "Apparitions Stalk the Night"s,
@@ -28,7 +27,7 @@ const vector<string> th06_musicNames = {
 };
 
 // Touhou 07
-const vector<string> th07_musicNames = {
+const std::vector<std::string> th07_musicNames = {
     "Ghostly Dream ~ Snow or Cherry Petal"s,
     "Paradise ~ Deep Mountain"s,
     "Crystallized Silver"s,
@@ -52,7 +51,7 @@ const vector<string> th07_musicNames = {
 };
 
 // Touhou 08
-const vector<string> th08_musicNames = {
+const std::vector<std::string> th08_musicNames = {
     "Eternal Night Vignette ~ Eastern Night"s,
     "Illusionary Night ~ Ghostly Eyes"s,
     "Stirring an Autumn Moon ~ Mooned Insect"s,
@@ -77,7 +76,7 @@ const vector<string> th08_musicNames = {
 };
 
 // Touhou 08 Spell Cards
-const vector<string> th08_spellCardName = {
+const std::vector<std::string> th08_spellCardName = {
     // stage 1 (13 cards)
     "Firefly Sign \"Meteors on Earth\""s,
     "Firefly Sign \"Comets on Earth\""s,
@@ -313,7 +312,7 @@ const vector<string> th08_spellCardName = {
 };
 
 // Touhou 09 Music
-const vector<string> th09_musicNames = {
+const std::vector<std::string> th09_musicNames = {
     "Flower Reflecting Mound ~ Higan Retour"s,
     "Spring Lane ~ Colorful Path"s,
     "Oriental Dark Flight"s,
@@ -336,7 +335,7 @@ const vector<string> th09_musicNames = {
 };
 
 // Touhou 09 Stages
-const vector<string> th09_stageNames = {
+const std::vector<std::string> th09_stageNames = {
     "Bamboo Forest of the Lost"s,
     "Bamboo Forest of the Lost"s,
     "Phantom Meadow"s,
@@ -354,7 +353,7 @@ const vector<string> th09_stageNames = {
 };
 
 // Touhou 09 Characters
-const vector<string> th09_characterNames = {
+const std::vector<std::string> th09_characterNames = {
     "Reimu"s,
     "Marisa"s,
     "Sakuya"s,
@@ -376,7 +375,7 @@ const vector<string> th09_characterNames = {
 
 // Touhou 09.5 Bosses and Spells
 // Empty strings are for unused levels.
-const vector<string> th095_bossAndSpells = {
+const std::vector<std::string> th095_bossAndSpells = {
     // Level 1
     "Wriggle Nightbug"s,
     "Rumia"s,
@@ -501,7 +500,7 @@ const vector<string> th095_bossAndSpells = {
 };
 
 // Touhou 09.5 Music
-const vector<string> th095_musicNames = {
+const std::vector<std::string> th095_musicNames = {
     "Tengu's Notebook ~ Mysterious Note"s,
     "Wind Circulation ~ Wind Tour"s,
     "Tengu is Watching ~ Black Eyes"s,
@@ -511,7 +510,7 @@ const vector<string> th095_musicNames = {
 };
 
 // Touhou 10
-const vector<string> th10_musicNames = {
+const std::vector<std::string> th10_musicNames = {
     "A God That Misses People ~ Romantic Fall"s,
     "Because Princess Inada Is Scolding Me"s,
     "Sealed Gods"s,
@@ -533,7 +532,7 @@ const vector<string> th10_musicNames = {
 };
 
 // Touhou 11
-const vector<string> th11_musicNames = {
+const std::vector<std::string> th11_musicNames = {
     "Awakening of the Earth Spirits"s,
     "The Dark Blowhole"s,
     "The Sealed Youkai ~ Lost Place"s,
@@ -557,7 +556,7 @@ const vector<string> th11_musicNames = {
 };
 
 // Touhou 12
-const vector<string> th12_musicNames = {
+const std::vector<std::string> th12_musicNames = {
     "At the End of Spring"s,
     "A Shadow in the Blue Sky"s,
     "A Tiny, Tiny, Clever Commander"s,
@@ -583,7 +582,7 @@ const vector<string> th12_musicNames = {
 };
 
 // Touhou 12.5 Music
-const vector<string> th125_musicNames = {
+const std::vector<std::string> th125_musicNames = {
     "Newshound"s,
     "The Mystery in Your Town"s,
     "Youkai Modern Colony"s,
@@ -594,7 +593,7 @@ const vector<string> th125_musicNames = {
 
 // Touhou 12.5 Bosses and Spells
 // Empty strings are for unused levels.
-const vector<string> th125_bossAndSpells = {
+const std::vector<std::string> th125_bossAndSpells = {
     // Level 1
     "Minoriko Aki"s,
     "Minoriko Aki"s,
@@ -752,7 +751,7 @@ const vector<string> th125_bossAndSpells = {
 };
 
 // Touhou 12.8
-const vector<string> th12_8_musicNames = {
+const std::vector<std::string> th12_8_musicNames = {
     "The Refrain of the Lovely Great War"s,
     "Year-Round Absorbed Curiosity"s,
     "Staking Your Life on a Prank"s,
@@ -768,7 +767,7 @@ const vector<string> th12_8_musicNames = {
 };
 
 // Touhou 13
-const vector<string> th13_spellCardName = {
+const std::vector<std::string> th13_spellCardName = {
     // stage 1 (14 cards)
     "Symbol \"Dance of the Dead Butterflies\""s,
     "Symbol \"Dance of the Dead Butterflies\""s,
@@ -907,7 +906,7 @@ const vector<string> th13_spellCardName = {
 };
 
 // Touhou 13 Music
-const vector<string> th13_musicNames = {
+const std::vector<std::string> th13_musicNames = {
     "Spirit of Avarice"s,
     "Night Sakura of Dead Spirits"s,
     "unused"s,
@@ -933,7 +932,7 @@ const vector<string> th13_musicNames = {
 };
 
 // Touhou 14 Spell Cards
-const vector<string> th14_spellCardName = {
+const std::vector<std::string> th14_spellCardName = {
     // stage 1 (1-10) (10 cards)
     "Ice Sign \"Ultimate Blizzard\""s,
     "Ice Sign \"Ultimate Blizzard\""s,
@@ -1064,7 +1063,7 @@ const vector<string> th14_spellCardName = {
 };
 
 // Touhou 14 Music
-const vector<string> th14_musicNames = {
+const std::vector<std::string> th14_musicNames = {
     "unused"s,
     "Mysterious Purification Rod"s,
     "Mist Lake"s,
@@ -1088,7 +1087,7 @@ const vector<string> th14_musicNames = {
 };
 
 // Touhou 14.3 stage names
-const vector<string> th143_stageNames = {
+const std::vector<std::string> th143_stageNames = {
     "unused"s,
     // Day 1
     "Cheat Against Impossible Danmaku"s,
@@ -1178,7 +1177,7 @@ const vector<string> th143_stageNames = {
 };
 
 // Touhou 14.3 Bosses and Spells
-const vector<string> th143_bossAndSpells = {
+const std::vector<std::string> th143_bossAndSpells = {
     "unused"s,
     // Day 1
     "Yatsuhashi Tsukumo"s,
@@ -1268,7 +1267,7 @@ const vector<string> th143_bossAndSpells = {
 };
 
 // Touhou 14.3 Music
-const vector<string> th143_musicNames = {
+const std::vector<std::string> th143_musicNames = {
     "Raise the Signal Fire of Cheating"s,
     "Cheat Against the Impossible Danmaku"s,
     "Midnight Spell Card"s,
@@ -1281,7 +1280,7 @@ const vector<string> th143_musicNames = {
 };
 
 // Touhou 15 Music
-const vector<string> th15_musicNames = {
+const std::vector<std::string> th15_musicNames = {
     "unused"s,
     "The Space Shrine Maiden Appears"s,
     "Unforgettable, the Nostalgic Greenery"s,
@@ -1303,7 +1302,7 @@ const vector<string> th15_musicNames = {
 };
 
 // Touhou 16
-const vector<string> th16_spellCardName = {
+const std::vector<std::string> th16_spellCardName = {
     // stage 1 (8 cards)
     "Butterfly Sign \"Minute Scales\""s,
     "Butterfly Sign \"Minute Scales\""s,
@@ -1433,7 +1432,7 @@ const vector<string> th16_spellCardName = {
 };
 
 // Touhou 16 Music
-const vector<string> th16_musicNames = {
+const std::vector<std::string> th16_musicNames = {
     "unused"s,
     "The Sky Where Cherry Blossoms Flutter Down"s,
     "A Star of Hope Rises in the Blue Sky"s,
@@ -1455,7 +1454,7 @@ const vector<string> th16_musicNames = {
 };
 
 // Touhou 17
-const vector<string> th17_spellCardName = {
+const std::vector<std::string> th17_spellCardName = {
     // stage 1 (1-8, 8 cards)
     "Stone Sign \"Stone Woods\""s,
     "Stone Sign \"Stone Woods\""s,
@@ -1567,7 +1566,7 @@ const vector<string> th17_spellCardName = {
 };
 
 // Touhou 17 Music
-const vector<string> th17_musicNames = {
+const std::vector<std::string> th17_musicNames = {
     "unused"s,
     "Silent Beast Spirits"s,
     "unused"s,
@@ -1590,7 +1589,7 @@ const vector<string> th17_musicNames = {
 };
 
 // Touhou 18
-const vector<string> th18_spellCardName = {
+const std::vector<std::string> th18_spellCardName = {
     // stage 1 (1-8, 8 cards)
     "Beckon Sign \"Many Danmaku Guests\""s,
     "Beckon Sign \"Many Danmaku Guests\""s,
@@ -1698,7 +1697,7 @@ const vector<string> th18_spellCardName = {
 };
 
 // Touhou 18 Music
-const vector<string> th18_musicNames = {
+const std::vector<std::string> th18_musicNames = {
     "unused"s,
     "A Rainbow Spanning Gensokyo"s,
     "unused"s,

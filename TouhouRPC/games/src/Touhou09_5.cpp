@@ -128,7 +128,7 @@ std::string Touhou09_5::getCustomMenuResources() const {
     // Formatted score 
     std::string scoreString = formatScore(combinedPhotoScore);
 
-    // Resource string
+    // Resource std::string
     std::string resources = std::to_string(completedScenes);
     resources.append(" completed scenes / ");
 

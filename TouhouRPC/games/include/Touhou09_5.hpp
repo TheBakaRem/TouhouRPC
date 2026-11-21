@@ -47,7 +47,7 @@ private:
 
         IN_MENU = 0x004B1FE4,  // 1 byte, value is: 1 on main menu / in-game (GAME_DATA_PTR = nullptr if on main menu), 2 on in-game replay, 5 on mission select, 21 on replay select
 
-        BGM_STR = 0x004C8FF4L, // Filename of the currently played music. (the string starts at FF0, but I start it at FF4 to remove the "bgm/" part automatically)
+        BGM_STR = 0x004C8FF4L, // Filename of the currently played music. (the std::string starts at FF0, but I start it at FF4 to remove the "bgm/" part automatically)
 
         OTHER_MENU_STATE_PTR = 0x004C4DF0L, // Pointer that gets to another menu state (music room, manual, options). nullptr when in game.
         OTHER_MENU_STATE_OFFSET = 0x6110,

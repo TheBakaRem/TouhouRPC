@@ -138,7 +138,7 @@ std::string Touhou12_5::getCustomMenuResources() const {
     // Formatted score
     std::string scoreString = formatScore(state.character == Character::Aya ? combinedPhotoScoreAya : combinedPhotoScoreHatate);
 
-    // Resource string
+    // Resource std::string
     std::string resources = std::to_string(state.character == Character::Aya ? completedScenesAya : completedScenesHatate);
     resources.append(" completed scenes / ");
 

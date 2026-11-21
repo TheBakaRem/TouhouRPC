@@ -116,7 +116,7 @@ void Touhou14_3::readDataFromGameProcess() {
 
 // Custom mission select resources
 std::string Touhou14_3::getCustomMenuResources() const {
-    // Resource string
+    // Resource std::string
     std::string resources = std::to_string(completedScenes);
     resources.append(" completed scenes");
     // Can add the number of nicknames earned here.

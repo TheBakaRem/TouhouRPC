@@ -28,6 +28,5 @@
 
 #include "Log.hpp"
 
-using namespace std;
 
-unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence);
+std::unique_ptr<TouhouBase> initializeTouhouGame(bool initLogSilence);

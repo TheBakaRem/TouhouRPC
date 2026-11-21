@@ -78,7 +78,7 @@ private:
         IN_MENU_PTR = 0x004E6BB4L, // Points to the menu info. nullptr while in game.
         IN_MENU_STATUS_OFFSET = 0x1C, // Offset to the current menu opened.
 
-        MUSIC_FILE_PLAYED = 0x0053D5D8L, // Holds a string containing the current music played. 16 bytes long max.
+        MUSIC_FILE_PLAYED = 0x0053D5D8L, // Holds a std::string containing the current music played. 16 bytes long max.
 
         // In-game
         MAIN_ITEM = 0x004E4710L, // Main item held by Seija.
