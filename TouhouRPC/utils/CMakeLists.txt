@@ -1,6 +1,6 @@
 # Include - Internal Utils
 add_library(Utils STATIC)
-target_compile_features(Utils PRIVATE cxx_std_20)
+touhourpc_build_options(Utils)
 target_sources(Utils
   PRIVATE
     src/Config.cpp

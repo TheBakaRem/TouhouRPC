@@ -1,6 +1,6 @@
 # Include - Discord API
 add_library(Discord STATIC)
-target_compile_features(Discord PRIVATE cxx_std_20)
+touhourpc_build_options(Discord)
 target_sources(Discord
   PRIVATE
     src/achievement_manager.cpp

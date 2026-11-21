@@ -1,7 +1,7 @@
 # Executable - TouhouRPC
 add_executable(TouhouRPC)
 target_sources(TouhouRPC PRIVATE TouhouRPC.cpp)
-target_compile_features(TouhouRPC PRIVATE cxx_std_20)
+touhourpc_build_options(TouhouRPC)
 target_link_libraries(TouhouRPC PRIVATE Discord Games Utils)
 
 # Dependencies

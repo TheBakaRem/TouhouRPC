@@ -1,6 +1,6 @@
 # Include - Touhou Games
 add_library(Games STATIC)
-target_compile_features(Games PRIVATE cxx_std_20)
+touhourpc_build_options(Games)
 target_sources(Games
   PRIVATE
     src/Touhou06.cpp
