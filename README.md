@@ -47,6 +47,11 @@ To compile the program by yourself, you will need:
 To generate the build system (recommended generator is Ninja): `cmake -S. -Bbuild -GNinja`  
 To compile the project (Release x64 only at the moment): `cmake --build build`
 
+### clangd
+It is highly recommended to install clangd to benefit from it's features such as code completion and clang-tidy diagnostics.  
+To enable it, you can add "C++ Clang tools for Windows" in your Visual Studio Installer and integrate `clangd.exe` to the IDE of your choice through their editor plugins system.  
+See the [clangd installation page](https://clangd.llvm.org/installation) for more details.
+
 ## Additional notes
 This program supports games patched using the [Touhou Community Reliant Automatic Patcher](https://github.com/thpatch/thcrap). It also supports games using the vpatch.
 

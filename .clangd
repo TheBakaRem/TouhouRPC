@@ -1,0 +1,24 @@
+CompileFlags:
+  CompilationDatabase: build
+  Add: []
+Diagnostics:
+  ClangTidy:
+    Add: [
+      bugprone-*,
+      clang-analyzer-*,
+      cppcoreguidelines-*,
+      fuchsia-*,
+      google-*,
+      misc-*,
+      modernize-*,
+      performance-*,
+      readability-*,
+    ]
+    Remove: []
+    FastCheckFilter: None
+  MissingIncludes: Strict
+  UnusedIncludes: Strict
+InlayHints:
+  BlockEnd: true
+Hover:
+  ShowAKA: true
